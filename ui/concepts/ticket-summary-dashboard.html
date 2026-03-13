@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  Concept: Ticket Summary Dashboard
+  Framework: Summary (4× Single Metric Cards)
+  Size: XXS (2 cols × 1 row = 376px × 180px per card)
+  Source: ConnectWise PSA — dashboard at-a-glance metrics
+  Generated: 2026-03-13
+  Figma Libraries:
+    Asio Neon: https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon
+    Widgets-Templates-Library: https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80
+-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Summary Dashboard — Concept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+
+  <style>
+    /* ─── Asio Neon Tokens ─── */
+    :root {
+      /* Text */
+      --text-primary: #101120;
+      --text-secondary: #767786;
+      --text-on-color: #f1f1f2;
+
+      /* Background */
+      --background: #ffffff;
+      --background-hover: rgba(153, 153, 156, 0.16);
+
+      /* Layer / Surface */
+      --layer-01: #f6f6f9;
+      --layer-hover-03: #e7e7ea;
+      --layer-active-03: #c5c6cb;
+
+      /* Border */
+      --border-subtle-02: #ececee;
+
+      /* Icon */
+      --icon-on-color: #ecedee;
+      --icon-disabled: rgba(35, 36, 42, 0.25);
+
+      /* Button — Primary */
+      --button-primary: #2e3f80;
+      --button-primary-hover: #222e5e;
+      --button-primary-active: #394e9e;
+      --button-disabled: #c6c6c6;
+
+      /* Button — Danger */
+      --button-danger-primary: #d32f2f;
+
+      /* Interactive */
+      --focus: #394e9e;
+      --link-primary: #006a8e;
+
+      /* Misc */
+      --skeleton-background: #dadae4;
+      --alert-text: #101120;
+
+      /* Semantic: not in extracted tokens — using Neon palette conventions */
+      --status-success: #1e7e34;
+      --status-success-bg: #e6f4ea;
+      --status-warning: #a65f00;
+      --status-warning-bg: #fff3e0;
+      --status-danger: var(--button-danger-primary);
+      --status-danger-bg: #fdecea;
+
+      /* Widget grid */
+      --row-height: 180px;
+      --col-gap: 16px;
+    }
+
+    /* ─── Typography ─── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      background: var(--layer-01);
+      padding: 40px;
+    }
+
+    .h4-light    { font-size: 24px; font-weight: 300; line-height: 1; }
+    .h4-bold     { font-size: 24px; font-weight: 700; line-height: 1; }
+    .text-16-semibold { font-size: 16px; font-weight: 600; line-height: 22px; }
+    .text-14-semibold { font-size: 14px; font-weight: 600; line-height: 18px; }
+    .text-12 { font-size: 12px; font-weight: 400; line-height: 16px; }
+    .text-12-semibold { font-size: 12px; font-weight: 600; line-height: 16px; }
+
+    /* ─── Page header ─── */
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+    }
+
+    .page-header p {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ─── Widget grid: 8 columns at 1552px, 16px gap ─── */
+    .widget-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: var(--col-gap);
+      max-width: 1552px;
+    }
+
+    /* Widget size tiers via grid-column span */
+    .widget-xxs { grid-column: span 2; }
+    .widget-xs  { grid-column: span 4; }
+    .widget-s   { grid-column: span 8; }
+    .widget-m   { grid-column: span 2; }
+    .widget-l   { grid-column: span 4; }
+    .widget-xl  { grid-column: span 4; }
+    .widget-xxl { grid-column: span 8; }
+
+    /* ─── Summary Card ─── (Zone 1 / Zone 2 / Zone 3) ─── */
+    .summary-card {
+      background: var(--background);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 8px;
+      height: var(--row-height);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+      position: relative;
+      transition: background 120ms ease;
+    }
+
+    .summary-card:hover {
+      background: var(--background-hover);
+    }
+
+    /* Zone 1 — Card Header */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-label {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+      color: var(--text-secondary);
+    }
+
+    /* Chip / Status badge */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .chip-success { background: var(--status-success-bg); color: var(--status-success); }
+    .chip-warning { background: var(--status-warning-bg); color: var(--status-warning); }
+    .chip-danger  { background: var(--status-danger-bg); color: var(--status-danger); }
+    .chip-neutral { background: var(--layer-01); color: var(--text-secondary); }
+
+    /* Zone 2 — Primary Value */
+    .card-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .primary-value {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      margin-bottom: 4px;
+    }
+
+    .trend-up   { color: var(--status-success); }
+    .trend-down { color: var(--status-danger); }
+    .trend-flat { color: var(--text-secondary); }
+
+    .trend-icon {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Zone 3 — Supporting Context */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--layer-hover-03);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 600ms ease;
+    }
+
+    .progress-fill-success { background: var(--status-success); }
+    .progress-fill-warning { background: var(--status-warning); }
+    .progress-fill-danger  { background: var(--status-danger); }
+    .progress-fill-primary { background: var(--button-primary); }
+
+    .drill-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--link-primary);
+      text-decoration: none;
+      white-space: nowrap;
+      margin-left: 12px;
+    }
+
+    .drill-link:hover { text-decoration: underline; }
+
+    .supporting-label {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    /* ─── Annotation strip (concept metadata) ─── */
+    .annotation-strip {
+      margin-top: 24px;
+      padding: 12px 16px;
+      background: var(--background);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 8px;
+      max-width: 1552px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .annotation-strip dt {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .annotation-strip dd {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+
+    .annotation-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .annotation-strip a {
+      color: var(--link-primary);
+      font-size: 12px;
+      text-decoration: none;
+    }
+    .annotation-strip a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Ticket Summary Dashboard</h1>
+    <p>At-a-glance KPI view — Summary framework · 4× XXS widgets (2 cols × 1 row)</p>
+  </header>
+
+  <!-- Widget Grid -->
+  <div class="widget-grid">
+
+    <!-- Card 1: Open Tickets -->
+    <div class="summary-card widget-xxs"
+         data-widget-size="xxs"
+         data-framework="Summary"
+         data-variant="Single Metric Card">
+
+      <!-- Zone 1: Header -->
+      <div class="card-header">
+        <span class="card-label">Open Tickets</span>
+        <span class="chip chip-warning">At Risk</span>
+      </div>
+
+      <!-- Zone 2: Primary Value -->
+      <div class="card-value-row">
+        <span class="primary-value">2,847</span>
+        <span class="trend trend-up">
+          <svg class="trend-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 2L10 7H2L6 2Z" fill="currentColor"/>
+          </svg>
+          +12%
+        </span>
+      </div>
+
+      <!-- Zone 3: Footer -->
+      <div class="card-footer">
+        <div style="flex:1;">
+          <div class="progress-wrap">
+            <div class="progress-fill progress-fill-warning" style="width:71%;"></div>
+          </div>
+          <span class="supporting-label" style="margin-top:4px; display:block;">71% of 4,000 capacity</span>
+        </div>
+        <a href="#" class="drill-link">View all →</a>
+      </div>
+    </div>
+
+    <!-- Card 2: SLA Compliance -->
+    <div class="summary-card widget-xxs"
+         data-widget-size="xxs"
+         data-framework="Summary"
+         data-variant="Single Metric Card">
+
+      <!-- Zone 1 -->
+      <div class="card-header">
+        <span class="card-label">SLA Compliance</span>
+        <span class="chip chip-success">On Track</span>
+      </div>
+
+      <!-- Zone 2 -->
+      <div class="card-value-row">
+        <span class="primary-value">94.2%</span>
+        <span class="trend trend-up">
+          <svg class="trend-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 2L10 7H2L6 2Z" fill="currentColor"/>
+          </svg>
+          +2.1%
+        </span>
+      </div>
+
+      <!-- Zone 3 -->
+      <div class="card-footer">
+        <div style="flex:1;">
+          <div class="progress-wrap">
+            <div class="progress-fill progress-fill-success" style="width:94%;"></div>
+          </div>
+          <span class="supporting-label" style="margin-top:4px; display:block;">Target: 95%</span>
+        </div>
+        <a href="#" class="drill-link">View all →</a>
+      </div>
+    </div>
+
+    <!-- Card 3: Critical Tickets -->
+    <div class="summary-card widget-xxs"
+         data-widget-size="xxs"
+         data-framework="Summary"
+         data-variant="Single Metric Card">
+
+      <!-- Zone 1 -->
+      <div class="card-header">
+        <span class="card-label">Critical Tickets</span>
+        <span class="chip chip-danger">Critical</span>
+      </div>
+
+      <!-- Zone 2 -->
+      <div class="card-value-row">
+        <span class="primary-value">38</span>
+        <span class="trend trend-down">
+          <svg class="trend-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 10L10 5H2L6 10Z" fill="currentColor"/>
+          </svg>
+          +8
+        </span>
+      </div>
+
+      <!-- Zone 3 -->
+      <div class="card-footer">
+        <span class="supporting-label">Since last week</span>
+        <a href="#" class="drill-link">Triage →</a>
+      </div>
+    </div>
+
+    <!-- Card 4: Avg Resolution Time -->
+    <div class="summary-card widget-xxs"
+         data-widget-size="xxs"
+         data-framework="Summary"
+         data-variant="Single Metric Card">
+
+      <!-- Zone 1 -->
+      <div class="card-header">
+        <span class="card-label">Avg Resolution Time</span>
+        <span class="chip chip-neutral">Steady</span>
+      </div>
+
+      <!-- Zone 2 -->
+      <div class="card-value-row">
+        <span class="primary-value">4.2h</span>
+        <span class="trend trend-flat">–0.1h</span>
+      </div>
+
+      <!-- Zone 3 -->
+      <div class="card-footer">
+        <div style="flex:1;">
+          <div class="progress-wrap">
+            <div class="progress-fill progress-fill-primary" style="width:52%;"></div>
+          </div>
+          <span class="supporting-label" style="margin-top:4px; display:block;">Target: 8h SLA</span>
+        </div>
+        <a href="#" class="drill-link">Details →</a>
+      </div>
+    </div>
+
+  </div>
+  <!-- /Widget Grid -->
+
+  <!-- Concept Annotation Strip -->
+  <dl class="annotation-strip">
+    <div class="annotation-item">
+      <dt>Framework</dt>
+      <dd>Summary — Single Metric Card (×4)</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Widget Size</dt>
+      <dd>XXS — 2 cols × 1 row (376px × 180px)</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Grid</dt>
+      <dd>8-column, 16px gap, 1552px content</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Design System</dt>
+      <dd>
+        <a href="https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon" target="_blank">Asio Neon</a>
+      </dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Sizing Library</dt>
+      <dd>
+        <a href="https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80" target="_blank">Widgets-Templates-Library</a>
+      </dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Neon Storybook</dt>
+      <dd>
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-card-%E2%9C%94--default" target="_blank">Card ✔</a>
+        ·
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-chip-%E2%9C%94--default" target="_blank">Chip ✔</a>
+        ·
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-form-components-linear-progress-%E2%9C%94--default" target="_blank">LinearProgress ✔</a>
+      </dd>
+    </div>
+  </dl>
+
+</body>
+</html>

@@ -60,6 +60,37 @@ Each entry follows this structure:
 
 ---
 
+### [2026-03-13] — Figma Concept Generation Pipeline Established
+**Status:** Active
+**Area:** Tooling | UX
+**Decision:** Connected the Figma Asio Neon library and Widgets-Templates-Library to ArgonOS via Figma MCP. Extracted design tokens (colors, typography, spacing) and widget sizing grid (7 tiers: XXS–XXL on an 8-column, 16px-gap grid). Created a persistent token reference doc and an always-on Cursor rule that enforces on-system values for all concept generation. Validated the full round-trip by generating and pushing a Ticket Summary Dashboard concept to Figma.
+**Reasoning:** Enables AI-assisted concept generation that stays within the Neon token set and respects widget sizing constraints by default, without requiring the designer to manually specify values each session.
+**What Changed:**
+- Created `design-system/neon-tokens.md` — extracted Neon token reference (colors, typography, spacing, widget sizing grid)
+- Created `/.cursor/rules/figma-neon-concept-gen.mdc` — always-on rule enforcing Neon tokens + widget sizing for concept generation
+- Created `ui/concepts/` directory
+- Created `ui/concepts/ticket-summary-dashboard.html` — first test concept (Summary framework, 4× XXS cards)
+- Generated Figma file: https://www.figma.com/design/YazkuCYaUX3P0Rw3j5zJLU
+**Related:**
+- Figma Neon library: https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon
+- Figma sizing library: https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80
+
+---
+
+### [2026-03-13] — Figma Concept Generator Tool Added to ArgonOS UI
+**Status:** Active
+**Area:** Tooling | UX
+**Decision:** Added a Figma Concept Generator tool to the ArgonOS dashboard and created a dedicated launcher page (`ui/figma.html`). The tool accepts a free-text prompt, fires a Cursor deep link to trigger the Figma generation pipeline, and displays two content sections: widget examples and the last 5 generated concepts — each as a clickable link to the corresponding HTML file.
+**Reasoning:** The Figma generation pipeline was previously only accessible via manual Cursor prompting. Surfacing it as a first-class ArgonOS tool gives designers a consistent entry point and surfaces past generated work alongside widget examples without leaving the browser.
+**What Changed:**
+- Created `ui/figma.html` — two-panel launcher (prompt sidebar + examples/concepts main panel)
+- Created `ui/concepts/manifest.json` — index of generated concepts; pre-populated with `ticket-summary-dashboard`
+- Created `ui/examples/manifest.json` — index of widget examples (summary, timeline)
+- Updated `ui/index.html` — replaced "Coming soon" slot 3 with live Figma Concept Generator card
+**Related:** [Figma Generation Tool UI Plan](figma_generation_tool_ui_05fb349f)
+
+---
+
 ## Superseded / Reversed Decisions
 
 _(None yet)_

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "summary",
+    "title": "Summary Widget",
+    "description": "Single-metric summary cards — XXS to M sizing tiers",
+    "filename": "summary.html"
+  },
+  {
+    "id": "timeline",
+    "title": "Timeline Widget",
+    "description": "Chronological activity feed — XS to L sizing tiers",
+    "filename": "timeline.html"
+  }
+]
