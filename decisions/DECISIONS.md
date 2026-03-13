@@ -48,6 +48,18 @@ Each entry follows this structure:
 
 ---
 
+### [2026-03-13] — Discovery Pack: Recent Ticket Drawer
+**Status:** Active
+**Area:** Research | UX
+**Decision:** Ran the UX PRD Discovery Pipeline on the Recent Ticket Drawer PRD. Produced a Discovery Pack with a readiness score of 62/100 (Conditionally Ready) and a strong Marvin evidence set from the Asio Ticketing - V3 project. Identified a key design risk around the PRD's fixed "open in new tab" decision, which conflicts with multiple user preference signals.
+**Reasoning:** Pipeline executed per standard workflow: fetch → readiness → gate check → research retrieval → pack output and persistence.
+**What Changed:**
+- Created `ui/discovery-packs/2026-03-13-recent-ticket-drawer.md`
+- Updated `ui/discovery-packs/manifest.json` (prepended new entry)
+**Related:** https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/1009123550/PRD+Recent+Ticket+Drawer
+
+---
+
 ## Superseded / Reversed Decisions
 
 _(None yet)_
