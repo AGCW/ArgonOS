@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  Concept: Recent Ticket Drawer
+  Framework: Datagrid (List of recent ticket records presented as a slide-out drawer)
+  Size: XL (4 cols × 4 rows = 752px × 768px) — drawer panel equivalent
+  Source: PRD Recent Ticket Drawer — https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/1009123550/PRD+Recent+Ticket+Drawer
+  Discovery Pack: /discovery-pack-recent-ticket-drawer.md
+  Generated: 2026-03-13
+  Figma Libraries:
+    Asio Neon: https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon
+    Widgets-Templates-Library: https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80
+
+  Primary Workflow Addressed:
+    Technician opens Recent Ticket Drawer from the top-right nav trigger,
+    scans the list of up to 10 recently-accessed tickets, and clicks a tile
+    to navigate to a ticket detail page — without losing context of the
+    current filtered ticket list.
+
+  Asio Neon Components Used:
+    - List 🧪 (ticket tiles)
+    - Chip ✔ (status badges)
+    - Badge ✔ (priority indicator)
+    - Button ✔ (trigger, close)
+    - Status (live status dot)
+
+  States Shown:
+    (1) Drawer open — populated, happy path (7 tiles)
+    (2) Inaccessible ticket tile (disabled, inline with list)
+    (3) Empty state — annotated panel below
+-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recent Ticket Drawer — Asio Neon Concept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+
+  <style>
+    /* ─── Asio Neon Tokens ─── */
+    :root {
+      /* Text */
+      --text-primary: #101120;
+      --text-secondary: #767786;
+      --text-on-color: #f1f1f2;
+
+      /* Background */
+      --background: #ffffff;
+      --background-hover: rgba(153, 153, 156, 0.16);
+
+      /* Layer / Surface */
+      --layer-01: #f6f6f9;
+      --layer-hover-03: #e7e7ea;
+      --layer-active-03: #c5c6cb;
+
+      /* Border */
+      --border-subtle-02: #ececee;
+
+      /* Icon */
+      --icon-on-color: #ecedee;
+      --icon-disabled: rgba(35, 36, 42, 0.25);
+
+      /* Button — Primary */
+      --button-primary: #2e3f80;
+      --button-primary-hover: #222e5e;
+      --button-primary-active: #394e9e;
+      --button-disabled: #c6c6c6;
+
+      /* Button — Secondary */
+      --button-secondary: #2e3f80;
+      --button-secondary-hover: #222e5e;
+      --button-secondary-active: #394e9e;
+
+      /* Button — Danger */
+      --button-danger-primary: #d32f2f;
+      --button-danger-secondary: #ef5350;
+      --button-danger-hover: #c62828;
+      --button-danger-active: #aa241d;
+
+      /* Interactive */
+      --focus: #394e9e;
+      --link-primary: #006a8e;
+
+      /* Misc */
+      --skeleton-background: #dadae4;
+      --alert-text: #101120;
+
+      /* Semantic status (Neon palette conventions — not in extracted tokens) */
+      --status-open-bg: #fff3e0;
+      --status-open-text: #a65f00;
+      --status-inprogress-bg: #eaedfa;
+      --status-inprogress-text: #2e3f80;
+      --status-resolved-bg: #e6f4ea;
+      --status-resolved-text: #1e7e34;
+      --status-waiting-bg: #f3e5f5;
+      --status-waiting-text: #6a1b9a;
+
+      /* Priority (Neon palette conventions) */
+      --priority-critical-bg: #fdecea;
+      --priority-critical-text: #d32f2f;
+      --priority-high-bg: #fff3e0;
+      --priority-high-text: #a65f00;
+      --priority-medium-bg: #eaedfa;
+      --priority-medium-text: #2e3f80;
+
+      /* Widget grid */
+      --row-height: 180px;
+      --col-gap: 16px;
+
+      /* Drawer */
+      --drawer-width: 360px;
+      --drawer-shadow: 0 8px 24px rgba(16, 17, 32, 0.12);
+    }
+
+    /* ─── Reset / Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      background: var(--layer-01);
+      min-height: 100vh;
+    }
+
+    /* ─── Typography scale ─── */
+    .h4-light    { font-size: 24px; font-weight: 300; line-height: 1; }
+    .h4-bold     { font-size: 24px; font-weight: 700; line-height: 1; }
+    .text-16-semibold { font-size: 16px; font-weight: 600; line-height: 22px; }
+    .text-14-semibold { font-size: 14px; font-weight: 600; line-height: 18px; }
+    .text-12 { font-size: 12px; font-weight: 400; line-height: 16px; }
+    .text-12-semibold { font-size: 12px; font-weight: 600; line-height: 16px; }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 1: PSA Background (simulated main view)
+       Purpose: Provides realistic context so the drawer reads
+                as an overlay on top of a working UI.
+    ═══════════════════════════════════════════════════════ */
+
+    .psa-shell {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 680px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 12px;
+      background: var(--background);
+      margin: 32px;
+      box-shadow: 0 2px 8px rgba(16,17,32,0.06);
+    }
+
+    /* ─── Top Nav ─── */
+    .psa-nav {
+      height: 52px;
+      background: var(--button-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+
+    .psa-nav-brand {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-on-color);
+      letter-spacing: 0.02em;
+    }
+
+    .psa-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Drawer trigger button (top-right, Marvin evidence: top-right preferred) */
+    .drawer-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(241, 241, 242, 0.15);
+      border: 1px solid rgba(241, 241, 242, 0.25);
+      border-radius: 6px;
+      color: var(--text-on-color);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+
+    .drawer-trigger:hover { background: rgba(241, 241, 242, 0.25); }
+
+    .trigger-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4caf50;
+    }
+
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(241, 241, 242, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-on-color);
+    }
+
+    /* ─── PSA Sub-nav / Page header ─── */
+    .psa-subheader {
+      height: 52px;
+      background: var(--background);
+      border-bottom: 1px solid var(--border-subtle-02);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 24px;
+      flex-shrink: 0;
+    }
+
+    .psa-subheader-tab {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding-bottom: 2px;
+      cursor: default;
+    }
+
+    .psa-subheader-tab.active {
+      color: var(--button-primary);
+      border-bottom: 2px solid var(--button-primary);
+    }
+
+    /* ─── PSA Content + Drawer layout ─── */
+    .psa-content-area {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ─── Simulated ticket list (background) ─── */
+    .psa-ticket-list {
+      flex: 1;
+      padding: 16px 20px;
+      opacity: 0.35;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .psa-filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .psa-filter-pill {
+      padding: 4px 10px;
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--background);
+    }
+
+    .psa-filter-pill.active {
+      background: var(--layer-01);
+      color: var(--button-primary);
+      border-color: var(--button-primary);
+    }
+
+    .psa-table-header {
+      display: grid;
+      grid-template-columns: 80px 1fr 160px 100px 90px 80px;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--layer-01);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 6px 6px 0 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .psa-table-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 160px 100px 90px 80px;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-subtle-02);
+      border-top: none;
+      background: var(--background);
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .psa-table-row:last-child { border-radius: 0 0 6px 6px; }
+    .psa-table-row:hover { background: var(--layer-01); }
+
+    .psa-id { font-weight: 600; color: var(--link-primary); }
+    .psa-cell-muted { color: var(--text-secondary); font-size: 12px; }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 2: Recent Ticket Drawer (primary concept)
+       Evidence: Marvin #118145 — slide-out from top-right
+                 Marvin #118315 — top-right placement validated
+    ═══════════════════════════════════════════════════════ */
+
+    /* Scrim overlay behind drawer */
+    .drawer-scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(16, 17, 32, 0.08);
+      pointer-events: none;
+    }
+
+    /* Drawer panel */
+    .recent-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: var(--drawer-width);
+      background: var(--background);
+      border-left: 1px solid var(--border-subtle-02);
+      box-shadow: var(--drawer-shadow);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      /* data annotation */
+      data-widget-size: xl;
+      data-framework: Datagrid;
+    }
+
+    /* ─── Drawer Header ─── */
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle-02);
+      flex-shrink: 0;
+    }
+
+    .drawer-title {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 22px;
+      color: var(--text-primary);
+    }
+
+    .drawer-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .drawer-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle-02);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 120ms ease, color 120ms ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .drawer-close-btn:hover {
+      background: var(--layer-hover-03);
+      color: var(--text-primary);
+    }
+
+    .drawer-close-btn:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* ─── Ticket List (Asio Neon: List 🧪) ─── */
+    .ticket-list {
+      list-style: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+
+    .ticket-list::-webkit-scrollbar { width: 4px; }
+    .ticket-list::-webkit-scrollbar-track { background: transparent; }
+    .ticket-list::-webkit-scrollbar-thumb { background: var(--layer-hover-03); border-radius: 2px; }
+
+    /* ─── Ticket Tile ─── */
+    .ticket-tile {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-subtle-02);
+      cursor: pointer;
+      transition: background 120ms ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .ticket-tile:hover { background: var(--layer-01); }
+
+    .ticket-tile:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: -2px;
+    }
+
+    /* Disabled / inaccessible tile */
+    .ticket-tile--disabled {
+      cursor: not-allowed;
+      opacity: 1;
+      background: var(--layer-01);
+    }
+
+    .ticket-tile--disabled:hover { background: var(--layer-01); }
+
+    .ticket-tile--disabled .tile-subject,
+    .ticket-tile--disabled .tile-company,
+    .ticket-tile--disabled .tile-id {
+      color: var(--icon-disabled);
+    }
+
+    /* Company avatar / initials */
+    .company-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--layer-hover-03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .company-avatar--disabled {
+      background: var(--skeleton-background);
+      color: var(--icon-disabled);
+    }
+
+    /* Tile body */
+    .tile-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tile-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+
+    .tile-id {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--link-primary);
+      white-space: nowrap;
+    }
+
+    .tile-time {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tile-subject {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+
+    .tile-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tile-company {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ─── Chip (Asio Neon: Chip ✔) ─── */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .chip-open       { background: var(--status-open-bg);       color: var(--status-open-text); }
+    .chip-inprogress { background: var(--status-inprogress-bg); color: var(--status-inprogress-text); }
+    .chip-resolved   { background: var(--status-resolved-bg);   color: var(--status-resolved-text); }
+    .chip-waiting    { background: var(--status-waiting-bg);     color: var(--status-waiting-text); }
+    .chip-disabled   { background: var(--layer-hover-03);        color: var(--icon-disabled); }
+
+    /* ─── Priority badge (Asio Neon: Badge ✔) ─── */
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .priority-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .priority-critical::before { background: var(--button-danger-primary); }
+    .priority-high::before     { background: var(--status-open-text); }
+    .priority-medium::before   { background: var(--button-primary); }
+    .priority-critical { color: var(--button-danger-primary); }
+    .priority-high     { color: var(--status-open-text); }
+    .priority-medium   { color: var(--button-primary); }
+
+    /* ─── Lock icon for inaccessible tile ─── */
+    .lock-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--icon-disabled);
+      flex-shrink: 0;
+    }
+
+    /* ─── Drawer footer (action link) ─── */
+    .drawer-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-subtle-02);
+      flex-shrink: 0;
+    }
+
+    .clear-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .clear-link:hover { color: var(--text-primary); }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 3: State Annotation Panels (Empty + Disabled)
+    ═══════════════════════════════════════════════════════ */
+
+    .states-section {
+      margin: 0 32px 24px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .state-panel {
+      background: var(--background);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .state-panel-header {
+      padding: 10px 16px;
+      background: var(--layer-01);
+      border-bottom: 1px solid var(--border-subtle-02);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .state-badge {
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--layer-hover-03);
+      color: var(--text-secondary);
+    }
+
+    /* ─── Empty State ─── */
+    .empty-state-body {
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .empty-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--layer-01);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--text-secondary);
+    }
+
+    .empty-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .empty-body-text {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 18px;
+      max-width: 220px;
+    }
+
+    /* ─── Design Decision Notes ─── */
+    .decision-notes {
+      padding: 16px;
+    }
+
+    .decision-note {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle-02);
+    }
+
+    .decision-note:last-child { border-bottom: none; }
+
+    .note-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      min-width: 80px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .note-text {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 18px;
+    }
+
+    .note-evidence {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 4: Concept Annotation Strip
+    ═══════════════════════════════════════════════════════ */
+
+    .annotation-strip {
+      margin: 0 32px 32px;
+      padding: 12px 16px;
+      background: var(--background);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 8px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .annotation-strip dt {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+
+    .annotation-strip dd {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 18px;
+    }
+
+    .annotation-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .annotation-strip a {
+      color: var(--link-primary);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .annotation-strip a:hover { text-decoration: underline; }
+
+    /* ─── Page-level header ─── */
+    .page-header {
+      padding: 32px 32px 0;
+      margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      line-height: 20px;
+    }
+
+    .section-label {
+      margin: 0 32px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Recent Ticket Drawer</h1>
+    <p>
+      Asio Neon concept · Datagrid (List) framework · XL equivalent (slide-out drawer, 360px × full height)<br>
+      Primary workflow: Technician opens drawer → scans recent tickets → navigates to ticket detail
+    </p>
+  </header>
+
+  <!-- ────────────────────────────────────────────────────
+       STATE 1 — DRAWER OPEN (Happy Path)
+       Shows the full PSA chrome + open drawer overlay.
+       Marvin evidence: top-right placement (Marvin #118315),
+       slide-out panel preferred (Marvin #118145)
+  ──────────────────────────────────────────────────── -->
+  <p class="section-label">State 1 — Drawer Open (Populated)</p>
+
+  <div class="psa-shell"
+       data-widget-size="xl"
+       data-framework="Datagrid"
+       data-variant="Recent Ticket Drawer — Open">
+
+    <!-- PSA Top Nav -->
+    <nav class="psa-nav" aria-label="PSA navigation">
+      <span class="psa-nav-brand">ConnectWise PSA</span>
+      <div class="psa-nav-right">
+        <!-- Drawer trigger — top-right per Marvin evidence -->
+        <button class="drawer-trigger" type="button" aria-label="Open recent tickets" aria-haspopup="true" aria-expanded="true">
+          <span class="trigger-dot" aria-hidden="true"></span>
+          Recent
+        </button>
+        <div class="nav-avatar" aria-label="User initials: JT">JT</div>
+      </div>
+    </nav>
+
+    <!-- PSA Sub-nav -->
+    <div class="psa-subheader" role="navigation" aria-label="Ticket views">
+      <span class="psa-subheader-tab active">All Tickets</span>
+      <span class="psa-subheader-tab">My Tickets</span>
+      <span class="psa-subheader-tab">Unassigned</span>
+      <span class="psa-subheader-tab">SLA At Risk</span>
+    </div>
+
+    <!-- Content area: muted list + drawer overlay -->
+    <div class="psa-content-area">
+
+      <!-- Simulated ticket list (background, muted) -->
+      <div class="psa-ticket-list" aria-hidden="true">
+        <div class="psa-filter-bar">
+          <span class="psa-filter-pill active">Status: Open</span>
+          <span class="psa-filter-pill">Priority: All</span>
+          <span class="psa-filter-pill">Assigned: Me</span>
+        </div>
+        <div class="psa-table-header">
+          <span>Ticket #</span>
+          <span>Subject</span>
+          <span>Company</span>
+          <span>Status</span>
+          <span>Priority</span>
+          <span>Age</span>
+        </div>
+        <div class="psa-table-row">
+          <span class="psa-id">#8900</span>
+          <span>Network switch unresponsive — Building A</span>
+          <span class="psa-cell-muted">Acme Corp</span>
+          <span class="psa-cell-muted">Open</span>
+          <span class="psa-cell-muted">High</span>
+          <span class="psa-cell-muted">30m</span>
+        </div>
+        <div class="psa-table-row">
+          <span class="psa-id">#8897</span>
+          <span>Printer offline — Marketing floor</span>
+          <span class="psa-cell-muted">Globex Systems</span>
+          <span class="psa-cell-muted">Open</span>
+          <span class="psa-cell-muted">Medium</span>
+          <span class="psa-cell-muted">1h</span>
+        </div>
+        <div class="psa-table-row">
+          <span class="psa-id">#8891</span>
+          <span>Password reset — Sales team</span>
+          <span class="psa-cell-muted">Initech IT</span>
+          <span class="psa-cell-muted">Open</span>
+          <span class="psa-cell-muted">Low</span>
+          <span class="psa-cell-muted">2h</span>
+        </div>
+        <div class="psa-table-row">
+          <span class="psa-id">#8888</span>
+          <span>VPN connectivity issues — Remote staff</span>
+          <span class="psa-cell-muted">Umbrella Corp</span>
+          <span class="psa-cell-muted">Open</span>
+          <span class="psa-cell-muted">High</span>
+          <span class="psa-cell-muted">3h</span>
+        </div>
+        <div class="psa-table-row">
+          <span class="psa-id">#8874</span>
+          <span>Antivirus update failure — Server room</span>
+          <span class="psa-cell-muted">Stark Industries</span>
+          <span class="psa-cell-muted">Open</span>
+          <span class="psa-cell-muted">Critical</span>
+          <span class="psa-cell-muted">5h</span>
+        </div>
+      </div>
+
+      <!-- Scrim -->
+      <div class="drawer-scrim" aria-hidden="true"></div>
+
+      <!-- ─── RECENT TICKET DRAWER ─── -->
+      <aside class="recent-drawer"
+             role="complementary"
+             aria-label="Recent tickets"
+             aria-live="polite">
+
+        <!-- Drawer Header -->
+        <div class="drawer-header">
+          <div>
+            <div class="drawer-title">Recent Tickets</div>
+            <div class="drawer-subtitle">Last 10 accessed — sorted by recency</div>
+          </div>
+          <button class="drawer-close-btn" type="button" aria-label="Close recent tickets panel">
+            ✕
+          </button>
+        </div>
+
+        <!-- Ticket List (Asio Neon: List 🧪) -->
+        <ul class="ticket-list" role="list" aria-label="Recently accessed tickets">
+
+          <!-- Tile 1: In Progress, Critical -->
+          <li>
+            <a class="ticket-tile" href="#" role="listitem"
+               aria-label="Ticket 8821, Server outage - Production down, Acme Corp, In Progress, Critical, 12 minutes ago">
+              <div class="company-avatar" aria-hidden="true">AC</div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id">#8821</span>
+                  <span class="tile-time">12m ago</span>
+                </div>
+                <div class="tile-subject">Server outage — Production down</div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company">Acme Corp</span>
+                  <span class="chip chip-inprogress">In Progress</span>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <!-- Tile 2: Open, High -->
+          <li>
+            <a class="ticket-tile" href="#" role="listitem"
+               aria-label="Ticket 8803, Email not syncing Office 365, Globex Systems, Open, High, 45 minutes ago">
+              <div class="company-avatar" aria-hidden="true">GX</div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id">#8803</span>
+                  <span class="tile-time">45m ago</span>
+                </div>
+                <div class="tile-subject">Email not syncing — Office 365</div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company">Globex Systems</span>
+                  <span class="chip chip-open">Open</span>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <!-- Tile 3: Resolved, Medium -->
+          <li>
+            <a class="ticket-tile" href="#" role="listitem"
+               aria-label="Ticket 8791, Firewall rule update needed, Initech IT, Resolved, 2 hours ago">
+              <div class="company-avatar" aria-hidden="true">IN</div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id">#8791</span>
+                  <span class="tile-time">2h ago</span>
+                </div>
+                <div class="tile-subject">Firewall rule update needed</div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company">Initech IT</span>
+                  <span class="chip chip-resolved">Resolved</span>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <!-- Tile 4: Open, Medium -->
+          <li>
+            <a class="ticket-tile" href="#" role="listitem"
+               aria-label="Ticket 8756, New employee onboarding setup, Umbrella Corp, Open, 4 hours ago">
+              <div class="company-avatar" aria-hidden="true">UC</div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id">#8756</span>
+                  <span class="tile-time">4h ago</span>
+                </div>
+                <div class="tile-subject">New employee onboarding setup</div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company">Umbrella Corp</span>
+                  <span class="chip chip-open">Open</span>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <!-- Tile 5: Waiting -->
+          <li>
+            <a class="ticket-tile" href="#" role="listitem"
+               aria-label="Ticket 8744, VPN access request for remote team, Stark Industries, Waiting on Customer, Yesterday">
+              <div class="company-avatar" aria-hidden="true">SI</div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id">#8744</span>
+                  <span class="tile-time">Yesterday</span>
+                </div>
+                <div class="tile-subject">VPN access request — Remote team</div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company">Stark Industries</span>
+                  <span class="chip chip-waiting">Waiting</span>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <!-- Tile 6: In Progress -->
+          <li>
+            <a class="ticket-tile" href="#" role="listitem"
+               aria-label="Ticket 8731, Backup failure on NAS device, Wayne Enterprises, In Progress, Yesterday">
+              <div class="company-avatar" aria-hidden="true">WE</div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id">#8731</span>
+                  <span class="tile-time">Yesterday</span>
+                </div>
+                <div class="tile-subject">Backup failure on NAS device</div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company">Wayne Enterprises</span>
+                  <span class="chip chip-inprogress">In Progress</span>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <!-- Tile 7: INACCESSIBLE (disabled tile)
+               PRD: "Inaccessible tickets shown as degraded tile"
+               Discovery risk: ensure clear visual pattern + aria-labels -->
+          <li>
+            <div class="ticket-tile ticket-tile--disabled"
+                 role="listitem"
+                 aria-disabled="true"
+                 aria-label="Ticket 8720 is inaccessible. You do not have permission to view this ticket.">
+              <div class="company-avatar company-avatar--disabled" aria-hidden="true">
+                <svg class="lock-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tile-body">
+                <div class="tile-top-row">
+                  <span class="tile-id" style="color: var(--icon-disabled);">#8720</span>
+                  <span class="tile-time">2 days ago</span>
+                </div>
+                <div class="tile-subject" style="color: var(--icon-disabled); font-style: italic;">
+                  Ticket not accessible
+                </div>
+                <div class="tile-bottom-row">
+                  <span class="tile-company" style="color: var(--icon-disabled);">You don't have permission to view this ticket</span>
+                  <span class="chip chip-disabled">Restricted</span>
+                </div>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+        <!-- /ticket-list -->
+
+        <!-- Drawer Footer -->
+        <div class="drawer-footer">
+          <a class="clear-link" href="#" aria-label="Clear all recent ticket history">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Clear recent history
+          </a>
+        </div>
+
+      </aside>
+      <!-- /recent-drawer -->
+
+    </div>
+    <!-- /psa-content-area -->
+  </div>
+  <!-- /psa-shell STATE 1 -->
+
+
+  <!-- ────────────────────────────────────────────────────
+       STATE 2 — EMPTY STATE + DESIGN DECISIONS
+  ──────────────────────────────────────────────────── -->
+  <p class="section-label" style="margin-top: 24px;">State 2 — Empty State &amp; Design Decisions</p>
+
+  <div class="states-section">
+
+    <!-- Empty State Panel -->
+    <div class="state-panel" data-widget-size="m" data-framework="Datagrid" data-variant="Empty State">
+      <div class="state-panel-header">
+        Empty State
+        <span class="state-badge">0 recent tickets</span>
+      </div>
+      <div style="border-bottom: 1px solid var(--border-subtle-02);">
+        <div class="drawer-header" style="border-bottom: none;">
+          <div>
+            <div class="drawer-title">Recent Tickets</div>
+            <div class="drawer-subtitle">Last 10 accessed — sorted by recency</div>
+          </div>
+          <button class="drawer-close-btn" type="button" aria-label="Close">✕</button>
+        </div>
+      </div>
+      <div class="empty-state-body" role="status" aria-label="No recent tickets">
+        <div class="empty-icon-wrap" aria-hidden="true">
+          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M7 8h10M7 12h7M7 16h5"/>
+          </svg>
+        </div>
+        <div class="empty-title">No recent tickets yet</div>
+        <p class="empty-body-text">
+          Tickets you open or update will appear here for quick access.
+        </p>
+      </div>
+      <div class="drawer-footer" style="text-align: center;">
+        <span style="font-size: 12px; color: var(--text-secondary);">
+          Visit any ticket to get started
+        </span>
+      </div>
+    </div>
+
+    <!-- Design Decision Notes -->
+    <div class="state-panel">
+      <div class="state-panel-header">Design Decisions &amp; Evidence</div>
+      <div class="decision-notes">
+
+        <div class="decision-note">
+          <span class="note-label">Placement</span>
+          <div>
+            <div class="note-text">Top-right nav trigger (always visible). Drawer slides in from the right, overlaying but not replacing the main ticket list.</div>
+            <div class="note-evidence">Marvin #118315: "top-right placement aligns with PSA design patterns and preserves the main filter view." · Marvin #118145: "slide-out panel prevents losing sight of main ticket list."</div>
+          </div>
+        </div>
+
+        <div class="decision-note">
+          <span class="note-label">Tile content</span>
+          <div>
+            <div class="note-text">Ticket ID · Subject (truncated to 1 line) · Company · Status chip · Time since last accessed.</div>
+            <div class="note-evidence">PRD spec: ID, subject, company, status required. Time supports recency scanning.</div>
+          </div>
+        </div>
+
+        <div class="decision-note">
+          <span class="note-label">Inaccessible</span>
+          <div>
+            <div class="note-text">Degraded tile: lock icon, italic placeholder subject, "Restricted" chip, no-pointer cursor. Preserved in list so technician knows the ticket existed.</div>
+            <div class="note-evidence">PRD risk table; Discovery pack design risk: "Inaccessible tickets create confusion despite disabled state — ensure clear visual pattern and aria-labels."</div>
+          </div>
+        </div>
+
+        <div class="decision-note">
+          <span class="note-label">Open behavior</span>
+          <div>
+            <div class="note-text">⚠ Unresolved: PRD defers "drawer stays open/closes on click" to UX decision. This concept shows drawer open after navigation for discoverability — requires PM/UX sign-off.</div>
+            <div class="note-evidence">Discovery pack UX Question: "When the drawer is open and the user clicks a recent ticket, should the drawer stay open or close?"</div>
+          </div>
+        </div>
+
+        <div class="decision-note">
+          <span class="note-label">Hover preview</span>
+          <div>
+            <div class="note-text">Not shown (MVP out of scope). Tile hover shows layer-01 background only. Capture hover preview as enhancement backlog item.</div>
+            <div class="note-evidence">Marvin #118275: "Jodie misses hover-over feature to view latest update without clicking in." PRD: out of scope for MVP.</div>
+          </div>
+        </div>
+
+        <div class="decision-note">
+          <span class="note-label">Max count</span>
+          <div>
+            <div class="note-text">10 tickets maximum per PRD. No pagination — oldest entry drops off when #11 is accessed. List header communicates "Last 10 accessed."</div>
+            <div class="note-evidence">PRD: fixed at 10. Discovery gap: "ideal count (10 vs. configurable)" flagged for post-MVP.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <!-- /states-section -->
+
+
+  <!-- ─── Concept Annotation Strip ─── -->
+  <dl class="annotation-strip">
+    <div class="annotation-item">
+      <dt>Concept</dt>
+      <dd>Recent Ticket Drawer</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Framework</dt>
+      <dd>Datagrid — List variant (slide-out drawer)</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Widget Size</dt>
+      <dd>XL — 4 cols × 4 rows equiv (360px drawer × full height)</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Grid</dt>
+      <dd>8-column, 16px gap, 1552px content</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>PRD</dt>
+      <dd>
+        <a href="https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/1009123550/PRD+Recent+Ticket+Drawer" target="_blank">
+          Recent Ticket Drawer ↗
+        </a>
+      </dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Discovery Pack</dt>
+      <dd>Score 78/100 · Conditionally Ready · 7 Marvin evidence items</dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Design System</dt>
+      <dd>
+        <a href="https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon" target="_blank">Asio Neon ↗</a>
+      </dd>
+    </div>
+    <div class="annotation-item">
+      <dt>Neon Components</dt>
+      <dd>
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-list-%F0%9F%A7%AA--default" target="_blank">List 🧪</a>
+        ·
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-chip-%E2%9C%94--default" target="_blank">Chip ✔</a>
+        ·
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-badge-%E2%9C%94--default" target="_blank">Badge ✔</a>
+        ·
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-button-%E2%9C%94--default" target="_blank">Button ✔</a>
+        ·
+        <a href="https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-avatar-%E2%9C%94--default" target="_blank">Avatar ✔</a>
+      </dd>
+    </div>
+  </dl>
+
+</body>
+</html>

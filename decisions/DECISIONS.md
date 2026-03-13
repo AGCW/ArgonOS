@@ -91,6 +91,21 @@ Each entry follows this structure:
 
 ---
 
+### [2026-03-13] — Asio Neon Concept: Recent Ticket Drawer
+**Status:** Active
+**Area:** UX | Tooling
+**Decision:** Generated an Asio Neon concept for the Recent Ticket Drawer PRD using the discovery pack as research context. The concept uses a Datagrid (List) framework presented as a slide-out drawer, addressing the primary technician workflow: open drawer → scan recent tickets → navigate to ticket detail. Three states rendered: populated drawer (7 tiles incl. one inaccessible/disabled tile), empty state, and an annotated design decision panel citing Marvin evidence. Pushed to Figma as a new page in the existing ArgonOS concept file.
+**Reasoning:** Converts the discovery pack's validated research signals directly into a concrete Neon-compliant UI artifact. Placement (top-right), drawer pattern, inaccessible tile treatment, and deferred hover-preview decision are all directly traceable to Marvin evidence items.
+**What Changed:**
+- Created `ui/concepts/recent-ticket-drawer.html` — full concept (3 states + annotation strip)
+- Updated `ui/concepts/manifest.json` — prepended new concept entry
+**Related:**
+- PRD: https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/1009123550/PRD+Recent+Ticket+Drawer
+- Discovery Pack: `discovery-pack-recent-ticket-drawer.md`
+- Figma: https://www.figma.com/design/YazkuCYaUX3P0Rw3j5zJLU?node-id=4-2
+
+---
+
 ## Superseded / Reversed Decisions
 
 _(None yet)_
