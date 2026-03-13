@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary Widget — Full Example</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: { DEFAULT: '#4f46e5', hover: '#4338ca', light: '#eef2ff' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Zone highlight overlay used in zone breakdowns */
+    .zone-block { position: relative; }
+    .zone-label {
+      position: absolute;
+      top: 4px; left: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    /* Progress bar fill animation */
+    @keyframes fill { from { width: 0 } }
+    .progress-fill { animation: fill 0.8s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans antialiased text-zinc-900 pb-16">
+
+  <!-- ── Page header ──────────────────────────────────────────────── -->
+  <div class="sticky top-0 z-20 bg-white border-b border-zinc-200 px-6 py-3 flex items-center gap-3 shadow-sm">
+    <span class="w-6 h-6 rounded-md bg-emerald-600 text-white flex items-center justify-center shrink-0">
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-9v9m3-13.5V21M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+      </svg>
+    </span>
+    <div>
+      <span class="text-sm font-semibold text-zinc-900">Summary Widget Framework</span>
+      <span class="ml-2 text-xs text-zinc-400">Full example · 5 variants · Asio Neon</span>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <span class="text-[10px] font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Stable</span>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 pt-8 space-y-16">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 1: Single Metric Card                               -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 1</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-600">PSA / Service Desk</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Single Metric Card</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">One KPI with health status, trend delta, and a drill-down link. The atomic unit of the Summary framework.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 max-w-xs">
+        <!-- Zone 1: Card Header -->
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-medium text-zinc-500">Open Tickets</span>
+          <!-- Asio Neon: Chip (warning state) -->
+          <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
+            At Risk
+          </span>
+        </div>
+        <!-- Zone 2: Primary Value -->
+        <div class="mb-4">
+          <div class="text-4xl font-bold text-zinc-900 tracking-tight leading-none mb-1.5">247</div>
+          <!-- Trend indicator: positive (down = good for open tickets) -->
+          <div class="flex items-center gap-1.5">
+            <span class="flex items-center gap-0.5 text-xs font-semibold text-red-600">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+              </svg>
+              +18
+            </span>
+            <span class="text-xs text-zinc-400">vs last week</span>
+          </div>
+        </div>
+        <!-- Zone 3: Supporting Context -->
+        <div class="space-y-2.5">
+          <!-- Asio Neon: LinearProgress -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs text-zinc-400">Queue utilization</span>
+              <span class="text-xs font-semibold text-zinc-600">82%</span>
+            </div>
+            <div class="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+              <div class="progress-fill h-full bg-amber-400 rounded-full" style="width: 82%"></div>
+            </div>
+          </div>
+          <!-- Asio Neon: Link -->
+          <a href="#" onclick="return false" class="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-800 transition">
+            View all tickets
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Zone breakdown (collapsible) -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3 transition-transform details-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 border border-dashed border-zinc-200 rounded-xl overflow-hidden max-w-xs">
+          <!-- Zone 1 -->
+          <div class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-blue-600">Zone 1 · Card Header</span>
+            <span class="text-[10px] text-blue-500 font-mono">Chip (warning)</span>
+          </div>
+          <!-- Zone 2 -->
+          <div class="bg-emerald-50 border-b border-emerald-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Zone 2 · Primary Value</span>
+            <span class="text-[10px] text-emerald-500 font-mono">Typography token · Trend icon</span>
+          </div>
+          <!-- Zone 3 -->
+          <div class="bg-violet-50 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-violet-600">Zone 3 · Supporting Context</span>
+            <span class="text-[10px] text-violet-500 font-mono">LinearProgress · Link</span>
+          </div>
+        </div>
+        <!-- Component callout -->
+        <div class="mt-2 max-w-xs bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2">
+          <p class="text-[10px] font-semibold text-zinc-500 uppercase tracking-wide mb-1">Asio Neon components used</p>
+          <div class="flex flex-wrap gap-1">
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Card ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">LinearProgress ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Link ✔</code>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 2: Metric Strip                                     -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 2</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-600">PSA / Service Desk Dashboard</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Metric Strip</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">4 KPI cards in a single row for at-a-glance dashboard headers. Max 4 cards per strip.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+
+        <!-- Card 1: Open Tickets -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-500">Open Tickets</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+              <span class="w-1 h-1 rounded-full bg-amber-400"></span>At Risk
+            </span>
+          </div>
+          <div class="text-2xl font-bold text-zinc-900 tracking-tight mb-1">247</div>
+          <div class="flex items-center gap-1">
+            <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+            </svg>
+            <span class="text-xs font-semibold text-red-600">+18</span>
+            <span class="text-xs text-zinc-400">vs last week</span>
+          </div>
+        </div>
+
+        <!-- Card 2: SLA Compliance -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-500">SLA Compliance</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+              <span class="w-1 h-1 rounded-full bg-emerald-400"></span>On Track
+            </span>
+          </div>
+          <div class="text-2xl font-bold text-zinc-900 tracking-tight mb-1">94.2%</div>
+          <div class="flex items-center gap-1">
+            <svg class="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+            <span class="text-xs font-semibold text-emerald-600">+1.3%</span>
+            <span class="text-xs text-zinc-400">vs last week</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Avg Resolution Time -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-500">Avg Resolution</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+              <span class="w-1 h-1 rounded-full bg-emerald-400"></span>On Track
+            </span>
+          </div>
+          <div class="text-2xl font-bold text-zinc-900 tracking-tight mb-1">3.4<span class="text-sm font-normal text-zinc-400 ml-0.5">hrs</span></div>
+          <div class="flex items-center gap-1">
+            <svg class="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+            <span class="text-xs font-semibold text-emerald-600">−0.6 hrs</span>
+            <span class="text-xs text-zinc-400">vs last week</span>
+          </div>
+        </div>
+
+        <!-- Card 4: CSAT Score -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-500">CSAT Score</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-red-100 text-red-700">
+              <span class="w-1 h-1 rounded-full bg-red-400"></span>Critical
+            </span>
+          </div>
+          <div class="text-2xl font-bold text-zinc-900 tracking-tight mb-1">3.8<span class="text-sm font-normal text-zinc-400 ml-0.5">/ 5</span></div>
+          <div class="flex items-center gap-1">
+            <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+            </svg>
+            <span class="text-xs font-semibold text-red-600">−0.4</span>
+            <span class="text-xs text-zinc-400">vs last month</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2">
+          <div class="flex items-start gap-3 text-xs">
+            <span class="shrink-0 w-4 h-4 rounded-sm bg-blue-100 border border-blue-200 mt-0.5"></span>
+            <span><strong class="font-semibold text-zinc-700">Zone 1 (Card Header):</strong> <span class="text-zinc-500">Metric label (left) + <code class="font-mono bg-zinc-100 px-1 rounded text-[10px]">Chip</code> health state (right). Each card has its own independent health state.</span></span>
+          </div>
+          <div class="flex items-start gap-3 text-xs">
+            <span class="shrink-0 w-4 h-4 rounded-sm bg-emerald-100 border border-emerald-200 mt-0.5"></span>
+            <span><strong class="font-semibold text-zinc-700">Zone 2 (Primary Value):</strong> <span class="text-zinc-500">Large numeric value using Asio Neon typography token. Trend indicator with signed delta and directional arrow icon.</span></span>
+          </div>
+          <div class="flex items-start gap-3 text-xs">
+            <span class="shrink-0 w-4 h-4 rounded-sm bg-zinc-100 border border-zinc-200 mt-0.5"></span>
+            <span><strong class="font-semibold text-zinc-700">Zone 3:</strong> <span class="text-zinc-500">Omitted in Metric Strip for compactness. Cards should maintain equal height within the strip.</span></span>
+          </div>
+          <div class="pt-2 border-t border-zinc-100">
+            <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wide mb-1">Asio Neon components</p>
+            <div class="flex flex-wrap gap-1">
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Card ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Typography ✔</code>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 3: Detail Grid                                      -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 3</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-600">RMM / Device Management</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Detail Grid</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">2-column grid with all 3 zones per card — value, capacity progress bar, and drill link. Use when each metric needs supporting context.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <!-- Card 1: Managed Devices -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Managed Devices</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+              <span class="w-1 h-1 rounded-full bg-emerald-400"></span>Healthy
+            </span>
+          </div>
+          <div class="text-3xl font-bold text-zinc-900 tracking-tight mb-1">4,812</div>
+          <div class="flex items-center gap-1 mb-4">
+            <svg class="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+            <span class="text-xs font-semibold text-emerald-600">+34</span>
+            <span class="text-xs text-zinc-400">this month</span>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">License utilization</span>
+              <span class="text-xs font-semibold text-zinc-600">4,812 / 5,000</span>
+            </div>
+            <div class="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+              <div class="progress-fill h-full bg-emerald-400 rounded-full" style="width: 96%"></div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-zinc-400">96% of capacity</span>
+              <a href="#" onclick="return false" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 transition">
+                View devices
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Patch Compliance -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Patch Compliance</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+              <span class="w-1 h-1 rounded-full bg-amber-400"></span>At Risk
+            </span>
+          </div>
+          <div class="text-3xl font-bold text-zinc-900 tracking-tight mb-1">78.4%</div>
+          <div class="flex items-center gap-1 mb-4">
+            <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+            </svg>
+            <span class="text-xs font-semibold text-red-600">−3.1%</span>
+            <span class="text-xs text-zinc-400">vs last month</span>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">Devices patched</span>
+              <span class="text-xs font-semibold text-zinc-600">3,772 / 4,812</span>
+            </div>
+            <div class="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+              <div class="progress-fill h-full bg-amber-400 rounded-full" style="width: 78%"></div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-zinc-400">Target: 95%</span>
+              <a href="#" onclick="return false" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 transition">
+                View unpatched
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Devices Online -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Devices Online</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+              <span class="w-1 h-1 rounded-full bg-emerald-400"></span>Normal
+            </span>
+          </div>
+          <div class="text-3xl font-bold text-zinc-900 tracking-tight mb-1">4,601</div>
+          <div class="flex items-center gap-1 mb-4">
+            <span class="text-xs text-zinc-400">of 4,812 managed</span>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">Online rate</span>
+              <span class="text-xs font-semibold text-zinc-600">95.6%</span>
+            </div>
+            <div class="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+              <div class="progress-fill h-full bg-emerald-400 rounded-full" style="width: 96%"></div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-zinc-400">211 offline</span>
+              <a href="#" onclick="return false" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 transition">
+                View offline
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Security Alerts -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Security Alerts</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-red-100 text-red-700">
+              <span class="w-1 h-1 rounded-full bg-red-400"></span>Critical
+            </span>
+          </div>
+          <div class="text-3xl font-bold text-zinc-900 tracking-tight mb-1">23</div>
+          <div class="flex items-center gap-1 mb-4">
+            <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+            </svg>
+            <span class="text-xs font-semibold text-red-600">+7</span>
+            <span class="text-xs text-zinc-400">in last 24 hrs</span>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">Unresolved</span>
+              <span class="text-xs font-semibold text-zinc-600">23 / 30 total</span>
+            </div>
+            <div class="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+              <div class="progress-fill h-full bg-red-400 rounded-full" style="width: 77%"></div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-zinc-400">7 resolved today</span>
+              <a href="#" onclick="return false" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 transition">
+                View alerts
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2">
+          <p class="text-xs text-zinc-500">The Detail Grid uses all 3 zones per card. Zone 3 always contains a bounded progress bar (has a min/max) plus a drill-down link.</p>
+          <div class="pt-2 border-t border-zinc-100">
+            <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wide mb-1">Asio Neon components</p>
+            <div class="flex flex-wrap gap-1">
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Card ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">LinearProgress ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Link ✔</code>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 4: Status Roll-Up                                   -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 4</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-600">Service Health</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Status Roll-Up</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">One card listing multiple sub-components, each with its own Status indicator. Use when communicating the health of a composite system.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-xl border border-zinc-200 shadow-sm max-w-sm">
+        <!-- Zone 1: Card Header -->
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100">
+          <span class="text-sm font-semibold text-zinc-900">Service Health</span>
+          <!-- Asio Neon: Status -->
+          <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+            <span class="w-1 h-1 rounded-full bg-amber-400"></span>Degraded
+          </span>
+        </div>
+        <!-- Zone 2: Sub-service rows (replaces primary value zone) -->
+        <div class="divide-y divide-zinc-50">
+          <div class="flex items-center justify-between px-5 py-3">
+            <span class="text-sm text-zinc-700">Ticket API</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Operational
+            </span>
+          </div>
+          <div class="flex items-center justify-between px-5 py-3">
+            <span class="text-sm text-zinc-700">Billing Portal</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Operational
+            </span>
+          </div>
+          <div class="flex items-center justify-between px-5 py-3 bg-amber-50">
+            <span class="text-sm text-zinc-700 font-medium">Reporting Engine</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>Degraded
+            </span>
+          </div>
+          <div class="flex items-center justify-between px-5 py-3">
+            <span class="text-sm text-zinc-700">Authentication</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Operational
+            </span>
+          </div>
+          <div class="flex items-center justify-between px-5 py-3 bg-red-50">
+            <span class="text-sm text-zinc-700 font-medium">Email Notifications</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-red-600">
+              <span class="w-2 h-2 rounded-full bg-red-400"></span>Outage
+            </span>
+          </div>
+        </div>
+        <!-- Zone 3: Footer link -->
+        <div class="px-5 py-3 border-t border-zinc-100">
+          <a href="#" onclick="return false" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition">
+            View incident history
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2">
+          <p class="text-xs text-zinc-500">Zone 2 (Primary Value) is replaced by a list of sub-service rows. The card-level <code class="font-mono text-[10px] bg-zinc-100 px-1 rounded">Status</code> chip in Zone 1 reflects the worst sub-status (if any sub-service is degraded or in outage, the card-level status reflects that).</p>
+          <div class="pt-2 border-t border-zinc-100">
+            <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wide mb-1">Asio Neon components</p>
+            <div class="flex flex-wrap gap-1">
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Card ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Status</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Link ✔</code>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 5: Comparative Card                                 -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 5</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-emerald-600">PSA / Billing — Period Comparison</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Comparative Card</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">One card with two columns in Zone 2 — same metric for two periods or entities. Use when comparison is the primary message.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="flex flex-col sm:flex-row gap-4 max-w-xl">
+
+        <!-- Card: Revenue comparison -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-5 flex-1">
+          <!-- Zone 1 -->
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Monthly Revenue</span>
+            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500">MoM</span>
+          </div>
+          <!-- Zone 2: Two-column comparison -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <div class="text-[10px] font-semibold uppercase tracking-wide text-zinc-400 mb-1">This Month</div>
+              <div class="text-2xl font-bold text-zinc-900 tracking-tight">$128.4K</div>
+              <div class="flex items-center gap-1 mt-1">
+                <svg class="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                </svg>
+                <span class="text-xs font-semibold text-emerald-600">+8.4%</span>
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-semibold uppercase tracking-wide text-zinc-400 mb-1">Last Month</div>
+              <div class="text-2xl font-bold text-zinc-400 tracking-tight">$118.5K</div>
+              <div class="mt-1">
+                <span class="text-xs text-zinc-400">Feb 2026</span>
+              </div>
+            </div>
+          </div>
+          <!-- Zone 3 -->
+          <div class="pt-3 border-t border-zinc-100">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs text-zinc-400">Monthly target</span>
+              <span class="text-xs font-semibold text-zinc-600">$128.4K / $140K</span>
+            </div>
+            <div class="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+              <div class="progress-fill h-full bg-blue-400 rounded-full" style="width: 92%"></div>
+            </div>
+            <div class="flex items-center justify-between mt-1.5">
+              <span class="text-xs text-zinc-400">92% of target</span>
+              <a href="#" onclick="return false" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 transition">
+                View invoices
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Ticket volume comparison (Team A vs Team B) -->
+        <div class="bg-white rounded-xl border border-zinc-200 shadow-sm p-5 flex-1">
+          <!-- Zone 1 -->
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-medium text-zinc-500">Tickets Resolved</span>
+            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500">Team vs Team</span>
+          </div>
+          <!-- Zone 2: Two-column comparison -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <div class="text-[10px] font-semibold uppercase tracking-wide text-zinc-400 mb-1">Team Alpha</div>
+              <div class="text-2xl font-bold text-zinc-900 tracking-tight">312</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                <span class="text-xs text-zinc-400">Above avg</span>
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-semibold uppercase tracking-wide text-zinc-400 mb-1">Team Beta</div>
+              <div class="text-2xl font-bold text-zinc-400 tracking-tight">248</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                <span class="text-xs text-zinc-400">Below avg</span>
+              </div>
+            </div>
+          </div>
+          <!-- Zone 3 -->
+          <div class="pt-3 border-t border-zinc-100">
+            <div class="text-xs text-zinc-400 mb-1.5">Relative performance</div>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 h-2 bg-emerald-100 rounded-full overflow-hidden">
+                <div class="progress-fill h-full bg-emerald-400 rounded-full" style="width: 100%"></div>
+              </div>
+              <span class="text-xs font-semibold text-emerald-600 w-8 text-right">312</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1.5">
+              <div class="flex-1 h-2 bg-amber-100 rounded-full overflow-hidden">
+                <div class="progress-fill h-full bg-amber-400 rounded-full" style="width: 79%"></div>
+              </div>
+              <span class="text-xs font-semibold text-amber-600 w-8 text-right">248</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2">
+          <p class="text-xs text-zinc-500">Zone 2 uses a 2-column layout instead of a single primary value. The "current" entity uses full-strength color; the "comparison" entity uses muted (zinc) text to establish visual hierarchy. Do not use the trend delta indicator in this variant — the comparison columns are the delta.</p>
+          <div class="pt-2 border-t border-zinc-100">
+            <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wide mb-1">Asio Neon components</p>
+            <div class="flex flex-wrap gap-1">
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Card ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Badge ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">LinearProgress ✔</code>
+              <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Link ✔</code>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Usage summary footer ─────────────────────────────────── -->
+    <section class="border border-zinc-200 rounded-2xl bg-white p-6">
+      <h3 class="text-sm font-semibold text-zinc-900 mb-4">Variant Selection Guide</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-zinc-200">
+              <th class="text-left py-2 pr-4 font-semibold text-zinc-500 whitespace-nowrap">Variant</th>
+              <th class="text-left py-2 pr-4 font-semibold text-zinc-500 whitespace-nowrap">When to use</th>
+              <th class="text-left py-2 font-semibold text-zinc-500 whitespace-nowrap">Zone 3 required?</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-100">
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Single Metric Card</td>
+              <td class="py-2.5 pr-4 text-zinc-500">One KPI needs dedicated real estate</td>
+              <td class="py-2.5 text-zinc-500">Optional</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Metric Strip</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Compare 2–4 KPIs in a single header row</td>
+              <td class="py-2.5 text-zinc-500">No — omit for compactness</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Detail Grid</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Metrics need progress context + drill links</td>
+              <td class="py-2.5 text-zinc-500">Yes — all 3 zones required</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Status Roll-Up</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Health of a multi-component system</td>
+              <td class="py-2.5 text-zinc-500">Optional (link to incident log)</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Comparative Card</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Comparison is the primary message</td>
+              <td class="py-2.5 text-zinc-500">Optional</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div><!-- /max-w-4xl -->
+</body>
+</html>

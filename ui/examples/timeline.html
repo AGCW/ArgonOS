@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline Widget — Full Example</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: { DEFAULT: '#4f46e5', hover: '#4338ca', light: '#eef2ff' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-zinc-50 font-sans antialiased text-zinc-900 pb-16">
+
+  <!-- ── Page header ──────────────────────────────────────────────── -->
+  <div class="sticky top-0 z-20 bg-white border-b border-zinc-200 px-6 py-3 flex items-center gap-3 shadow-sm">
+    <span class="w-6 h-6 rounded-md bg-violet-600 text-white flex items-center justify-center shrink-0">
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </span>
+    <div>
+      <span class="text-sm font-semibold text-zinc-900">Timeline Widget Framework</span>
+      <span class="ml-2 text-xs text-zinc-400">Full example · 5 variants · Asio Neon</span>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+      <span class="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">Stable</span>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 pt-8 space-y-16">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 1: Activity Feed                                    -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 1</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-violet-600">PSA / Service Desk</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Activity Feed</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">Real-time event stream for a record. Newest events at top. Actor attribution on every entry. "Load more" replaces pagination. Uses Zones 1 and 3.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden max-w-lg">
+        <!-- Zone 1: Widget Header -->
+        <div class="flex items-center gap-3 px-5 py-3.5 border-b border-zinc-100">
+          <div class="flex items-center gap-2 flex-1 min-w-0">
+            <span class="text-sm font-semibold text-zinc-900">Activity Log</span>
+            <!-- Asio Neon: Badge (record context) -->
+            <span class="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-md shrink-0">TKT-8841</span>
+          </div>
+          <!-- Asio Neon: Dropdown (time range filter) -->
+          <div class="flex items-center gap-1 text-xs text-zinc-500 border border-zinc-200 rounded-lg px-2.5 py-1.5 cursor-pointer hover:bg-zinc-50 transition shrink-0">
+            Last 7 days
+            <svg class="w-3 h-3 text-zinc-400 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Zone 3: Event Stream -->
+        <div class="px-5 py-4">
+          <!-- Asio Neon: List (event stream container) -->
+          <div>
+
+            <!-- Event 1: Status changed → Resolved -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-violet-500 ring-2 ring-white mt-1 shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+              </div>
+              <div class="pb-5 min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-13 · 10:22 AM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Status changed</span>
+                  <!-- Asio Neon: Chip (event type) -->
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-emerald-400"></span>Resolved
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <!-- Asio Neon: Avatar -->
+                  <div class="w-5 h-5 rounded-full bg-indigo-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">JC</div>
+                  <span class="text-xs text-zinc-400">Jane Cooper</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event 2: Comment added -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-violet-500 ring-2 ring-white mt-1 shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+              </div>
+              <div class="pb-5 min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-13 · 9:05 AM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Comment added</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-blue-400"></span>Comment
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-teal-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">MT</div>
+                  <span class="text-xs text-zinc-400">Mike Torres · <em>"Checked with client — issue is on their VPN config."</em></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event 3: Status changed → In Progress -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-violet-500 ring-2 ring-white mt-1 shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+              </div>
+              <div class="pb-5 min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-12 · 2:48 PM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Status changed</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-amber-400"></span>In Progress
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-indigo-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">JC</div>
+                  <span class="text-xs text-zinc-400">Jane Cooper</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event 4: Ticket created (last — no spine line below) -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-zinc-300 ring-2 ring-white mt-1 shrink-0"></div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-11 · 11:30 AM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Ticket created</span>
+                  <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500 shrink-0 mt-0.5">New</span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">SR</div>
+                  <span class="text-xs text-zinc-400">Sarah Reeves</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Load more -->
+          <button class="mt-4 w-full text-xs font-medium text-zinc-400 hover:text-zinc-600 border border-dashed border-zinc-200 rounded-lg py-2.5 transition hover:border-zinc-300 hover:bg-zinc-50">
+            Load more events
+          </button>
+        </div>
+      </div>
+
+      <!-- Zone breakdown (collapsible) -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 border border-dashed border-zinc-200 rounded-xl overflow-hidden max-w-lg">
+          <!-- Zone 1 -->
+          <div class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-blue-600">Zone 1 · Widget Header</span>
+            <span class="text-[10px] text-blue-500 font-mono">Badge · Dropdown</span>
+          </div>
+          <!-- Zone 3 -->
+          <div class="bg-violet-50 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-violet-600">Zone 3 · Event Stream</span>
+            <span class="text-[10px] text-violet-500 font-mono">List · Avatar · Chip</span>
+          </div>
+        </div>
+        <div class="mt-2 max-w-lg bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2">
+          <p class="text-[10px] font-semibold text-zinc-500 uppercase tracking-wide mb-1">Asio Neon components used</p>
+          <div class="flex flex-wrap gap-1">
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Badge ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Dropdown ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">List 🧪</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Avatar ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+          </div>
+          <p class="text-[10px] text-zinc-400 mt-2">Zone 2 (Filter Bar) is omitted — Activity Feed uses Zones 1 and 3 only. Sort is always newest-first. Actor attribution is mandatory on every entry. "Load more" replaces page pagination — do not use traditional prev/next controls.</p>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 2: Audit Trail                                      -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 2</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-violet-600">Security / Compliance</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Audit Trail</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">Compliance-grade read-only log. Actor attribution always visible — never hidden behind a hover state. Export action in Zone 1. Actor filter chips in Zone 2. All 3 zones required.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden max-w-lg">
+        <!-- Zone 1: Widget Header -->
+        <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-100">
+          <span class="text-sm font-semibold text-zinc-900 flex-1">Audit Log</span>
+          <!-- Asio Neon: Button (export — Audit Trail only) -->
+          <button class="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-600 border border-zinc-200 rounded-lg px-2.5 py-1.5 hover:bg-zinc-50 transition shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Export
+          </button>
+          <!-- Asio Neon: Dropdown -->
+          <div class="flex items-center gap-1 text-xs text-zinc-500 border border-zinc-200 rounded-lg px-2.5 py-1.5 cursor-pointer hover:bg-zinc-50 transition shrink-0">
+            Last 30 days
+            <svg class="w-3 h-3 text-zinc-400 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Zone 2: Filter Bar (actor filters) -->
+        <div class="flex items-center gap-2 px-5 py-2.5 border-b border-zinc-100 bg-zinc-50 flex-wrap">
+          <!-- Asio Neon: Chip (active filter) -->
+          <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-violet-100 text-violet-700 border border-violet-200 cursor-pointer hover:bg-violet-200 transition">
+            All actors
+            <svg class="w-3 h-3 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </span>
+          <span class="inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-full bg-white text-zinc-500 border border-zinc-200 cursor-pointer hover:bg-zinc-100 transition">admin@acme.com</span>
+          <span class="inline-flex items-center text-[11px] font-medium px-2.5 py-1 rounded-full bg-white text-zinc-500 border border-zinc-200 cursor-pointer hover:bg-zinc-100 transition">it-admin@acme.com</span>
+        </div>
+
+        <!-- Zone 3: Event Stream (read-only) -->
+        <div class="px-5 py-4">
+          <div>
+
+            <!-- Event 1: Permission changed -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-violet-500 ring-2 ring-white mt-1 shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+              </div>
+              <div class="pb-5 min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-13 · 8:14 AM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Permission changed → Admin</span>
+                  <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-700 shrink-0 mt-0.5">Permission</span>
+                </div>
+                <!-- Actor always visible (not hover-only) -->
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">IA</div>
+                  <span class="text-xs text-zinc-500 font-medium">it-admin@acme.com</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event 2: Login from new IP -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-violet-500 ring-2 ring-white mt-1 shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+              </div>
+              <div class="pb-5 min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-12 · 6:55 PM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Login from new IP</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-amber-400"></span>Security
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">AA</div>
+                  <span class="text-xs text-zinc-500 font-medium">admin@acme.com</span>
+                  <span class="text-xs text-zinc-400">· IP: 203.0.113.42</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event 3: Password reset -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-violet-500 ring-2 ring-white mt-1 shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+              </div>
+              <div class="pb-5 min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-10 · 3:22 PM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Password reset</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-amber-400"></span>Security
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">AA</div>
+                  <span class="text-xs text-zinc-500 font-medium">admin@acme.com</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event 4: Account created (last) -->
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-zinc-300 ring-2 ring-white mt-1 shrink-0"></div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">2026-03-08 · 9:00 AM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Account created</span>
+                  <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500 shrink-0 mt-0.5">System</span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <div class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0">IA</div>
+                  <span class="text-xs text-zinc-500 font-medium">it-admin@acme.com</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 border border-dashed border-zinc-200 rounded-xl overflow-hidden max-w-lg">
+          <div class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-blue-600">Zone 1 · Widget Header</span>
+            <span class="text-[10px] text-blue-500 font-mono">Button (export) · Dropdown</span>
+          </div>
+          <div class="bg-emerald-50 border-b border-emerald-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Zone 2 · Filter Bar</span>
+            <span class="text-[10px] text-emerald-500 font-mono">Chip (actor filters)</span>
+          </div>
+          <div class="bg-violet-50 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-violet-600">Zone 3 · Event Stream</span>
+            <span class="text-[10px] text-violet-500 font-mono">List · Avatar · Chip</span>
+          </div>
+        </div>
+        <div class="mt-2 max-w-lg bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2">
+          <p class="text-[10px] font-semibold text-zinc-500 uppercase tracking-wide mb-1">Asio Neon components used</p>
+          <div class="flex flex-wrap gap-1">
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Button ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Dropdown ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">List 🧪</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Avatar ✔</code>
+          </div>
+          <p class="text-[10px] text-zinc-400 mt-2">Actor attribution must always be visible — never behind a hover state. The Export button is exclusive to the Audit Trail variant. All 3 zones are required. The stream is read-only; no inline edit, dismiss, or action controls on entries.</p>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 3: Notification Feed                                -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 3</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-violet-600">Notification Center</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Notification Feed</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">Personal feed of events targeted at the current user. Unread items are visually differentiated via background tint and dot overlay. Dismiss action per entry. Uses Zones 1 and 3.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden max-w-lg">
+        <!-- Zone 1: Widget Header with unread Badge -->
+        <div class="flex items-center gap-3 px-5 py-3.5 border-b border-zinc-100">
+          <span class="text-sm font-semibold text-zinc-900 flex-1">Notifications</span>
+          <!-- Asio Neon: Badge (unread count) -->
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-violet-600 text-white text-[10px] font-bold leading-none">3</span>
+          <button class="text-xs text-zinc-400 hover:text-zinc-600 transition ml-1">Mark all read</button>
+        </div>
+
+        <!-- Zone 3: Notification entries (Asio Neon: Notification component) -->
+        <div class="divide-y divide-zinc-50">
+
+          <!-- Unread 1: SLA breach — Critical -->
+          <div class="flex items-start gap-3 px-4 py-3.5 bg-violet-50 hover:bg-violet-50/80 transition">
+            <div class="relative shrink-0 mt-0.5">
+              <!-- Asio Neon: Avatar -->
+              <div class="w-6 h-6 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">SY</div>
+              <!-- Asio Neon: Badge (unread dot) -->
+              <div class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-violet-500 ring-1 ring-white"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start gap-2 mb-0.5 flex-wrap">
+                <span class="text-sm font-semibold text-zinc-900 leading-snug flex-1">SLA breached on TKT-9102</span>
+                <!-- Asio Neon: Chip -->
+                <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 shrink-0 mt-0.5">
+                  <span class="w-1 h-1 rounded-full bg-red-400"></span>Critical
+                </span>
+              </div>
+              <div class="text-[10px] text-zinc-400">System · Today at 10:30 AM</div>
+            </div>
+            <button class="text-zinc-300 hover:text-zinc-500 transition shrink-0 mt-0.5" aria-label="Dismiss">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
+          <!-- Unread 2: Assignment -->
+          <div class="flex items-start gap-3 px-4 py-3.5 bg-violet-50 hover:bg-violet-50/80 transition">
+            <div class="relative shrink-0 mt-0.5">
+              <div class="w-6 h-6 rounded-full bg-indigo-500 text-white text-[9px] font-bold flex items-center justify-center">JC</div>
+              <div class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-violet-500 ring-1 ring-white"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start gap-2 mb-0.5 flex-wrap">
+                <span class="text-sm font-semibold text-zinc-900 leading-snug flex-1">Assigned to TKT-8934</span>
+                <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0 mt-0.5">Assignment</span>
+              </div>
+              <div class="text-[10px] text-zinc-400">Jane Cooper · Today at 9:18 AM</div>
+            </div>
+            <button class="text-zinc-300 hover:text-zinc-500 transition shrink-0 mt-0.5" aria-label="Dismiss">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
+          <!-- Unread 3: Comment -->
+          <div class="flex items-start gap-3 px-4 py-3.5 bg-violet-50 hover:bg-violet-50/80 transition">
+            <div class="relative shrink-0 mt-0.5">
+              <div class="w-6 h-6 rounded-full bg-teal-500 text-white text-[9px] font-bold flex items-center justify-center">MT</div>
+              <div class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-violet-500 ring-1 ring-white"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start gap-2 mb-0.5 flex-wrap">
+                <span class="text-sm font-semibold text-zinc-900 leading-snug flex-1">Comment on TKT-8801</span>
+                <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500 shrink-0 mt-0.5">Comment</span>
+              </div>
+              <div class="text-[10px] text-zinc-400">Mike Torres · Today at 8:50 AM</div>
+            </div>
+            <button class="text-zinc-300 hover:text-zinc-500 transition shrink-0 mt-0.5" aria-label="Dismiss">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
+          <!-- Read 4: Resolved (muted) -->
+          <div class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 transition">
+            <div class="w-6 h-6 rounded-full bg-zinc-200 text-zinc-400 text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">SY</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start gap-2 mb-0.5 flex-wrap">
+                <span class="text-sm text-zinc-400 leading-snug flex-1">TKT-8740 resolved</span>
+                <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-500 shrink-0 mt-0.5">Resolved</span>
+              </div>
+              <div class="text-[10px] text-zinc-300">System · Yesterday at 4:10 PM</div>
+            </div>
+          </div>
+
+          <!-- Read 5: Report (muted) -->
+          <div class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 transition">
+            <div class="w-6 h-6 rounded-full bg-zinc-200 text-zinc-400 text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">SY</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start gap-2 mb-0.5 flex-wrap">
+                <span class="text-sm text-zinc-400 leading-snug flex-1">Report ready: March Patch Status</span>
+                <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-400 shrink-0 mt-0.5">Report</span>
+              </div>
+              <div class="text-[10px] text-zinc-300">System · Yesterday at 2:00 PM</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 border border-dashed border-zinc-200 rounded-xl overflow-hidden max-w-lg">
+          <div class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-blue-600">Zone 1 · Widget Header</span>
+            <span class="text-[10px] text-blue-500 font-mono">Badge (unread count)</span>
+          </div>
+          <div class="bg-violet-50 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-violet-600">Zone 3 · Notification Entries</span>
+            <span class="text-[10px] text-violet-500 font-mono">Notification · Badge · Avatar · Chip</span>
+          </div>
+        </div>
+        <div class="mt-2 max-w-lg bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2">
+          <p class="text-[10px] font-semibold text-zinc-500 uppercase tracking-wide mb-1">Asio Neon components used</p>
+          <div class="flex flex-wrap gap-1">
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Badge ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Notification</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Avatar ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+          </div>
+          <p class="text-[10px] text-zinc-400 mt-2">Unread entries use a <code class="font-mono bg-zinc-100 px-1 rounded text-[9px]">bg-violet-50</code> background tint and a filled violet dot overlaid on the Avatar. Read entries use muted zinc text with no dot. Zone 2 is omitted. The vertical spine is replaced by a list-item layout — no spine connector between notification entries.</p>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 4: Grouped Timeline                                 -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 4</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-violet-600">RMM / Device Monitoring</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Grouped Timeline</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">Events clustered by day with group header labels. Use when the timeline spans multiple days and day-level orientation helps the user. Event-type Chip filters in Zone 2. All 3 zones.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden max-w-lg">
+        <!-- Zone 1: Widget Header -->
+        <div class="flex items-center gap-3 px-5 py-3.5 border-b border-zinc-100">
+          <div class="flex items-center gap-2 flex-1 min-w-0">
+            <span class="text-sm font-semibold text-zinc-900">Alert History</span>
+            <span class="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-md shrink-0">WKSTN-042</span>
+          </div>
+          <div class="flex items-center gap-1 text-xs text-zinc-500 border border-zinc-200 rounded-lg px-2.5 py-1.5 cursor-pointer hover:bg-zinc-50 transition shrink-0">
+            Last 14 days
+            <svg class="w-3 h-3 text-zinc-400 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Zone 2: Filter Bar (event-type chips) -->
+        <div class="flex items-center gap-2 px-5 py-2.5 border-b border-zinc-100 bg-zinc-50 flex-wrap">
+          <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 cursor-pointer hover:bg-red-200 transition">Alert ×</span>
+          <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 cursor-pointer hover:bg-amber-200 transition">Warning ×</span>
+          <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-200 transition">Info ×</span>
+        </div>
+
+        <!-- Zone 3: Grouped Event Stream -->
+        <div class="px-5 py-4 space-y-5">
+
+          <!-- Group: TODAY -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-3 flex items-center gap-2">
+              Today
+              <span class="flex-1 h-px bg-zinc-100"></span>
+              <span class="text-[10px] font-normal normal-case tracking-normal text-zinc-300">Mar 13</span>
+            </div>
+            <div>
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center shrink-0">
+                  <div class="w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-white mt-1 shrink-0"></div>
+                  <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+                </div>
+                <div class="pb-4 min-w-0 flex-1">
+                  <div class="text-[10px] text-zinc-400 mb-1 font-mono">10:15 AM</div>
+                  <div class="flex items-start gap-2 flex-wrap">
+                    <span class="text-sm font-medium text-zinc-900 leading-snug">Disk space warning</span>
+                    <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 shrink-0 mt-0.5">Warning</span>
+                  </div>
+                  <span class="text-xs text-zinc-400">System · C:\ at 91% capacity</span>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center shrink-0">
+                  <div class="w-2.5 h-2.5 rounded-full bg-zinc-300 ring-2 ring-white mt-1 shrink-0"></div>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="text-[10px] text-zinc-400 mb-1 font-mono">9:42 AM</div>
+                  <div class="flex items-start gap-2 flex-wrap">
+                    <span class="text-sm font-medium text-zinc-900 leading-snug">CPU spike resolved</span>
+                    <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500 shrink-0 mt-0.5">Info</span>
+                  </div>
+                  <span class="text-xs text-zinc-400">System · Returned to normal after 4 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Group: YESTERDAY -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-3 flex items-center gap-2">
+              Yesterday
+              <span class="flex-1 h-px bg-zinc-100"></span>
+              <span class="text-[10px] font-normal normal-case tracking-normal text-zinc-300">Mar 12</span>
+            </div>
+            <div class="flex gap-3">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-2.5 h-2.5 rounded-full bg-zinc-300 ring-2 ring-white mt-1 shrink-0"></div>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-[10px] text-zinc-400 mb-1 font-mono">3:22 PM</div>
+                <div class="flex items-start gap-2 flex-wrap">
+                  <span class="text-sm font-medium text-zinc-900 leading-snug">Network connectivity restored</span>
+                  <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500 shrink-0 mt-0.5">Info</span>
+                </div>
+                <span class="text-xs text-zinc-400">System · Offline for 8 minutes</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Group: MARCH 10 -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-3 flex items-center gap-2">
+              March 10
+              <span class="flex-1 h-px bg-zinc-100"></span>
+            </div>
+            <div>
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center shrink-0">
+                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white mt-1 shrink-0"></div>
+                  <div class="w-px flex-1 bg-zinc-100 mt-1"></div>
+                </div>
+                <div class="pb-4 min-w-0 flex-1">
+                  <div class="text-[10px] text-zinc-400 mb-1 font-mono">11:00 AM</div>
+                  <div class="flex items-start gap-2 flex-wrap">
+                    <span class="text-sm font-medium text-zinc-900 leading-snug">Patch deployed: KB5034441</span>
+                    <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
+                      <span class="w-1 h-1 rounded-full bg-emerald-400"></span>Success
+                    </span>
+                  </div>
+                  <span class="text-xs text-zinc-400">System</span>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center shrink-0">
+                  <div class="w-2.5 h-2.5 rounded-full bg-zinc-300 ring-2 ring-white mt-1 shrink-0"></div>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="text-[10px] text-zinc-400 mb-1 font-mono">10:55 AM</div>
+                  <div class="flex items-start gap-2 flex-wrap">
+                    <span class="text-sm font-medium text-zinc-900 leading-snug">Device reboot completed</span>
+                    <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-500 shrink-0 mt-0.5">Info</span>
+                  </div>
+                  <span class="text-xs text-zinc-400">System · Uptime reset</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 border border-dashed border-zinc-200 rounded-xl overflow-hidden max-w-lg">
+          <div class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-blue-600">Zone 1 · Widget Header</span>
+            <span class="text-[10px] text-blue-500 font-mono">Badge · Dropdown</span>
+          </div>
+          <div class="bg-emerald-50 border-b border-emerald-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Zone 2 · Filter Bar</span>
+            <span class="text-[10px] text-emerald-500 font-mono">Chip (event-type filters)</span>
+          </div>
+          <div class="bg-violet-50 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-violet-600">Zone 3 · Grouped Event Stream</span>
+            <span class="text-[10px] text-violet-500 font-mono">List · Chip · Day group headers</span>
+          </div>
+        </div>
+        <div class="mt-2 max-w-lg bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2">
+          <p class="text-[10px] font-semibold text-zinc-500 uppercase tracking-wide mb-1">Asio Neon components used</p>
+          <div class="flex flex-wrap gap-1">
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Badge ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Dropdown ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Chip ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">List 🧪</code>
+          </div>
+          <p class="text-[10px] text-zinc-400 mt-2">Day group headers ("Today", "Yesterday", "March 10") use a horizontal rule to visually separate clusters. Within each group, the vertical spine connects events as normal. The dot color encodes severity: red (Alert), amber (Warning), emerald (Success), zinc (Info). All 3 zones are required.</p>
+        </div>
+      </details>
+    </section>
+
+    <hr class="border-zinc-100">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- VARIANT 5: Milestone Timeline                               -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section>
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Variant 5</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-300">·</span>
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-violet-600">Customer Onboarding</span>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900">Milestone Timeline</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">Curated past + future milestones. Not a raw event log — milestones are planned and managed. Status component per milestone. Pulsing ring for the current step. Uses Zones 1 and 3.</p>
+      </div>
+
+      <!-- Live render -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden max-w-lg">
+        <!-- Zone 1: Widget Header -->
+        <div class="flex items-center gap-3 px-5 py-3.5 border-b border-zinc-100">
+          <div class="flex items-center gap-2 flex-1 min-w-0">
+            <span class="text-sm font-semibold text-zinc-900">Onboarding Milestones</span>
+            <!-- Asio Neon: Badge (record context) -->
+            <span class="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-md shrink-0">Acme Corp</span>
+          </div>
+          <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-50 text-blue-600 shrink-0">
+            3 of 5 complete
+          </span>
+        </div>
+
+        <!-- Zone 3: Milestone stream (Asio Neon: Stepper) -->
+        <div class="px-5 py-5">
+          <div>
+
+            <!-- Milestone 1: Completed -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center shrink-0">
+                <!-- Asio Neon: Status (completed) -->
+                <div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center ring-2 ring-white shrink-0">
+                  <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                </div>
+                <div class="w-px flex-1 bg-zinc-200 mt-1"></div>
+              </div>
+              <div class="pb-5 flex-1 min-w-0">
+                <div class="flex items-start gap-2 flex-wrap mb-0.5">
+                  <span class="text-sm font-semibold text-zinc-900">Contract signed</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-emerald-400"></span>Completed
+                  </span>
+                </div>
+                <div class="text-xs text-zinc-400">Mar 3, 2026 · CSM Team</div>
+              </div>
+            </div>
+
+            <!-- Milestone 2: Completed -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center ring-2 ring-white shrink-0">
+                  <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                </div>
+                <div class="w-px flex-1 bg-zinc-200 mt-1"></div>
+              </div>
+              <div class="pb-5 flex-1 min-w-0">
+                <div class="flex items-start gap-2 flex-wrap mb-0.5">
+                  <span class="text-sm font-semibold text-zinc-900">Data migration</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-emerald-400"></span>Completed
+                  </span>
+                </div>
+                <div class="text-xs text-zinc-400">Mar 7, 2026 · Migration Team</div>
+              </div>
+            </div>
+
+            <!-- Milestone 3: Current / In Progress (pulsing ring) -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center shrink-0">
+                <!-- Asio Neon: Status (current) — pulsing -->
+                <div class="relative w-7 h-7 shrink-0">
+                  <div class="w-7 h-7 rounded-full bg-violet-600 flex items-center justify-center ring-2 ring-white relative z-10">
+                    <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
+                  </div>
+                  <div class="absolute inset-0 rounded-full bg-violet-400 animate-ping opacity-40"></div>
+                </div>
+                <div class="w-px flex-1 bg-zinc-200 mt-1"></div>
+              </div>
+              <div class="pb-5 flex-1 min-w-0">
+                <div class="flex items-start gap-2 flex-wrap mb-0.5">
+                  <span class="text-sm font-semibold text-zinc-900">Technician training</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-700 shrink-0 mt-0.5">
+                    <span class="w-1 h-1 rounded-full bg-violet-400"></span>In Progress
+                  </span>
+                </div>
+                <div class="text-xs text-zinc-400">Mar 14, 2026 · Training Team</div>
+              </div>
+            </div>
+
+            <!-- Milestone 4: Upcoming -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center shrink-0">
+                <!-- Asio Neon: Status (upcoming) -->
+                <div class="w-7 h-7 rounded-full bg-white border-2 border-zinc-300 flex items-center justify-center shrink-0"></div>
+                <div class="w-px flex-1 bg-zinc-200 mt-1"></div>
+              </div>
+              <div class="pb-5 flex-1 min-w-0">
+                <div class="flex items-start gap-2 flex-wrap mb-0.5">
+                  <span class="text-sm font-medium text-zinc-400">Go-live review</span>
+                  <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-400 shrink-0 mt-0.5">Upcoming</span>
+                </div>
+                <div class="text-xs text-zinc-300">Mar 21, 2026 · Account Team</div>
+              </div>
+            </div>
+
+            <!-- Milestone 5: Upcoming (last — no spine line below) -->
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-7 h-7 rounded-full bg-white border-2 border-zinc-300 flex items-center justify-center shrink-0"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start gap-2 flex-wrap mb-0.5">
+                  <span class="text-sm font-medium text-zinc-400">Handoff complete</span>
+                  <span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-400 shrink-0 mt-0.5">Upcoming</span>
+                </div>
+                <div class="text-xs text-zinc-300">Mar 28, 2026 · Account Team</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone breakdown -->
+      <details class="mt-4">
+        <summary class="cursor-pointer text-xs font-semibold text-zinc-400 hover:text-zinc-600 transition select-none flex items-center gap-1.5 w-fit">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          Show zone breakdown
+        </summary>
+        <div class="mt-3 border border-dashed border-zinc-200 rounded-xl overflow-hidden max-w-lg">
+          <div class="bg-blue-50 border-b border-blue-100 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-blue-600">Zone 1 · Widget Header</span>
+            <span class="text-[10px] text-blue-500 font-mono">Badge · progress label</span>
+          </div>
+          <div class="bg-violet-50 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wide text-violet-600">Zone 3 · Milestone Stream</span>
+            <span class="text-[10px] text-violet-500 font-mono">Stepper 🧪 · Status · Badge</span>
+          </div>
+        </div>
+        <div class="mt-2 max-w-lg bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2">
+          <p class="text-[10px] font-semibold text-zinc-500 uppercase tracking-wide mb-1">Asio Neon components used</p>
+          <div class="flex flex-wrap gap-1">
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Badge ✔</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Stepper 🧪</code>
+            <code class="text-[10px] bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded font-mono">Status</code>
+          </div>
+          <p class="text-[10px] text-zinc-400 mt-2">Three milestone dot states: filled emerald ✓ (Completed), pulsing violet ring (In Progress), empty ring with zinc border (Upcoming). Upcoming text uses muted zinc tones to communicate the unstarted state. Zone 2 is omitted. This variant is not an event log — do not use the Timeline framework if there are no timestamps or the sequence is user-directed steps (use Form › Stepper instead).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Variant Selection Guide ──────────────────────────────── -->
+    <section class="border border-zinc-200 rounded-2xl bg-white p-6">
+      <h3 class="text-sm font-semibold text-zinc-900 mb-4">Variant Selection Guide</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-zinc-200">
+              <th class="text-left py-2 pr-4 font-semibold text-zinc-500 whitespace-nowrap">Variant</th>
+              <th class="text-left py-2 pr-4 font-semibold text-zinc-500 whitespace-nowrap">When to use</th>
+              <th class="text-left py-2 pr-4 font-semibold text-zinc-500 whitespace-nowrap">Zone 2 required?</th>
+              <th class="text-left py-2 font-semibold text-zinc-500 whitespace-nowrap">Actor attribution?</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-100">
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Activity Feed</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Ongoing record activity — tickets, comments, status changes</td>
+              <td class="py-2.5 pr-4 text-zinc-500">No</td>
+              <td class="py-2.5 text-zinc-500">Mandatory on every entry</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Audit Trail</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Compliance log — who changed what and when</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Yes — actor filter</td>
+              <td class="py-2.5 text-zinc-500">Always visible — never hover-only</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Notification Feed</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Personal unseen events for the current user</td>
+              <td class="py-2.5 pr-4 text-zinc-500">No</td>
+              <td class="py-2.5 text-zinc-500">Optional (actor = sender)</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Grouped Timeline</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Multi-day event log needing day-level orientation</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Optional — event-type filter</td>
+              <td class="py-2.5 text-zinc-500">Recommended</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 pr-4 font-semibold text-zinc-700 whitespace-nowrap">Milestone Timeline</td>
+              <td class="py-2.5 pr-4 text-zinc-500">Curated past + future milestones (not a raw event log)</td>
+              <td class="py-2.5 pr-4 text-zinc-500">No</td>
+              <td class="py-2.5 text-zinc-500">Not applicable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div><!-- /max-w-4xl -->
+</body>
+</html>

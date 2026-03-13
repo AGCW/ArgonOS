@@ -1,0 +1,10 @@
+{
+  "name": "argonos",
+  "version": "1.0.0",
+  "description": "UX discovery pipeline for PRDs",
+  "private": true,
+  "scripts": {
+    "discovery": "npx serve ui -p 3000",
+    "ui": "npx serve ui -p 3000"
+  }
+}

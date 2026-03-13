@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArgonOS — UX Discovery Launcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="auth.js"></script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: {
+              DEFAULT: '#4f46e5',
+              hover:   '#4338ca',
+              light:   '#eef2ff',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Prose styles for rendered Markdown content -->
+  <style type="text/tailwindcss">
+    .prose h1 { @apply text-lg font-semibold mt-6 mb-2 text-zinc-900; }
+    .prose h2 { @apply text-base font-semibold mt-5 mb-2 text-zinc-900; }
+    .prose h3 { @apply text-sm font-semibold mt-4 mb-1 text-zinc-900; }
+    .prose p  { @apply text-sm leading-relaxed mb-3 text-zinc-700; }
+    .prose ul { @apply list-disc pl-5 text-sm mb-3 space-y-1 text-zinc-700; }
+    .prose ol { @apply list-decimal pl-5 text-sm mb-3 space-y-1 text-zinc-700; }
+    .prose li { @apply leading-relaxed; }
+    .prose a  { @apply text-accent underline underline-offset-2 hover:text-accent-hover; }
+    .prose strong { @apply font-semibold text-zinc-900; }
+    .prose em { @apply italic; }
+    .prose code { @apply bg-zinc-100 rounded px-1 py-0.5 text-xs font-mono text-zinc-800; }
+    .prose pre  { @apply bg-zinc-100 rounded-lg p-4 overflow-x-auto text-xs font-mono mb-3; }
+    .prose pre code { @apply bg-transparent p-0; }
+    .prose table { @apply w-full text-sm border-collapse mb-4; }
+    .prose th { @apply bg-zinc-100 font-semibold text-left px-3 py-2 border border-zinc-200 text-zinc-700; }
+    .prose td { @apply px-3 py-2 border border-zinc-200 text-zinc-600; }
+    .prose blockquote { @apply border-l-4 border-accent-light pl-4 italic text-zinc-500 mb-3; }
+    .prose hr { @apply border-zinc-200 my-5; }
+  </style>
+</head>
+
+<body class="bg-zinc-50 text-zinc-900 font-sans flex flex-col h-screen overflow-hidden antialiased">
+
+  <!-- ── Header ─────────────────────────────────────────────────── -->
+  <header class="shrink-0 bg-white border-b border-zinc-200 px-5 py-3 flex items-center gap-3 z-10 shadow-sm">
+    <!-- Logo mark / home link -->
+    <a href="index.html" class="flex items-center justify-center w-8 h-8 rounded-lg bg-accent text-white text-xs font-bold select-none tracking-tight shrink-0 hover:bg-accent-hover transition" aria-label="Back to ArgonOS home">
+      Ar
+    </a>
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-1.5 text-sm">
+      <a href="index.html" class="font-semibold text-zinc-900 hover:text-accent transition">ArgonOS</a>
+      <span class="text-zinc-300">/</span>
+      <span class="text-zinc-500 font-normal">Discovery Launcher</span>
+    </div>
+
+    <!-- Status pill -->
+    <div class="ml-auto">
+      <span class="inline-flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-100 rounded-full px-2.5 py-1 font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></span>
+        Pipeline ready
+      </span>
+    </div>
+  </header>
+
+  <!-- ── Body ───────────────────────────────────────────────────── -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- ── Sidebar ──────────────────────────────────────────────── -->
+    <aside class="w-[300px] shrink-0 bg-white border-r border-zinc-200 flex flex-col">
+
+      <!-- Scrollable content -->
+      <div class="flex-1 overflow-y-auto">
+
+        <!-- Form section -->
+        <div class="p-5">
+          <p class="text-xs text-zinc-500 leading-relaxed mb-5">
+            Paste a Confluence PRD URL to kick off the full UX discovery pipeline — readiness evaluation, research retrieval, and a saved Discovery Pack.
+          </p>
+
+          <form id="discovery-form" novalidate class="space-y-4">
+
+            <!-- PRD URL -->
+            <div>
+              <label for="prd-url" class="block text-xs font-semibold text-zinc-700 mb-1.5">
+                PRD URL
+              </label>
+              <input
+                type="url"
+                id="prd-url"
+                name="prd-url"
+                placeholder="https://[site].atlassian.net/wiki/..."
+                required
+                autocomplete="url"
+                class="w-full px-3 py-2.5 text-sm bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-accent focus:bg-white transition"
+              >
+              <p class="hidden mt-1.5 text-xs text-red-600 flex items-center gap-1" id="url-error" role="alert">
+                Please enter a valid Confluence URL.
+              </p>
+            </div>
+
+            <!-- Space Key -->
+            <div>
+              <label for="space-key" class="flex items-center gap-2 text-xs font-semibold text-zinc-700 mb-1.5">
+                Confluence Space Key
+                <span class="text-[10px] font-normal bg-zinc-100 text-zinc-500 rounded-full px-2 py-0.5 leading-none">
+                  Optional
+                </span>
+              </label>
+              <input
+                type="text"
+                id="space-key"
+                name="space-key"
+                placeholder="e.g. UXPRD"
+                autocomplete="off"
+                class="w-full px-3 py-2.5 text-sm bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-accent focus:bg-white transition"
+              >
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-accent hover:bg-accent-hover rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Start Discovery
+            </button>
+
+          </form>
+        </div>
+
+        <!-- Fallback alert -->
+        <div id="fallback" class="hidden mx-5 mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+          <p class="text-xs font-semibold text-amber-800 mb-2">Cursor didn't open?</p>
+          <p class="text-xs text-amber-700 mb-2">Copy the prompt link manually:</p>
+          <a href="#" id="fallback-link" class="block text-[11px] text-amber-700 break-all underline underline-offset-2 mb-3 hover:text-amber-900 transition" target="_blank" rel="noopener"></a>
+          <button
+            type="button"
+            id="copy-btn"
+            class="text-xs font-semibold px-3 py-1.5 bg-white border border-amber-300 rounded-lg text-amber-800 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+          >
+            Copy to clipboard
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-zinc-100 mx-5"></div>
+
+        <!-- How it works -->
+        <div class="p-5">
+          <h3 class="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mb-4">How it works</h3>
+          <ol class="space-y-3.5">
+            <li class="flex gap-3 items-start">
+              <span class="shrink-0 w-5 h-5 rounded-full bg-accent-light text-accent text-[10px] font-bold flex items-center justify-center mt-0.5">1</span>
+              <span class="text-xs text-zinc-500 leading-relaxed">Paste your PRD's Confluence URL above</span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="shrink-0 w-5 h-5 rounded-full bg-accent-light text-accent text-[10px] font-bold flex items-center justify-center mt-0.5">2</span>
+              <span class="text-xs text-zinc-500 leading-relaxed">Click <strong class="font-semibold text-zinc-600">Start Discovery</strong> — Cursor opens with the prompt pre-filled</span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="shrink-0 w-5 h-5 rounded-full bg-accent-light text-accent text-[10px] font-bold flex items-center justify-center mt-0.5">3</span>
+              <span class="text-xs text-zinc-500 leading-relaxed">Confirm in Cursor chat to run the pipeline (readiness score, research, Discovery Pack)</span>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="shrink-0 w-5 h-5 rounded-full bg-accent-light text-accent text-[10px] font-bold flex items-center justify-center mt-0.5">4</span>
+              <span class="text-xs text-zinc-500 leading-relaxed">Your Discovery Pack appears in the panel automatically</span>
+            </li>
+          </ol>
+        </div>
+
+      </div><!-- /scrollable content -->
+
+      <!-- Back to home — sticky footer -->
+      <div class="p-4 border-t border-zinc-100 shrink-0">
+        <a href="index.html"
+           class="flex items-center gap-2 text-xs text-zinc-500 hover:text-accent transition px-2 py-1.5 rounded-lg hover:bg-zinc-50">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          </svg>
+          Back to ArgonOS
+        </a>
+      </div>
+
+    </aside>
+
+    <!-- ── Main panel ────────────────────────────────────────────── -->
+    <main class="flex-1 min-w-0 overflow-y-auto bg-zinc-50">
+      <div class="max-w-3xl mx-auto px-8 py-8">
+
+        <!-- Section header -->
+        <div class="flex items-end justify-between mb-5">
+          <div>
+            <h2 class="text-sm font-semibold text-zinc-900">Recent Discovery Packs</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Latest 5 pipeline runs · expand to read</p>
+          </div>
+        </div>
+
+        <!-- Pack cards injected here -->
+        <div id="packs-container"></div>
+
+      </div>
+    </main>
+
+  </div><!-- /body flex -->
+
+  <!-- ── Scripts ──────────────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+    // ── DOM refs ────────────────────────────────────────────────────
+    const form         = document.getElementById('discovery-form');
+    const prdUrlInput  = document.getElementById('prd-url');
+    const spaceKeyInput = document.getElementById('space-key');
+    const urlError     = document.getElementById('url-error');
+    const fallback     = document.getElementById('fallback');
+    const fallbackLink = document.getElementById('fallback-link');
+    const copyBtn      = document.getElementById('copy-btn');
+
+    // ── Prompt / deep-link helpers ──────────────────────────────────
+    function buildPrompt() {
+      const url      = prdUrlInput.value.trim();
+      const spaceKey = spaceKeyInput.value.trim();
+      if (spaceKey) {
+        return `Run the UX discovery pipeline on space ${spaceKey}. Primary PRD: ${url}`;
+      }
+      return `Run the UX discovery pipeline on this PRD: ${url}`;
+    }
+
+    function generateDeepLink(prompt) {
+      return `cursor://anysphere.cursor-deeplink/prompt?text=${encodeURIComponent(prompt)}`;
+    }
+
+    // ── Error state helpers ─────────────────────────────────────────
+    function showError() {
+      urlError.classList.remove('hidden');
+      prdUrlInput.setAttribute('aria-invalid', 'true');
+      prdUrlInput.classList.add('ring-2', 'ring-red-500', 'border-transparent', 'bg-white');
+    }
+
+    function hideError() {
+      urlError.classList.add('hidden');
+      prdUrlInput.setAttribute('aria-invalid', 'false');
+      prdUrlInput.classList.remove('ring-2', 'ring-red-500', 'border-transparent');
+    }
+
+    // ── Form submit ─────────────────────────────────────────────────
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      hideError();
+
+      const url = prdUrlInput.value.trim();
+      if (!url) {
+        showError();
+        prdUrlInput.focus();
+        return;
+      }
+
+      try {
+        new URL(url);
+      } catch {
+        showError();
+        prdUrlInput.focus();
+        return;
+      }
+
+      const deepLink = generateDeepLink(buildPrompt());
+      fallbackLink.href        = deepLink;
+      fallbackLink.textContent = deepLink;
+      fallback.classList.remove('hidden');
+
+      window.location.href = deepLink;
+    });
+
+    // ── Copy button ─────────────────────────────────────────────────
+    copyBtn.addEventListener('click', async () => {
+      const deepLink = generateDeepLink(buildPrompt());
+      try {
+        await navigator.clipboard.writeText(deepLink);
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('bg-green-600', 'text-white', 'border-green-600');
+        copyBtn.classList.remove('bg-white', 'text-amber-800', 'border-amber-300');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy to clipboard';
+          copyBtn.classList.remove('bg-green-600', 'text-white', 'border-green-600');
+          copyBtn.classList.add('bg-white', 'text-amber-800', 'border-amber-300');
+        }, 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+    });
+
+    prdUrlInput.addEventListener('input', hideError);
+
+    // ── Discovery Packs ─────────────────────────────────────────────
+    const PACKS_LIMIT   = 5;
+    const packsContainer = document.getElementById('packs-container');
+
+    function formatDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString(undefined, {
+          year: 'numeric', month: 'short', day: 'numeric',
+        });
+      } catch {
+        return iso;
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function renderPackCard(pack) {
+      const card = document.createElement('div');
+      card.className     = 'bg-white border border-zinc-200 rounded-xl overflow-hidden mb-3 shadow-sm';
+      card.dataset.filename = pack.filename;
+
+      const prdLinkHtml = pack.prdUrl
+        ? `<span class="text-zinc-300 mx-1">·</span><a href="${escapeHtml(pack.prdUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="underline underline-offset-2 hover:text-zinc-700 transition">View PRD</a>`
+        : '';
+
+      card.innerHTML = `
+        <button
+          type="button"
+          class="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left bg-white hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent transition"
+          aria-expanded="false"
+          aria-controls="pack-body-${pack.id}"
+          id="pack-header-${pack.id}"
+        >
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-zinc-900 truncate">${escapeHtml(pack.title)}</div>
+            <div class="flex items-center mt-0.5 text-xs text-zinc-500">
+              <span>${formatDate(pack.createdAt)}</span>
+              ${prdLinkHtml}
+            </div>
+          </div>
+          <svg
+            class="shrink-0 w-4 h-4 text-zinc-400 transition-transform duration-200"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <div
+          class="hidden border-t border-zinc-100"
+          id="pack-body-${pack.id}"
+          role="region"
+          aria-labelledby="pack-header-${pack.id}"
+        >
+          <p class="pack-loading p-4 text-sm text-zinc-400">Loading…</p>
+        </div>
+      `;
+
+      const header  = card.querySelector('button');
+      const body    = card.querySelector('[role="region"]');
+      const chevron = header.querySelector('svg');
+
+      header.addEventListener('click', () => {
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          body.classList.add('hidden');
+          chevron.classList.remove('rotate-180');
+          header.setAttribute('aria-expanded', 'false');
+        } else {
+          body.classList.remove('hidden');
+          chevron.classList.add('rotate-180');
+          header.setAttribute('aria-expanded', 'true');
+          if (!card.dataset.loaded) {
+            loadPackContent(card, body);
+          }
+        }
+      });
+
+      return card;
+    }
+
+    async function loadPackContent(card, body) {
+      try {
+        const res      = await fetch(`discovery-packs/${card.dataset.filename}`);
+        if (!res.ok) throw new Error('Failed to load');
+        const markdown = await res.text();
+        const html     = typeof marked !== 'undefined' ? marked.parse(markdown) : escapeHtml(markdown);
+
+        body.innerHTML = '';
+        const content  = document.createElement('div');
+        content.className = 'prose p-5 max-h-[65vh] overflow-y-auto';
+        content.innerHTML = html;
+        body.appendChild(content);
+        card.dataset.loaded = 'true';
+      } catch {
+        body.innerHTML = '<p class="p-4 text-sm text-red-500">Could not load discovery pack.</p>';
+      }
+    }
+
+    async function loadPacks() {
+      try {
+        const res   = await fetch('discovery-packs/manifest.json');
+        if (!res.ok) throw new Error('Manifest not found');
+        const packs  = await res.json();
+        const recent = Array.isArray(packs) ? packs.slice(0, PACKS_LIMIT) : [];
+
+        packsContainer.innerHTML = '';
+
+        if (recent.length === 0) {
+          packsContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20 text-center">
+              <div class="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+              </div>
+              <h3 class="text-sm font-semibold text-zinc-700 mb-1">No discovery packs yet</h3>
+              <p class="text-xs text-zinc-400 max-w-xs leading-relaxed">Paste a PRD URL in the sidebar and click <strong class="font-semibold text-zinc-500">Start Discovery</strong> to generate your first pack.</p>
+            </div>
+          `;
+        } else {
+          recent.forEach(pack => packsContainer.appendChild(renderPackCard(pack)));
+        }
+      } catch {
+        packsContainer.innerHTML = `
+          <div class="p-4 bg-red-50 border border-red-100 rounded-xl">
+            <p class="text-sm text-red-600">Could not load discovery packs. Make sure you're running via <code class="bg-red-100 px-1 rounded text-xs font-mono">npm run ui</code> on localhost:3000.</p>
+          </div>
+        `;
+      }
+    }
+
+    loadPacks();
+  </script>
+
+</body>
+</html>

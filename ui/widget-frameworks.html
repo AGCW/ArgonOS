@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArgonOS — Core Widget Frameworks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="auth.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: { DEFAULT: '#4f46e5', hover: '#4338ca', light: '#eef2ff' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    .prose h1 { @apply text-lg font-semibold mt-6 mb-2 text-zinc-900; }
+    .prose h2 { @apply text-base font-semibold mt-5 mb-2 text-zinc-900 border-b border-zinc-100 pb-1; }
+    .prose h3 { @apply text-sm font-semibold mt-4 mb-1 text-zinc-900; }
+    .prose p  { @apply text-sm leading-relaxed mb-3 text-zinc-700; }
+    .prose ul { @apply list-disc pl-5 text-sm mb-3 space-y-1 text-zinc-700; }
+    .prose ol { @apply list-decimal pl-5 text-sm mb-3 space-y-1 text-zinc-700; }
+    .prose li { @apply leading-relaxed; }
+    .prose a  { @apply text-accent underline underline-offset-2 hover:text-accent-hover; }
+    .prose strong { @apply font-semibold text-zinc-900; }
+    .prose em { @apply italic; }
+    .prose code { @apply bg-zinc-100 rounded px-1 py-0.5 text-xs font-mono text-zinc-800; }
+    .prose pre  { @apply bg-zinc-900 text-zinc-100 rounded-lg p-4 overflow-x-auto text-xs font-mono mb-3; }
+    .prose pre code { @apply bg-transparent p-0 text-zinc-100; }
+    .prose table { @apply w-full text-sm border-collapse mb-4; }
+    .prose th { @apply bg-zinc-100 font-semibold text-left px-3 py-2 border border-zinc-200 text-zinc-700; }
+    .prose td { @apply px-3 py-2 border border-zinc-200 text-zinc-600; }
+    .prose blockquote { @apply border-l-4 border-accent-light pl-4 italic text-zinc-500 mb-3; }
+    .prose hr { @apply border-zinc-200 my-5; }
+  </style>
+</head>
+
+<body class="bg-zinc-50 text-zinc-900 font-sans flex flex-col h-screen overflow-hidden antialiased">
+
+  <!-- ── Header ─────────────────────────────────────────────────── -->
+  <header class="shrink-0 bg-white border-b border-zinc-200 px-5 py-3 flex items-center gap-3 z-10 shadow-sm">
+    <a href="index.html" class="flex items-center justify-center w-8 h-8 rounded-lg bg-accent text-white text-xs font-bold select-none tracking-tight shrink-0 hover:bg-accent-hover transition" aria-label="Back to ArgonOS home">
+      Ar
+    </a>
+    <div class="flex items-center gap-1.5 text-sm">
+      <a href="index.html" class="font-semibold text-zinc-900 hover:text-accent transition">ArgonOS</a>
+      <span class="text-zinc-300">/</span>
+      <span class="text-zinc-500 font-normal">Core Widget Frameworks</span>
+    </div>
+    <div class="ml-auto flex items-center gap-3">
+      <span class="hidden sm:inline text-xs text-zinc-400">5 frameworks · Asio Neon</span>
+      <span class="inline-flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-100 rounded-full px-2.5 py-1 font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0"></span>
+        Design reference
+      </span>
+    </div>
+  </header>
+
+  <!-- ── Body ───────────────────────────────────────────────────── -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- ── Sidebar ──────────────────────────────────────────────── -->
+    <aside class="w-[260px] shrink-0 bg-white border-r border-zinc-200 flex flex-col overflow-y-auto">
+      <div class="p-5 border-b border-zinc-100">
+        <p class="text-xs text-zinc-500 leading-relaxed">
+          Select a widget framework to view its spec — anatomy, variants, Asio Neon components, AI selection signals, and usage rules.
+        </p>
+      </div>
+      <nav class="p-3 flex-1" aria-label="Widget frameworks">
+        <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest px-2 mb-3">Frameworks</p>
+        <ul class="space-y-0.5" id="framework-nav"></ul>
+      </nav>
+      <div class="p-4 border-t border-zinc-100">
+        <a href="widget-frameworks/README.md" id="readme-link"
+           class="flex items-center gap-2 text-xs text-zinc-500 hover:text-accent transition px-2 py-1.5 rounded-lg hover:bg-zinc-50">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+          </svg>
+          View README &amp; AI Selection Guide
+        </a>
+        <a href="index.html"
+           class="flex items-center gap-2 text-xs text-zinc-500 hover:text-accent transition px-2 py-1.5 rounded-lg hover:bg-zinc-50 mt-0.5">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          </svg>
+          Back to ArgonOS
+        </a>
+      </div>
+    </aside>
+
+    <!-- ── Main panel ────────────────────────────────────────────── -->
+    <main class="flex-1 min-w-0 overflow-hidden flex flex-col" id="main-panel">
+
+      <!-- Welcome state -->
+      <div id="welcome-state" class="flex flex-col items-center justify-center flex-1 text-center px-8 overflow-y-auto">
+        <div class="w-14 h-14 rounded-2xl bg-accent-light flex items-center justify-center mb-5 shadow-sm">
+          <svg class="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+          </svg>
+        </div>
+        <h2 class="text-base font-semibold text-zinc-900 mb-2">Core Widget Frameworks</h2>
+        <p class="text-sm text-zinc-400 max-w-sm leading-relaxed mb-6">
+          Five structural patterns for building consistent UI in ArgonOS. Select a framework from the sidebar to view its full specification.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-2xl w-full" id="quick-pick-grid"></div>
+      </div>
+
+      <!-- ── Spec / Example container (hidden until a framework is selected) ── -->
+      <div id="spec-container" style="display:none" class="flex flex-col flex-1 overflow-hidden">
+
+        <!-- Sticky top bar: icon + title + tabs + back -->
+        <div class="shrink-0 bg-white border-b border-zinc-200 px-6 py-0 flex items-center gap-3 shadow-sm z-10">
+          <!-- Icon + title -->
+          <div class="flex items-center gap-3 py-3">
+            <div id="spec-icon" class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"></div>
+            <div>
+              <h1 id="spec-title" class="text-sm font-semibold text-zinc-900 leading-none"></h1>
+              <p id="spec-subtitle" class="text-xs text-zinc-400 mt-0.5"></p>
+            </div>
+          </div>
+
+          <!-- Tab bar (only when exampleFile exists) -->
+          <div id="tab-bar" class="hidden ml-6 flex items-center self-stretch">
+            <button id="tab-spec-btn" type="button"
+              class="tab-toggle-btn h-full px-4 text-xs font-semibold border-b-2 border-accent text-accent transition"
+              data-tab="spec">
+              Spec
+            </button>
+            <button id="tab-example-btn" type="button"
+              class="tab-toggle-btn h-full px-4 text-xs font-semibold border-b-2 border-transparent text-zinc-500 hover:text-zinc-700 transition"
+              data-tab="example">
+              Example
+            </button>
+          </div>
+
+          <!-- Right side: badge + back -->
+          <div class="ml-auto flex items-center gap-3 py-3">
+            <span id="spec-status-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full"></span>
+            <button id="back-btn" type="button"
+              class="text-xs text-zinc-500 hover:text-accent transition flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              All frameworks
+            </button>
+          </div>
+        </div>
+
+        <!-- Spec panel (markdown) -->
+        <div id="spec-panel" class="flex-1 overflow-y-auto bg-zinc-50">
+          <div class="max-w-3xl mx-auto px-8 py-8">
+            <div id="spec-content" class="prose"></div>
+          </div>
+        </div>
+
+        <!-- Example panel (iframe) — hidden by default -->
+        <div id="example-panel" class="hidden flex-1 overflow-hidden bg-zinc-100">
+          <iframe id="example-frame" src="" class="w-full h-full border-0 bg-white"></iframe>
+        </div>
+
+      </div><!-- /spec-container -->
+
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+    // ── Framework definitions ────────────────────────────────────────
+    const FRAMEWORKS = [
+      {
+        id:          'datagrid',
+        label:       'Datagrid',
+        file:        'widget-frameworks/datagrid.md',
+        exampleFile: null,
+        subtitle:    'Browse, filter, and act on structured records',
+        signal:      '"list of records", "manage items", "sort & filter"',
+        color:       'bg-blue-600',
+        lightBg:     'bg-blue-50',
+        lightText:   'text-blue-700',
+        borderCol:   'border-blue-200',
+        badgeCls:    'bg-blue-100 text-blue-700',
+        icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375z" />
+        </svg>`,
+      },
+      {
+        id:          'timeline',
+        label:       'Timeline',
+        file:        'widget-frameworks/timeline.md',
+        exampleFile: 'examples/timeline.html',
+        subtitle:    'Chronological events, activity, and audit trails',
+        signal:      '"activity log", "audit trail", "history"',
+        color:       'bg-violet-600',
+        lightBg:     'bg-violet-50',
+        lightText:   'text-violet-700',
+        borderCol:   'border-violet-200',
+        badgeCls:    'bg-violet-100 text-violet-700',
+        icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>`,
+      },
+      {
+        id:          'summary',
+        label:       'Summary',
+        file:        'widget-frameworks/summary.md',
+        exampleFile: 'examples/summary.html',
+        subtitle:    'KPIs, metrics, and at-a-glance status cards',
+        signal:      '"dashboard card", "KPI", "health indicator"',
+        color:       'bg-emerald-600',
+        lightBg:     'bg-emerald-50',
+        lightText:   'text-emerald-700',
+        borderCol:   'border-emerald-200',
+        badgeCls:    'bg-emerald-100 text-emerald-700',
+        icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-9v9m3-13.5V21M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+        </svg>`,
+      },
+      {
+        id:          'form',
+        label:       'Form',
+        file:        'widget-frameworks/form.md',
+        exampleFile: null,
+        subtitle:    'Data entry, configuration, and settings',
+        signal:      '"create new", "edit", "configure", "wizard"',
+        color:       'bg-amber-500',
+        lightBg:     'bg-amber-50',
+        lightText:   'text-amber-700',
+        borderCol:   'border-amber-200',
+        badgeCls:    'bg-amber-100 text-amber-700',
+        icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+        </svg>`,
+      },
+      {
+        id:          'insight',
+        label:       'Insight',
+        file:        'widget-frameworks/insight.md',
+        exampleFile: null,
+        subtitle:    'Analytics, trends, and data visualization',
+        signal:      '"chart", "trend", "analytics", "performance"',
+        color:       'bg-rose-600',
+        lightBg:     'bg-rose-50',
+        lightText:   'text-rose-700',
+        borderCol:   'border-rose-200',
+        badgeCls:    'bg-rose-100 text-rose-700',
+        icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+        </svg>`,
+      },
+    ];
+
+    // ── DOM refs ─────────────────────────────────────────────────────
+    const nav            = document.getElementById('framework-nav');
+    const quickPickGrid  = document.getElementById('quick-pick-grid');
+    const welcomeState   = document.getElementById('welcome-state');
+    const specContainer  = document.getElementById('spec-container');
+    const specTitle      = document.getElementById('spec-title');
+    const specSubtitle   = document.getElementById('spec-subtitle');
+    const specIcon       = document.getElementById('spec-icon');
+    const specBadge      = document.getElementById('spec-status-badge');
+    const specContent    = document.getElementById('spec-content');
+    const specPanel      = document.getElementById('spec-panel');
+    const examplePanel   = document.getElementById('example-panel');
+    const exampleFrame   = document.getElementById('example-frame');
+    const tabBar         = document.getElementById('tab-bar');
+    const tabSpecBtn     = document.getElementById('tab-spec-btn');
+    const tabExampleBtn  = document.getElementById('tab-example-btn');
+    const backBtn        = document.getElementById('back-btn');
+    const readmeLink     = document.getElementById('readme-link');
+
+    let activeId  = null;
+    let activeTab = 'spec'; // 'spec' | 'example'
+    let currentFw = null;
+
+    // ── Build sidebar nav ────────────────────────────────────────────
+    FRAMEWORKS.forEach(fw => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <button type="button" data-id="${fw.id}"
+          class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition group"
+          aria-current="false">
+          <span class="shrink-0 w-6 h-6 rounded-md ${fw.color} text-white flex items-center justify-center">
+            ${fw.icon}
+          </span>
+          <span class="font-medium">${fw.label}</span>
+          ${fw.exampleFile ? `<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide text-emerald-600 bg-emerald-50 rounded-full px-1.5 py-0.5 leading-none">Example</span>` : `<svg class="w-3.5 h-3.5 ml-auto text-zinc-300 group-hover:text-zinc-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>`}
+        </button>
+      `;
+      li.querySelector('button').addEventListener('click', () => loadFramework(fw));
+      nav.appendChild(li);
+    });
+
+    // ── Build quick-pick cards ───────────────────────────────────────
+    FRAMEWORKS.forEach(fw => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = `text-left p-4 bg-white border ${fw.borderCol} rounded-xl shadow-sm hover:shadow transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-accent`;
+      card.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-7 h-7 rounded-lg ${fw.color} text-white flex items-center justify-center shrink-0">${fw.icon}</span>
+          <span class="text-sm font-semibold text-zinc-900">${fw.label}</span>
+          ${fw.exampleFile ? `<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide text-emerald-600 bg-emerald-50 rounded-full px-1.5 py-0.5 leading-none">Example</span>` : ''}
+        </div>
+        <p class="text-xs text-zinc-500 leading-relaxed mb-2">${fw.subtitle}</p>
+        <p class="text-[10px] ${fw.lightText} ${fw.lightBg} rounded-md px-2 py-1 font-medium leading-relaxed">${fw.signal}</p>
+      `;
+      card.addEventListener('click', () => loadFramework(fw));
+      quickPickGrid.appendChild(card);
+    });
+
+    // ── Tab click handlers ───────────────────────────────────────────
+    tabSpecBtn.addEventListener('click', () => switchTab('spec'));
+    tabExampleBtn.addEventListener('click', () => switchTab('example'));
+
+    function switchTab(tab) {
+      activeTab = tab;
+      const specActive = tab === 'spec';
+
+      // Tab button active styles
+      tabSpecBtn.classList.toggle('border-accent',   specActive);
+      tabSpecBtn.classList.toggle('text-accent',     specActive);
+      tabSpecBtn.classList.toggle('border-transparent', !specActive);
+      tabSpecBtn.classList.toggle('text-zinc-500',   !specActive);
+      tabSpecBtn.classList.toggle('hover:text-zinc-700', !specActive);
+
+      tabExampleBtn.classList.toggle('border-accent',   !specActive);
+      tabExampleBtn.classList.toggle('text-accent',     !specActive);
+      tabExampleBtn.classList.toggle('border-transparent', specActive);
+      tabExampleBtn.classList.toggle('text-zinc-500',   specActive);
+      tabExampleBtn.classList.toggle('hover:text-zinc-700', specActive);
+
+      // Panel visibility
+      specPanel.classList.toggle('hidden', !specActive);
+      examplePanel.classList.toggle('hidden', specActive);
+
+      // Load iframe src lazily on first switch to example
+      if (!specActive && currentFw && currentFw.exampleFile) {
+        if (!exampleFrame.src || !exampleFrame.src.includes(currentFw.exampleFile)) {
+          exampleFrame.src = currentFw.exampleFile;
+        }
+      }
+    }
+
+    // ── README link ──────────────────────────────────────────────────
+    readmeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentFw = null;
+      setActiveNav(null);
+      loadMarkdownFile('widget-frameworks/README.md', {
+        label:    'README',
+        subtitle: 'Master index · AI selection guide',
+        color:    'bg-zinc-700',
+        badgeCls: 'bg-zinc-100 text-zinc-600',
+        badgeText:'Reference',
+        hasExample: false,
+        icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+        </svg>`,
+      });
+    });
+
+    // ── Back button ──────────────────────────────────────────────────
+    backBtn.addEventListener('click', showWelcome);
+
+    // ── Load framework ───────────────────────────────────────────────
+    function loadFramework(fw) {
+      currentFw = fw;
+      setActiveNav(fw.id);
+      loadMarkdownFile(fw.file, {
+        label:      fw.label,
+        subtitle:   fw.subtitle,
+        color:      fw.color,
+        badgeCls:   fw.badgeCls,
+        badgeText:  'Stable',
+        hasExample: !!fw.exampleFile,
+        icon:       fw.icon,
+      });
+    }
+
+    async function loadMarkdownFile(path, meta) {
+      showSpec();
+
+      // Reset to spec tab whenever a new framework is loaded
+      activeTab = 'spec';
+      specPanel.classList.remove('hidden');
+      examplePanel.classList.add('hidden');
+      exampleFrame.src = '';
+
+      // Update header
+      specTitle.textContent    = meta.label;
+      specSubtitle.textContent = meta.subtitle;
+      specIcon.className       = `w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0 ${meta.color}`;
+      specIcon.innerHTML       = meta.icon;
+      specBadge.className      = `text-[10px] font-semibold px-2 py-0.5 rounded-full ${meta.badgeCls}`;
+      specBadge.textContent    = meta.badgeText;
+
+      // Show/hide tab bar
+      if (meta.hasExample) {
+        tabBar.classList.remove('hidden');
+        tabBar.classList.add('flex');
+        // Reset tab button states to spec-active
+        tabSpecBtn.classList.add('border-accent', 'text-accent');
+        tabSpecBtn.classList.remove('border-transparent', 'text-zinc-500');
+        tabExampleBtn.classList.remove('border-accent', 'text-accent');
+        tabExampleBtn.classList.add('border-transparent', 'text-zinc-500');
+      } else {
+        tabBar.classList.add('hidden');
+        tabBar.classList.remove('flex');
+      }
+
+      specContent.innerHTML = '<p class="text-sm text-zinc-400">Loading…</p>';
+      specPanel.scrollTop = 0;
+
+      try {
+        const res  = await fetch(path);
+        if (!res.ok) throw new Error('Not found');
+        const md   = await res.text();
+        const html = typeof marked !== 'undefined' ? marked.parse(md) : escapeHtml(md);
+        specContent.innerHTML = html;
+      } catch {
+        specContent.innerHTML = `
+          <div class="p-4 bg-red-50 border border-red-100 rounded-xl">
+            <p class="text-sm text-red-600">Could not load spec. Make sure you're running via <code class="bg-red-100 px-1 rounded text-xs font-mono">npm run ui</code> on localhost:3000.</p>
+          </div>
+        `;
+      }
+    }
+
+    // ── UI state helpers ─────────────────────────────────────────────
+    function showSpec() {
+      welcomeState.style.display = 'none';
+      specContainer.style.display = 'flex';
+    }
+
+    function showWelcome() {
+      specContainer.style.display = 'none';
+      welcomeState.style.display = '';
+      activeId  = null;
+      currentFw = null;
+      setActiveNav(null);
+    }
+
+    function setActiveNav(id) {
+      activeId = id;
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        const isActive = btn.dataset.id === id;
+        btn.setAttribute('aria-current', isActive ? 'page' : 'false');
+        btn.classList.toggle('bg-accent-light',       isActive);
+        btn.classList.toggle('text-accent',            isActive);
+        btn.classList.toggle('font-semibold',          isActive);
+        btn.classList.toggle('text-zinc-600',          !isActive);
+        btn.classList.toggle('hover:bg-zinc-50',       !isActive);
+        btn.classList.toggle('hover:text-zinc-900',    !isActive);
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ── Hash navigation ──────────────────────────────────────────────
+    function loadFromHash() {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+      const fw = FRAMEWORKS.find(f => f.id === hash);
+      if (fw) { loadFramework(fw); return; }
+      if (hash === 'readme') { readmeLink.click(); }
+    }
+
+    window.addEventListener('hashchange', loadFromHash);
+    loadFromHash();
+  </script>
+
+</body>
+</html>
