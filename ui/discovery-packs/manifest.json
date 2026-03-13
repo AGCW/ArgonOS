@@ -1,5 +1,12 @@
 [
   {
+    "id": "2026-03-13-consolidated-invoice-prototype",
+    "title": "PRD: Consolidated Invoice Prototype",
+    "prdUrl": "https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/654803128/PRD+Consolidated+Invoice+Prototype",
+    "createdAt": "2026-03-13T00:00:00Z",
+    "filename": "2026-03-13-consolidated-invoice-prototype.md"
+  },
+  {
     "id": "2026-03-13-recent-ticket-drawer",
     "title": "PRD: Recent Ticket Drawer",
     "prdUrl": "https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/1009123550/PRD+Recent+Ticket+Drawer",
