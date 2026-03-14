@@ -75,7 +75,7 @@
     <aside class="w-[260px] shrink-0 bg-white border-r border-zinc-200 flex flex-col overflow-y-auto">
       <div class="p-5 border-b border-zinc-100">
         <p class="text-xs text-zinc-500 leading-relaxed">
-          Select a widget framework to view its spec — anatomy, variants, Asio Neon components, AI selection signals, and usage rules.
+          Select a framework to view its spec — anatomy, variants, widget sizing, Asio Neon components, AI selection signals, and usage rules.
         </p>
       </div>
       <nav class="p-3 flex-1" aria-label="Widget frameworks">
@@ -425,18 +425,36 @@
       specContent.innerHTML = '<p class="text-sm text-zinc-400">Loading…</p>';
       specPanel.scrollTop = 0;
 
-      try {
-        const res  = await fetch(path);
-        if (!res.ok) throw new Error('Not found');
-        const md   = await res.text();
+      // Check inline embedded content first — works without a local server
+      const PATH_TO_ID = {
+        'widget-frameworks/datagrid.md': 'fw-datagrid',
+        'widget-frameworks/timeline.md': 'fw-timeline',
+        'widget-frameworks/summary.md':  'fw-summary',
+        'widget-frameworks/form.md':     'fw-form',
+        'widget-frameworks/insight.md':  'fw-insight',
+        'widget-frameworks/README.md':   'fw-readme',
+      };
+      const inlineId = PATH_TO_ID[path];
+      const inlineEl = inlineId ? document.getElementById(inlineId) : null;
+
+      if (inlineEl) {
+        const md   = inlineEl.textContent.trim();
         const html = typeof marked !== 'undefined' ? marked.parse(md) : escapeHtml(md);
         specContent.innerHTML = html;
-      } catch {
-        specContent.innerHTML = `
-          <div class="p-4 bg-red-50 border border-red-100 rounded-xl">
-            <p class="text-sm text-red-600">Could not load spec. Make sure you're running via <code class="bg-red-100 px-1 rounded text-xs font-mono">npm run ui</code> on localhost:3000.</p>
-          </div>
-        `;
+      } else {
+        try {
+          const res  = await fetch(path);
+          if (!res.ok) throw new Error('Not found');
+          const md   = await res.text();
+          const html = typeof marked !== 'undefined' ? marked.parse(md) : escapeHtml(md);
+          specContent.innerHTML = html;
+        } catch {
+          specContent.innerHTML = `
+            <div class="p-4 bg-red-50 border border-red-100 rounded-xl">
+              <p class="text-sm text-red-600">Spec content not found. <a class="underline" href="${path}">${path}</a></p>
+            </div>
+          `;
+        }
       }
     }
 
@@ -485,6 +503,978 @@
 
     window.addEventListener('hashchange', loadFromHash);
     loadFromHash();
+  </script>
+
+
+  <!-- ── Inline framework specs (enables file:// access without a server) ── -->
+
+  <script type="text/plain" id="fw-readme">
+# ArgonOS — Core Widget Framework
+
+**Version:** 1.0
+**Design System:** Asio Neon (ConnectWise)
+**Audience:** UX Designers · AI-assisted design sessions
+
+---
+
+## What Is a Widget Framework?
+
+A Widget Framework is a **structural pattern** that defines how a specific type of UI surface is organized — its anatomy (zones), its valid variants, the Asio Neon components it uses, and when to apply it. It is not a finished design; it is the skeleton that a finished design is built on.
+
+Five core frameworks cover the primary UI surfaces in ArgonOS:
+
+| Framework | Purpose | Key Signal |
+|-----------|---------|------------|
+| [Datagrid](./datagrid.md) | Browse, filter, and act on rows of structured data | "list of records", "table of results", "manage items" |
+| [Timeline](./timeline.md) | Display chronological events, activity, or history | "activity log", "audit trail", "history", "recent events" |
+| [Summary](./summary.md) | Show KPIs, metrics, and at-a-glance status | "dashboard card", "metric", "KPI", "health indicator" |
+| [Form](./form.md) | Structured data entry, configuration, or settings | "create new", "edit", "configure", "settings panel" |
+| [Insight](./insight.md) | Analyze trends, visualize data, and report | "chart", "trend", "analytics", "performance over time" |
+
+---
+
+## AI Selection Guide
+
+Use this decision tree when a designer describes a feature to determine the correct Widget Framework before producing any design output.
+
+```
+What is the user primarily trying to do?
+│
+├─ Browse, search, sort, or take bulk actions on a list of records
+│   └─ → DATAGRID
+│
+├─ See what happened, when, and by whom (events over time)
+│   └─ → TIMELINE
+│
+├─ Get a quick read on status, health, or numbers at a glance
+│   └─ → SUMMARY
+│
+├─ Fill in, configure, or submit structured information
+│   └─ → FORM
+│
+└─ Understand a trend, compare performance, or view analytics
+    └─ → INSIGHT
+```
+
+### Disambiguation Rules
+
+- If a surface shows **both a metric and a list of its contributing records**, use **Summary + Datagrid** (two separate widgets).
+- If a form contains a **step-by-step flow** (3+ steps), the Form framework applies with the Stepper variant.
+- If a timeline shows **progress toward a goal** (not past events), use the **Form > Stepper** variant instead.
+- If an insight view also includes a **drill-down table**, the Insight framework owns the surface; the embedded table is part of its anatomy, not a separate Datagrid widget.
+- When in doubt, ask: is the user **doing** something (Form), **seeing** something summarized (Summary/Insight), or **browsing** something (Datagrid/Timeline)?
+
+---
+
+## Framework Status
+
+| Framework | Status | Asio Neon Components |
+|-----------|--------|----------------------|
+| Datagrid | Stable | DataGrid ✔, Search, Pagination ✔, OverflowMenu, Button ✔, Chip ✔ |
+| Timeline | Stable | List 🧪, Status, Badge ✔, Chip ✔, Stepper 🧪 |
+| Summary | Stable | Card ✔, Badge ✔, Status, CircularProgress ✔, LinearProgress ✔, Chip ✔ |
+| Form | Stable | TextInput ✔, Dropdown ✔, Select ✔, Checkbox ✔, Radio ✔, Switch ✔, DatePicker ✔, Button ✔, Alert ✔, Stepper 🧪 |
+| Insight | Stable | Card ✔, ToggleButton ✔, Chip ✔, DataGrid 🧪, Status, Badge ✔ |
+
+> ✔ = Asio Neon stable component · 🧪 = Asio Neon experimental component
+
+---
+
+## Widget Sizing Grid
+
+**Source:** [UXTT-Widgets](https://www.figma.com/design/6gHlNEUBGcVMC7NJSlffXG/UXTT-Widgets?node-id=0-1) (authoritative sizing reference)
+
+All widgets must conform to the 7-tier sizing grid. Sizes are defined in columns and rows on an 8-column, 16px-gap grid. At `breakpoints.xl` (1552px content area), each column is 180px wide.
+
+| Size | Columns | Rows | Width (xl) | Height (xl) | Character |
+|------|---------|------|------------|-------------|-----------|
+| XXS | 2 | 1 | 376px | 180px | Minimal stat/indicator |
+| XS | 4 | 1 | 768px | 180px | Compact summary strip |
+| S | 8 | 1 | 1552px | 180px | Full-width banner |
+| M | 2 | 2 | 376px | 376px | Small card |
+| L | 4 | 2 | 768px | 376px | Medium card |
+| XL | 4 | 4 | 768px | 768px | Large data card |
+| XXL | 8 | 5 | 1552px | 964px | Full-width deep widget |
+
+> Full responsive breakpoint pixel tables (xl through xs) are in `/design-system/neon-tokens.md`.
+
+---
+
+## Framework → Size Pairing
+
+Every widget must be assigned a size from its framework's valid set. Sizes outside the valid set must not be used. The content and use case determine the appropriate size within the valid set.
+
+| Framework | Valid Sizes | Default | Size Selection Principle |
+|-----------|------------|---------|--------------------------|
+| Summary | XXS, XS, M | XS | Number of KPIs and depth of supporting data determine size. Single stat → XXS. Row of metrics → XS. KPI with trend/breakdown → M. |
+| Timeline | L, XL | L | Number of events and primacy of the timeline determine size. Secondary/recent feed (4–6 events) → L. Primary audit trail (10+ events) → XL. |
+| Datagrid | XL, XXL | XXL | Whether data browsing is the primary task determines size. Secondary/embedded panel → XL. Primary management surface → XXL. |
+| Form | L, XL | L | Field count and structural complexity determine size. Short form (2–4 fields) → L. Long or multi-section form (5+ fields) → XL. |
+| Insight | L, XL, XXL | XL | Analytical depth and number of chart zones determine size. Single chart → L. Chart + table or multi-metric → XL. Full dashboard → XXL. |
+
+---
+
+## Versioning
+
+This framework library is versioned alongside ArgonOS. Changes to a framework spec require review before updating, as specs are used as AI context. Do not introduce component substitutions without updating both the spec and the Asio Neon component reference.
+  </script>
+
+  <script type="text/plain" id="fw-summary">
+# Summary Widget Framework
+
+**Category:** Core Widget Framework
+**Design System:** Asio Neon
+**Last Updated:** 2026-03-13
+
+---
+
+## Purpose
+
+The Summary framework structures UI surfaces that present **key metrics, KPIs, and at-a-glance status information** — giving users an immediate read on the health, volume, or state of something without requiring them to navigate elsewhere or interpret raw data.
+
+Summary widgets are the answer to: "What is the current state of this thing, right now?" They surface the signal, not the data behind it.
+
+---
+
+## When to Use
+
+| Use This Framework When... | Do NOT Use When... |
+|----------------------------|--------------------|
+| You have 1–8 scalar values that summarize a system or process | You need to show trends over time (use Insight) |
+| The primary value is a number, percentage, or status label | You have rows of records to browse (use Datagrid) |
+| The user needs a quick situational read before taking action | The user needs to enter or edit data (use Form) |
+| The surface acts as a navigation entry point to deeper detail | The data requires explanatory visualization (use Insight) |
+| Multiple metrics need to be compared side-by-side | |
+
+---
+
+## Widget Sizing
+
+**Valid sizes:** XXS, XS, M
+**Default:** XS
+**Not valid for this framework:** S, L, XL, XXL
+
+The appropriate size is determined by the number of KPIs being displayed and the depth of supporting data. Use the smallest size that accommodates the content without truncation.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| XXS | 376 × 180px | Single stat: one primary number, one label, and an optional status icon or trend arrow. Use when the widget is one of many in a dense dashboard row and space is at a premium. |
+| XS | 768 × 180px | 2–4 KPI metrics arranged horizontally in a compact strip. Use for a dashboard header row that gives a quick multi-metric read before users drill deeper. |
+| M | 376 × 376px | Single KPI card with secondary supporting data — trend sparkline, period-over-period delta, or a small breakdown list. Use when depth matters and the metric needs context to be actionable. |
+
+**Content-to-size rules:**
+- If you are showing only 1 value → XXS or M (M if supporting data is present)
+- If you are showing 2–4 values at equal weight → XS
+- If you are showing 5–8 values → use multiple XS or M widgets, not one enlarged widget
+- Do not stretch a Summary widget to L or XL to fill space — if that much room is needed, reconsider whether Summary is the right framework
+
+---
+
+## Anatomy
+
+The Summary framework uses a Card-based layout. A single Summary widget instance is one card. Multiple instances are arranged in a responsive grid (Summary Grid). Each card has 3 internal zones.
+
+```
+┌───────────────────────────────────────┐
+│  Zone 1: Card Header                  │
+│  [Metric Label]         [Status Chip] │
+├───────────────────────────────────────┤
+│  Zone 2: Primary Value                │
+│                                       │
+│       2,847                           │
+│  [Trend indicator]  [Delta label]     │
+│                                       │
+├───────────────────────────────────────┤
+│  Zone 3: Supporting Context           │
+│  [Progress bar or ring]  [Drill link] │
+└───────────────────────────────────────┘
+```
+
+**Summary Grid** (multi-card layout):
+```
+┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐
+│  Card 1    │  │  Card 2    │  │  Card 3    │  │  Card 4    │
+│            │  │            │  │            │  │            │
+└────────────┘  └────────────┘  └────────────┘  └────────────┘
+```
+
+### Zone Definitions
+
+**Zone 1 — Card Header**
+The label that names what is being measured. An optional `Chip` or `Status` component on the right end indicates the health state of the metric.
+
+**Zone 2 — Primary Value**
+The featured metric. Rendered at a large type size. Directly below, an optional **trend indicator** (up/down arrow icon + percentage delta) communicates change versus the previous period.
+
+**Zone 3 — Supporting Context**
+Optional but strongly recommended. Contains a `LinearProgress` or `CircularProgress` bar, a secondary label, or a drill-down `Link`.
+
+---
+
+## Variants
+
+### 1. Single Metric Card
+A standalone card representing exactly one KPI.
+
+- **Use when:** One metric needs dedicated real estate on a dashboard or panel.
+- **Zones:** 1 (label only), 2 (value + trend), 3 (optional).
+
+### 2. Metric Strip
+A horizontal row of 2–4 single metric cards sharing the same visual weight.
+
+- **Use when:** You need to compare 2–4 top-level KPIs simultaneously.
+- **Max cards:** 4.
+
+### 3. Detail Grid
+A 2-column or 3-column grid of cards, each showing slightly more context.
+
+- **Use when:** The dashboard surface has vertical space and each metric needs supporting context.
+- **Zones per card:** All 3 zones required.
+
+### 4. Status Roll-Up
+A compact card that shows the health of multiple sub-components in a single card.
+
+- **Use when:** You need to communicate the health of a composite system.
+
+### 5. Comparative Card
+A card that shows the same metric for two different entities side-by-side.
+
+- **Use when:** The primary user task is comparison between two related values.
+
+---
+
+## Asio Neon Components
+
+| Zone | Component | Story Reference |
+|------|-----------|-----------------|
+| Card container | `Card` | `asio-neon-components-card-✔` |
+| Zone 1 | `Chip` (health state tag) | `asio-neon-components-chip-✔` |
+| Zone 1 | `Status` (health state indicator) | `asio-neon-components-status` |
+| Zone 1 | `Badge` (count label or category) | `asio-neon-components-badge-✔` |
+| Zone 3 | `LinearProgress` (utilization bar) | `asio-neon-form-components-linear-progress-✔` |
+| Zone 3 | `CircularProgress` (completion ring) | `asio-neon-components-circularprogress-✔` |
+| Zone 3 | `Link` (drill-down link) | `asio-neon-components-link-✔` |
+
+---
+
+## AI Selection Signals
+
+Apply the Summary framework when the designer's description includes:
+
+- "dashboard card" or "KPI card"
+- "at-a-glance" or "quick view"
+- "metric" or "KPI" or "indicator"
+- "health" or "health score"
+- "X out of Y" (utilization or capacity)
+- "summary section" or "overview panel"
+- "[number] open / closed / pending"
+
+---
+
+## Do's and Don'ts
+
+### Do
+- Limit Zone 2 to one primary value per card.
+- Use `Status` or `Chip` in Zone 1 to communicate health immediately.
+- Use trend indicators with signed deltas ("+12%", "−4%") so change direction is explicit.
+- Show a skeleton state while metric data loads.
+
+### Don't
+- Don't put more than 4 cards in a Metric Strip row.
+- Don't use progress bars for metrics that are not inherently bounded (min/max).
+- Don't use red/amber/green as the only communication of health — always pair color with a text label.
+- Don't nest a full chart inside a Summary card — that is an Insight widget.
+
+---
+
+## States
+
+| State | Trigger | Rendering |
+|-------|---------|-----------|
+| Loading | Metric data being fetched | Card skeleton |
+| No data | Metric has no value yet | Zone 2 shows "—" or "N/A" |
+| Error | Metric fetch failed | Error icon + "Could not load" text |
+| Alert threshold | Value crosses warning/critical threshold | Zone 1 Status chip changes state |
+| Positive trend | Delta is positive | Up arrow + success color token |
+| Negative trend | Delta is negative | Down arrow + error color token |
+  </script>
+
+  <script type="text/plain" id="fw-datagrid">
+# Datagrid Widget Framework
+
+**Category:** Core Widget Framework
+**Design System:** Asio Neon
+**Last Updated:** 2026-03-13
+
+---
+
+## Purpose
+
+The Datagrid framework structures UI surfaces where users need to **browse, search, filter, sort, and act on a set of structured records** presented in rows and columns. It is the primary pattern for any "list management" surface in ArgonOS.
+
+---
+
+## When to Use
+
+| Use This Framework When... | Do NOT Use When... |
+|----------------------------|--------------------|
+| The data set has 2+ columns of comparable attributes | You're showing a chronological feed (use Timeline) |
+| The user needs to search or filter the data | You have only 1–3 scalar metrics (use Summary) |
+| The user needs to take actions on individual rows | You're collecting user input (use Form) |
+| Bulk selection or bulk actions are required | The data is better read as a trend or chart (use Insight) |
+| The user needs to export or sort the data set | |
+
+---
+
+## Widget Sizing
+
+**Valid sizes:** XL, XXL
+**Default:** XXL
+**Not valid for this framework:** XXS, XS, S, M, L
+
+Datagrid widgets are data-dense surfaces that require both horizontal space (for columns) and vertical space (for rows). Sizes below XL do not provide enough room for a usable grid with toolbar, data rows, and pagination.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| XL | 768 × 768px | Compact list view with a limited number of visible rows (typically 4–6) and a reduced column set. Use when the Datagrid is **embedded in a broader layout** alongside other widgets, or when it serves as a secondary panel rather than the primary task surface. |
+| XXL | 1552 × 964px | Primary management surface with a full column set, complete toolbar (search, filters, bulk actions), and full pagination controls. Use when **data browsing is the primary job** — the user came to this view specifically to find, review, or act on records. |
+
+**Content-to-size rules:**
+- If the Datagrid is one of several widgets on a dashboard and shows a supporting list → XL
+- If the Datagrid IS the page — the user's entire task is working with this list → XXL
+- If the data requires more than 5 visible columns at once → XXL
+- Do not use XL for bulk-action workflows — the reduced height limits selection visibility; use XXL
+
+---
+
+## Anatomy
+
+The Datagrid framework is composed of 4 named zones. Every instance must include zones 1–3. Zone 4 is required when the data set can exceed the visible viewport.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Zone 1: Widget Header                                   │
+│  [Title]  [Description]          [Primary Action Btn]   │
+├─────────────────────────────────────────────────────────┤
+│  Zone 2: Toolbar                                         │
+│  [Search]  [Filter Chips]        [Column/View Controls] │
+├─────────────────────────────────────────────────────────┤
+│  Zone 3: Data Surface                                    │
+│  ┌────────┬──────────┬──────────┬──────────┬──────────┐ │
+│  │ Col A  │  Col B   │  Col C   │  Col D   │ Actions  │ │
+│  ├────────┼──────────┼──────────┼──────────┼──────────┤ │
+│  │ Row 1  │          │          │          │    ⋯     │ │
+│  │ Row 2  │          │          │          │    ⋯     │ │
+│  └────────┴──────────┴──────────┴──────────┴──────────┘ │
+├─────────────────────────────────────────────────────────┤
+│  Zone 4: Footer                                          │
+│  [Rows per page]            [Page X of Y]  [‹ 1 2 3 ›] │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Zone Definitions
+
+**Zone 1 — Widget Header:** Title, optional description, and primary action button (e.g., "Add New"). No filtering here.
+
+**Zone 2 — Toolbar:** Search (left-aligned), active filter chips, view/column controls (right-aligned).
+
+**Zone 3 — Data Surface:** The DataGrid itself. Rightmost column reserved for OverflowMenu row actions.
+
+**Zone 4 — Footer:** Pagination controls. Required when data supports pagination.
+
+---
+
+## Variants
+
+### 1. Read-Only List
+No bulk selection, no inline editing. Row actions via OverflowMenu only.
+
+### 2. Selectable List
+Rows can be individually or bulk-selected. A contextual action bar appears on selection.
+
+### 3. Filterable List
+Extends any base variant with active filter chip support in Zone 2.
+
+### 4. Inline Actions List
+Each row exposes 1–2 icon actions directly. No more than 2 inline actions — all others go in the OverflowMenu.
+
+### 5. Expandable Row List
+Rows can be expanded to reveal additional detail without navigating away.
+
+---
+
+## Asio Neon Components
+
+| Zone | Component | Story Reference |
+|------|-----------|-----------------|
+| Zone 1 | `Button` (primary) | `asio-neon-components-button-✔` |
+| Zone 2 | `Search` | `asio-neon-components-search` |
+| Zone 2 | `Chip` (filter chips) | `asio-neon-components-chip-✔` |
+| Zone 2 | `Dropdown` (filter trigger) | `asio-neon-form-components-dropdown-✔` |
+| Zone 3 | `DataGrid` | `asio-neon-components-datagrid-🧪` |
+| Zone 3 | `OverflowMenu` (row actions) | `asio-neon-components-overflow-menu` |
+| Zone 3 | `Status` (status column values) | `asio-neon-components-status` |
+| Zone 3 | `Badge` (count/label column values) | `asio-neon-components-badge-✔` |
+| Zone 4 | `Pagination` | `asio-neon-components-pagination-✔` |
+
+---
+
+## AI Selection Signals
+
+- "list of [records/items/entities]"
+- "table of results"
+- "manage [items]" or "view all [items]"
+- "search and filter"
+- "sort by column"
+- "bulk [action]" (delete, assign, export, archive)
+- "pagination" or "show X per page"
+
+---
+
+## Do's and Don'ts
+
+### Do
+- Always include Zone 2 with at least a Search field when the data set can exceed 10 rows.
+- Use `Status` component for any column that represents a state or condition.
+- Use `OverflowMenu` for all row-level secondary actions.
+- Show a Skeleton state while data is loading — never show an empty grid.
+
+### Don't
+- Don't use the Datagrid for fewer than 3 rows of static content — use a simple List component instead.
+- Don't expose more than 2 inline actions per row.
+- Don't use DataGrid for 1-column lists — use the `List` component instead.
+
+---
+
+## States
+
+| State | Trigger | Rendering |
+|-------|---------|-----------|
+| Loading | Data fetch in progress | `DataGrid > Skeleton` variant |
+| Empty (no data) | Dataset has 0 records | `DataGrid > No Data` variant + explanatory message |
+| Empty (filtered) | Active filters return 0 results | `DataGrid > Empty Search` + "Clear filters" action |
+| Error | Data fetch failed | Alert component (error variant) above Zone 3 |
+| Row selected | User selects 1+ rows | Selection count badge + contextual action bar |
+| Row expanded | User expands a row | Expanded content zone below parent row |
+  </script>
+
+  <script type="text/plain" id="fw-timeline">
+# Timeline Widget Framework
+
+**Category:** Core Widget Framework
+**Design System:** Asio Neon
+**Last Updated:** 2026-03-13
+
+---
+
+## Purpose
+
+The Timeline framework structures UI surfaces where users need to **read a chronological sequence of events, activities, or changes** associated with a record, user, or system. It is the primary pattern for history, audit trails, activity feeds, and event logs in ArgonOS.
+
+The defining characteristic of the Timeline is **time as the primary axis** — every item is anchored to a timestamp, and reading order is chronological (newest first by default).
+
+---
+
+## When to Use
+
+| Use This Framework When... | Do NOT Use When... |
+|----------------------------|--------------------|
+| Events are timestamped and ordered by time | You're tracking progress toward a goal (use Form > Stepper) |
+| The user needs to understand what happened and when | You have a set of records to manage with actions (use Datagrid) |
+| The sequence includes actor attribution ("who did what") | The sequence is a list of steps to follow (use Form > Stepper) |
+| You need to display system or human-generated activity | The items are unordered or alphabetical (use Datagrid or List) |
+| An audit or compliance record is required | |
+
+---
+
+## Widget Sizing
+
+**Valid sizes:** L, XL
+**Default:** L
+**Not valid for this framework:** XXS, XS, S, M, XXL
+
+Timeline widgets need vertical space to display a readable sequence of events. Sizes below L are too short to render a meaningful event list. XXL is not valid because the Timeline framework does not expand into full-width layouts — at that scale, a Datagrid is a better fit.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| L | 768 × 376px | Recent activity feed showing 4–6 events with timestamp, actor, and a brief description. Use when the timeline is **secondary context** — one widget among several on a dashboard, giving quick situational awareness without being the focus. |
+| XL | 768 × 768px | Full event history or audit trail showing 10+ events with richer per-event detail. Use when the timeline is the **primary surface** — the main reason the user opened this view. |
+
+**Content-to-size rules:**
+- If the user needs a quick "what happened recently" read alongside other widgets → L
+- If the user is investigating a specific record's full history or compiling an audit trail → XL
+- Do not use L when the event list requires scrolling past 6–8 items to reach relevant content — upgrade to XL
+- Do not use XL when the timeline is supplementary; it will dominate the layout disproportionately
+
+---
+
+## Anatomy
+
+The Timeline framework is composed of 3 named zones. Zone 1 and Zone 3 are required.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Zone 1: Widget Header                                   │
+│  [Title]  [Record Context]        [Time Range Filter]   │
+├─────────────────────────────────────────────────────────┤
+│  Zone 2: Filter Bar (optional)                           │
+│  [Event Type Chips]              [Actor Filter]         │
+├─────────────────────────────────────────────────────────┤
+│  Zone 3: Event Stream                                    │
+│                                                          │
+│  ●  2026-03-12 · 2:34 PM                                │
+│  │  [Event Title]    [Actor Badge]    [Status/Tag Chip] │
+│  │  [Event detail / description text]                   │
+│  │                                                       │
+│  ●  2026-03-11 · 9:12 AM                                │
+│  │  [Event Title]    [Actor Badge]    [Status/Tag Chip] │
+│  │                                                       │
+│  ●  [Load more events]                                  │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Zone Definitions
+
+**Zone 1 — Widget Header:** Title, optional record context badge, and time range filter (right-aligned).
+
+**Zone 2 — Filter Bar:** Optional. Event type chips and actor filter. Can be collapsed when no filters are active.
+
+**Zone 3 — Event Stream:** Vertical timeline spine with dot indicators. Each entry has timestamp, event title, actor, optional status chip, and optional detail text.
+
+---
+
+## Variants
+
+### 1. Activity Feed
+Real-time stream of mixed event types. Newest first. "Load more" pagination at the bottom.
+
+### 2. Audit Trail
+Compliance-grade log. All events are system-generated/verified. Read-only. Actor attribution mandatory on every entry.
+
+### 3. Notification Feed
+Personal feed targeted at the current user. Unread items visually differentiated.
+
+### 4. Grouped Timeline
+Events grouped by day or another time bucket with a sticky group header label.
+
+### 5. Milestone Timeline
+Forward-looking or mixed (past + future) sequence of significant milestones with status indicators.
+
+---
+
+## Asio Neon Components
+
+| Zone | Component | Story Reference |
+|------|-----------|-----------------|
+| Zone 1 | `Badge` (record context label) | `asio-neon-components-badge-✔` |
+| Zone 1 | `Dropdown` (time range filter) | `asio-neon-form-components-dropdown-✔` |
+| Zone 2 | `Chip` (event type + actor filter chips) | `asio-neon-components-chip-✔` |
+| Zone 3 | `List` (event stream container) | `asio-neon-components-list-🧪` |
+| Zone 3 | `Avatar` + name text (actor attribution) | `asio-neon-components-avatar-✔` |
+| Zone 3 | `Badge` (unread count) | `asio-neon-components-badge-✔` |
+| Zone 3 | `Status` (milestone status) | `asio-neon-components-status` |
+| Zone 3 | `Chip` (event type tag per entry) | `asio-neon-components-chip-✔` |
+| Zone 3 | `Stepper` (Milestone variant only) | `asio-neon-components-stepper-🧪` |
+
+---
+
+## AI Selection Signals
+
+- "activity log" or "activity feed"
+- "audit trail" or "audit log"
+- "change history" or "version history"
+- "recent events" or "recent activity"
+- "what happened" / "who did what"
+- "notification feed" or "notification center"
+- "history of [record]"
+- "chronological" or "in order"
+
+---
+
+## Do's and Don'ts
+
+### Do
+- Always show timestamps on every entry — date and time, not relative only.
+- Use `Status` component for event outcomes — never plain text color.
+- Include actor attribution on every entry in Audit Trail and Activity Feed variants.
+- Show a skeleton or loading state while events are being fetched.
+
+### Don't
+- Don't use the Timeline for forward-looking step sequences — use Form > Stepper.
+- Don't show more than 20 events at once without a "Load more" mechanism.
+- Don't omit timestamps — if a timestamp isn't available, the surface is not a timeline.
+- Don't collapse actor attribution behind a hover state in Audit Trail.
+
+---
+
+## States
+
+| State | Trigger | Rendering |
+|-------|---------|-----------|
+| Loading | Event fetch in progress | Skeleton list items (3–5 placeholder rows) |
+| Empty (no events) | No events match the current time range | Empty state + "No events found" + time range hint |
+| Empty (filtered) | Active filter returns 0 results | "No results for this filter" + "Clear filters" action |
+| Error | Event fetch failed | Alert (error variant) above Zone 3 |
+| Unread items | User has unseen events | Badge count on header + highlighted dot on unread entries |
+  </script>
+
+  <script type="text/plain" id="fw-form">
+# Form Widget Framework
+
+**Category:** Core Widget Framework
+**Design System:** Asio Neon
+**Last Updated:** 2026-03-13
+
+---
+
+## Purpose
+
+The Form framework structures UI surfaces where users **create, edit, configure, or submit structured information**. It is the primary pattern for any data-entry, settings, or configuration surface in ArgonOS.
+
+The defining characteristic of the Form is **user intent to write** — the user is the source of the data, and the system's job is to make that entry clear, guided, and error-resistant.
+
+---
+
+## When to Use
+
+| Use This Framework When... | Do NOT Use When... |
+|----------------------------|--------------------|
+| The user is creating a new record or entity | The user is browsing or filtering existing records (use Datagrid) |
+| The user is editing the attributes of a record | The user is reading a summary of metrics (use Summary) |
+| The user is configuring a setting or preference | The user is viewing a chart or trend (use Insight) |
+| The user is completing a guided, multi-step process | The surface shows a sequence of past events (use Timeline) |
+| The user must submit data to the system for processing | |
+
+---
+
+## Widget Sizing
+
+**Valid sizes:** L, XL
+**Default:** L
+**Not valid for this framework:** XXS, XS, S, M, XXL
+
+Form widgets require enough vertical space to render fields with their labels, helper text, validation messages, and action buttons without crowding. Sizes below L are too compact for usable form layouts. XXL is not valid — a form that requires full-width deep layout should be reconsidered as a multi-step flow or a dedicated page rather than a widget.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| L | 768 × 376px | Short form with 2–4 fields in a single-step layout. Use for quick configuration, inline editing, or narrow-scope data entry where the user can complete the task in under 60 seconds. Action buttons (Submit / Cancel) are visible without scrolling. |
+| XL | 768 × 768px | Longer form with 5+ fields, or a form with logical sections separated by visual grouping (section headers, dividers). Use for structured data entry workflows where field relationships require visual hierarchy, or when a Stepper variant is used for multi-step flows. |
+
+**Content-to-size rules:**
+- If the form has 2–4 fields and a single submit action → L
+- If the form has 5+ fields OR uses field grouping/sections → XL
+- If the form uses the Stepper variant (multi-step flow) → XL
+- Do not use XL to add padding or breathing room — only use it when field count or structure genuinely requires it
+- If the form would require scrolling even at XL, it is too complex to be a widget; redesign as a full-page experience
+
+---
+
+## Anatomy
+
+The Form framework is composed of 4 named zones. Zones 1, 3, and 4 are required in all variants.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Zone 1: Form Header                                     │
+│  [Title]  [Subtitle / context]       [Close / Cancel]   │
+├─────────────────────────────────────────────────────────┤
+│  Zone 2: Section Structure (if multi-section)            │
+│  ── Section Label ────────────────────────────────────  │
+│                                                          │
+│  Zone 3: Field Area                                      │
+│                                                          │
+│  [Label]               [Label]                          │
+│  [Input field]         [Input field]                    │
+│                                                          │
+│  [Label]                                                │
+│  [Dropdown / Select]                                    │
+│                                                          │
+│  [Validation message if error]                          │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│  Zone 4: Action Bar                                      │
+│  [Secondary action: Cancel]    [Primary action: Save]   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Zone Definitions
+
+**Zone 1 — Form Header:** Form title, optional subtitle, and a Cancel or Close control. Do not place field-level controls in Zone 1.
+
+**Zone 2 — Section Structure:** Groups related fields under labeled section dividers. Required when the form has distinct logical groupings.
+
+**Zone 3 — Field Area:** All input components. Labels always above their input. Required fields marked with asterisk (*). Error messages directly below the offending field.
+
+**Zone 4 — Action Bar:** Primary action (right-aligned) and secondary action (Cancel/Back). Sticky-bottom inside Drawer or Modal.
+
+---
+
+## Variants
+
+### 1. Single-Step Form
+All fields visible at once. One primary submit action. Fewer than 10 fields.
+
+### 2. Multi-Section Form
+10+ fields divided into labeled sections. All sections visible and scrollable at once.
+
+### 3. Wizard (Multi-Step Form)
+Step-by-step flow using the `Stepper` component. Zone 4 shows Back + Next (intermediate) and Back + Finish (final step).
+
+### 4. Settings Panel
+Persistent configuration surface. Per-field auto-save (Switch) or single "Save changes" at bottom.
+
+### 5. Modal Form
+Focused form in a `Dialog` overlay. Fewer than 8 fields. Does not exceed 600px width or 80vh height.
+
+### 6. Drawer Form
+Medium-complexity form (up to 15 fields) in a side `Drawer`. Fixed width 360–480px. Underlying page remains partially visible.
+
+---
+
+## Asio Neon Components
+
+| Zone | Component | Story Reference |
+|------|-----------|-----------------|
+| Zone 2 | `Stepper` (Wizard variant) | `asio-neon-components-stepper-🧪` |
+| Zone 3 | `TextInput` | `asio-neon-form-components-text-input-✔` |
+| Zone 3 | `Textarea` | `asio-neon-form-components-textarea-✔` |
+| Zone 3 | `Dropdown` (single select, searchable) | `asio-neon-form-components-dropdown-✔` |
+| Zone 3 | `Select` (simple select) | `asio-neon-form-components-select-✔` |
+| Zone 3 | `Checkbox` | `asio-neon-form-components-checkbox-✔` |
+| Zone 3 | `Radio` / `RadioGroup` | `asio-neon-form-components-radio-✔` |
+| Zone 3 | `Switch` (on/off toggle) | `asio-neon-form-components-switch-✔` |
+| Zone 3 | `DatePicker` | `asio-neon-form-components-date-picker-✔` |
+| Zone 3 | `Alert` (inline validation) | `asio-neon-components-alert-✔` |
+| Zone 4 | `Button` (primary — Submit/Save) | `asio-neon-components-button-✔` |
+| Zone 4 | `Button` (tertiary — Cancel/Back) | `asio-neon-components-button-✔` |
+| Container (Modal) | `Dialog` | `asio-neon-components-dialog-✔` |
+| Container (Drawer) | `Drawer` | `asio-neon-components-drawer-🧪` |
+
+---
+
+## Field Selection Guide
+
+| User Needs To... | Use This Component |
+|------------------|--------------------|
+| Enter free text (short) | `TextInput` |
+| Enter free text (long / multiline) | `Textarea` |
+| Choose one from a long list (searchable) | `Dropdown` |
+| Choose one from a short list (≤6 options) | `RadioGroup` |
+| Choose multiple from a list | `Checkbox` group |
+| Toggle a boolean on/off | `Switch` |
+| Pick a single date | `DatePicker` |
+| Pick a date range | `DateRangePicker` |
+| Enter a password | `Password` |
+
+---
+
+## AI Selection Signals
+
+- "create new [record]" or "add [record]"
+- "edit [record]" or "update [record]"
+- "configure" or "configuration panel"
+- "settings" or "preferences"
+- "submit" or "save changes"
+- "wizard" or "step-by-step" or "guided flow"
+- "multi-step" or "onboarding flow"
+- "required fields" or "validation"
+
+---
+
+## Do's and Don'ts
+
+### Do
+- Always place field labels above their input, never beside it.
+- Mark required fields with an asterisk (*).
+- Validate on blur and on submit — not on every keystroke.
+- Show error messages directly below the offending field.
+
+### Don't
+- Don't use a Dropdown for fewer than 4 options — use `RadioGroup` instead.
+- Don't put more than 2 actions in Zone 4.
+- Don't auto-submit on field change.
+- Don't clear the form on Cancel without confirming if the form has been partially filled.
+
+---
+
+## States
+
+| State | Trigger | Rendering |
+|-------|---------|-----------|
+| Pristine | Form loaded, no user input | All fields empty or pre-filled |
+| Dirty | User has changed at least one field | Cancel/Close prompts for confirmation |
+| Validation error | Submit attempted with invalid fields | Red border on fields + error messages |
+| Submitting | Submit button clicked | Button disabled + loading spinner |
+| Success | Submission confirmed | Form closes; Toast notification |
+| Server error | API returns an error | Alert (error) at top of Zone 3 |
+| Read-only | User lacks edit permissions | All fields as read-only text, no Zone 4 |
+  </script>
+
+  <script type="text/plain" id="fw-insight">
+# Insight Widget Framework
+
+**Category:** Core Widget Framework
+**Design System:** Asio Neon
+**Last Updated:** 2026-03-13
+
+---
+
+## Purpose
+
+The Insight framework structures UI surfaces where users need to **analyze trends, understand patterns, compare performance, and draw conclusions from data over time or across dimensions**. It is the primary pattern for analytics, reporting, and data visualization surfaces in ArgonOS.
+
+The defining characteristic of the Insight widget is the **visualization-first layout**: the primary content is a chart or graph, supported by controls for adjusting the view and supplementary data for deeper interpretation. Unlike the Summary framework (which shows a current state), the Insight framework reveals *how something has changed* and *why*.
+
+---
+
+## When to Use
+
+| Use This Framework When... | Do NOT Use When... |
+|----------------------------|--------------------|
+| The data has a time axis and shows change over time | You have a single scalar metric (use Summary) |
+| The user's goal is to identify a trend or pattern | The user needs to browse rows of records (use Datagrid) |
+| Comparison across categories or periods is the primary task | The user needs to enter data (use Form) |
+| The visualization is the primary way to communicate the data | The surface shows a feed of events (use Timeline) |
+| The user needs to switch between chart types or time ranges | |
+
+---
+
+## Widget Sizing
+
+**Valid sizes:** L, XL, XXL
+**Default:** XL
+**Not valid for this framework:** XXS, XS, S, M
+
+Insight widgets are visualization-first surfaces. They need sufficient width for a chart to be legible and enough height for a chart body plus controls and optional supporting data. Sizes below L produce charts too small to read meaningfully.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| L | 768 × 376px | A single chart or metric comparison displayed as **supplemental analytics** — one insight widget among several on a dashboard. The chart zone is the full body; no room for a supporting data table. Use for high-level trend indicators where precision is not required. |
+| XL | 768 × 768px | A chart with **supporting data**: a secondary metric panel, a data table below the chart, or a multi-metric layout (e.g., two stacked charts). Use when the Insight widget is the **primary focus** of a dashboard section. |
+| XXL | 1552 × 964px | A **full analytics dashboard surface** spanning multiple chart zones, a ToggleButton control bar, and optionally an embedded summary strip or data table. Use for dedicated reporting views where analytics is the entire purpose of the page. |
+
+**Content-to-size rules:**
+- If the chart is one of several widgets on a mixed dashboard → L
+- If the chart is the primary widget with supporting data (table, secondary KPIs) → XL
+- If the surface IS the analytics page with multiple chart panels → XXL
+- Do not use XXL for a single chart — it will produce excessive whitespace; use XL instead
+- Do not use L when a supporting data table is required — upgrade to XL
+
+---
+
+## Anatomy
+
+The Insight framework is composed of 4 named zones. Zones 1, 2, and 3 are required.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Zone 1: Widget Header                                   │
+│  [Title]  [Description]      [Date Range]  [Export]     │
+├─────────────────────────────────────────────────────────┤
+│  Zone 2: View Controls                                   │
+│  [Metric Toggle / View Toggle]         [Granularity]    │
+├─────────────────────────────────────────────────────────┤
+│  Zone 3: Visualization Area                              │
+│                                                          │
+│   ▲                                                      │
+│   │    ╭──╮                                             │
+│   │   ╭╯  ╰──╮          ╭──╮                           │
+│   │  ╭╯      ╰──────────╯  ╰──╮                        │
+│   └──────────────────────────────────▶                  │
+│                                                          │
+│  [Legend]                           [Annotation]        │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│  Zone 4: Data Table (optional)                           │
+│  [Toggle: Show / Hide table]                            │
+│  [Tabular breakdown of charted values]                  │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Zone Definitions
+
+**Zone 1 — Widget Header:** Insight title, date range selector, and optional Export button.
+
+**Zone 2 — View Controls:** Metric Toggle (`ToggleButton`), View Toggle (chart type), and Granularity (`Dropdown`).
+
+**Zone 3 — Visualization Area:** The chart itself. Includes legend (below chart) and optional annotations on significant data points.
+
+**Zone 4 — Data Table:** Optional expandable table of raw values. Hidden by default. Show/hide toggle at top.
+
+---
+
+## Variants
+
+### 1. Trend Chart
+One or more metrics plotted over time as line or area series. Default variant.
+
+### 2. Comparison Chart
+Same metric for two or more categories or time periods side-by-side.
+
+### 3. Distribution Chart
+How a metric is distributed across categories. Bar chart or Donut/Pie. Limit to 8 categories.
+
+### 4. Performance Scorecard
+Summary cards on top + Trend chart below. Page-level composition — each widget operates within its own framework.
+
+### 5. Embedded Analytics
+Compact Insight widget (200–280px height) embedded within a record detail page. Zone 2 is minimal.
+
+---
+
+## Asio Neon Components
+
+| Zone | Component | Story Reference |
+|------|-----------|-----------------|
+| Widget container | `Card` | `asio-neon-components-card-✔` |
+| Zone 1 | `Dropdown` (date range presets) | `asio-neon-form-components-dropdown-✔` |
+| Zone 1 | `Button` (Export action) | `asio-neon-components-button-✔` |
+| Zone 2 | `ToggleButton` (metric / view toggle) | `asio-neon-components-togglebutton-✔` |
+| Zone 2 | `Dropdown` (granularity selector) | `asio-neon-form-components-dropdown-✔` |
+| Zone 3 | Chart library (outside Asio Neon scope) | — |
+| Zone 3 | `Badge` (annotation labels on chart) | `asio-neon-components-badge-✔` |
+| Zone 4 | `DataGrid` (underlying data table) | `asio-neon-components-datagrid-🧪` |
+
+---
+
+## AI Selection Signals
+
+- "chart" or "graph" or "visualization"
+- "trend" or "over time" or "historical"
+- "analytics" or "reporting" or "report"
+- "performance" or "performance over time"
+- "compare [X] to [Y]" or "benchmark"
+- "distribution" or "breakdown by"
+- "time series" or "date range"
+- "line chart", "bar chart", "area chart", "donut chart"
+
+---
+
+## Do's and Don'ts
+
+### Do
+- Always include a date range control in Zone 1 — never hard-code the visible time range.
+- Use `ToggleButton` in Zone 2 for view switching — do not use a Dropdown for 2–3 options.
+- Include a legend for any chart with 2+ data series.
+- Keep the Zone 4 data table hidden by default — offer it as an opt-in.
+
+### Don't
+- Don't show more than 5 data series on a single chart without a mechanism to show/hide individual series.
+- Don't use a Pie or Donut chart for more than 5 segments.
+- Don't apply arbitrary colors to data series — use the Asio Neon chip color tokens.
+
+---
+
+## States
+
+| State | Trigger | Rendering |
+|-------|---------|-----------|
+| Loading | Data fetch in progress | Skeleton chart area (animated placeholder) |
+| No data (period) | No data exists for selected date range | Empty state + "No data for this period" |
+| No data (filtered) | Active filter returns no results | "No data matches the current filter" + "Clear filter" |
+| Error | Data fetch failed | Alert (error variant) inside Zone 3 |
+| Partial data | Some series have data, others do not | Chart renders available series; missing labeled "(no data)" in legend |
+| Data point hover | User hovers over a chart data point | Tooltip with exact value, date, and series label |
   </script>
 
 </body>

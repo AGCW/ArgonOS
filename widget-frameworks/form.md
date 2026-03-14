@@ -26,6 +26,28 @@ The defining characteristic of the Form is **user intent to write** — the user
 
 ---
 
+## Widget Sizing
+
+**Valid sizes:** L, XL  
+**Default:** L  
+**Not valid for this framework:** XXS, XS, S, M, XXL
+
+Form widgets require enough vertical space to render fields with their labels, helper text, validation messages, and action buttons without crowding. Sizes below L are too compact for usable form layouts. XXL is not valid — a form that requires full-width deep layout should be reconsidered as a multi-step flow or a dedicated page rather than a widget.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| L | 768 × 376px | Short form with 2–4 fields in a single-step layout. Use for quick configuration, inline editing, or narrow-scope data entry where the user can complete the task in under 60 seconds. Action buttons (Submit / Cancel) are visible without scrolling. |
+| XL | 768 × 768px | Longer form with 5+ fields, or a form with logical sections separated by visual grouping (section headers, dividers). Use for structured data entry workflows where field relationships require visual hierarchy, or when a Stepper variant is used for multi-step flows. |
+
+**Content-to-size rules:**
+- If the form has 2–4 fields and a single submit action → L
+- If the form has 5+ fields OR uses field grouping/sections → XL
+- If the form uses the Stepper variant (multi-step flow) → XL (stepper header + step content + action bar need the height)
+- Do not use XL to add padding or breathing room — only use it when field count or structure genuinely requires it
+- If the form would require scrolling even at XL, it is too complex to be a widget; redesign as a full-page experience
+
+---
+
 ## Anatomy
 
 The Form framework is composed of 4 named zones. Zones 1, 3, and 4 are required in all variants. Zone 2 (section structure) is required when the form has more than 6 fields or distinct logical groupings.

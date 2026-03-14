@@ -108,9 +108,12 @@ All type uses **Inter** from Google Fonts / the Figma library.
 
 ## Widget Sizing Grid
 
-**Source:** Figma — [Widgets-Templates-Library](https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80)
-**Grid:** 8 columns, consistent across all breakpoints
-**Row height:** 180px | **Gap:** 16px
+**Sources:**
+- [UXTT-Widgets](https://www.figma.com/design/6gHlNEUBGcVMC7NJSlffXG/UXTT-Widgets?node-id=0-1) ← authoritative sizing reference
+- [Widgets-Templates-Library](https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80)
+
+**Grid:** 8 columns, consistent across all breakpoints  
+**Row height:** 180px | **Gap:** 16px | **Column width at xl:** 180px
 
 ### Size Tiers
 
@@ -129,37 +132,91 @@ All type uses **Inter** from Google Fonts / the Figma library.
 | Token | Viewport Approx. | Grid Columns |
 |-------|-----------------|--------------|
 | `$breakpoints.xl` | 1920px (1552px content) | 8 cols |
-| `$breakpoints.l` | 1440px | 8 cols |
-| `$breakpoints.m` | 1280px | 8 cols |
-| `$breakpoints.s` | 1024px | 8 cols |
-| `$breakpoints.xs` | 768px | 8 cols |
+| `$breakpoints.l` | 1440px (1080px content) | 8 cols |
+| `$breakpoints.m` | 1280px (814px content) | 8 cols |
+| `$breakpoints.s` | 1024px (568px content) | 8 cols |
+| `$breakpoints.xs` | 768px (377px content) | 8 cols |
 
 > The column/row ratios for all 7 widget size tiers are **identical across all breakpoints**. Column pixel widths scale with viewport; relative sizing stays the same.
 
-### Pixel Widths at $breakpoints.xl (1552px content area, 8 cols, 16px gaps)
+### Pixel Dimensions by Breakpoint
 
-| Size | Approx. Width | Approx. Height |
-|------|--------------|----------------|
-| XXS | 368px | 180px |
-| XS | 752px | 180px |
+**Formula:** Width = (cols × colWidth) + ((cols−1) × 16). Height = (rows × 180) + ((rows−1) × 16).
+
+#### breakpoints.xl — 1552px content, col = 180px
+
+| Size | Width | Height |
+|------|-------|--------|
+| XXS | 376px | 180px |
+| XS | 768px | 180px |
 | S | 1552px | 180px |
-| M | 368px | 376px |
-| L | 752px | 376px |
-| XL | 752px | 768px |
+| M | 376px | 376px |
+| L | 768px | 376px |
+| XL | 768px | 768px |
 | XXL | 1552px | 964px |
 
-> Formula: col width = (1552 - 7×16) / 8 = 180px per col. Width = (cols × 180) + ((cols-1) × 16). Height = (rows × 180) + ((rows-1) × 16).
+#### breakpoints.l — 1080px content, col ≈ 124px
+
+| Size | Width | Height |
+|------|-------|--------|
+| XXS | 258px | 121px |
+| XS | 532px | 121px |
+| S | 1080px | 121px |
+| M | 258px | 258px |
+| L | 532px | 258px |
+| XL | 532px | 532px |
+| XXL | 1080px | 669px |
+
+#### breakpoints.m — 814px content, col ≈ 93px
+
+| Size | Width | Height |
+|------|-------|--------|
+| XXS | 399px | 198px |
+| XS | 814px | 192px |
+| S | 814px | 192px |
+| M | 399px | 399px |
+| L | 814px | 399px |
+| XL | 814px | 814px |
+| XXL | 814px | 1021px |
+
+#### breakpoints.s — 568px content, col ≈ 65px
+
+| Size | Width | Height |
+|------|-------|--------|
+| XXS | 280px | 136px |
+| XS | 568px | 136px |
+| S | 568px | 136px |
+| M | 280px | 280px |
+| L | 568px | 280px |
+| XL | 568px | 568px |
+| XXL | 568px | 712px |
+
+#### breakpoints.xs — 377px content, col ≈ 43px
+
+| Size | Width | Height |
+|------|-------|--------|
+| XXS | 377px | 184px |
+| XS | 377px | 184px |
+| S | 377px | 184px |
+| M | 377px | 377px |
+| L | 377px | 377px |
+| XL | 376px | 762px |
+| XXL | 377px | 955px |
+
+> Note: At `breakpoints.xs`, most multi-column sizes collapse to full-width (377px). The grid remains 8-col but column pixel size shrinks to ~43px per col.
 
 ---
 
 ## How This Connects to Widget Frameworks
 
-Each of the 5 core widget frameworks should be sized using the grid above:
+Each of the 5 core widget frameworks maps to a defined set of valid sizes. Sizes outside the valid set for a framework must not be used.
 
-| Framework | Recommended Default Size |
-|-----------|--------------------------|
-| Summary (KPI/metric card) | XS or M |
-| Timeline (activity/events) | L or XL |
-| Datagrid (table/list) | XL or XXL |
-| Form (structured input) | L or XL |
-| Insight (chart/analytics) | L, XL, or XXL |
+| Framework | Valid Sizes | Default |
+|-----------|------------|---------|
+| Summary (KPI/metric card) | XXS, XS, M | XS |
+| Timeline (activity/events) | L, XL | L |
+| Datagrid (table/list) | XL, XXL | XXL |
+| Form (structured input) | L, XL | L |
+| Insight (chart/analytics) | L, XL, XXL | XL |
+
+> See each framework spec in `/widget-frameworks/` for per-size content rationale.

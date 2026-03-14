@@ -26,6 +26,29 @@ The defining characteristic of the Insight widget is the **visualization-first l
 
 ---
 
+## Widget Sizing
+
+**Valid sizes:** L, XL, XXL  
+**Default:** XL  
+**Not valid for this framework:** XXS, XS, S, M
+
+Insight widgets are visualization-first surfaces. They need sufficient width for a chart to be legible and enough height for a chart body plus controls and optional supporting data. Sizes below L produce charts too small to read meaningfully.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| L | 768 × 376px | A single chart or metric comparison displayed as **supplemental analytics** — one insight widget among several on a dashboard. The chart zone is the full body; no room for a supporting data table. Use for high-level trend indicators where precision is not required. |
+| XL | 768 × 768px | A chart with **supporting data**: a secondary metric panel, a data table below the chart, or a multi-metric layout (e.g., two stacked charts). Use when the Insight widget is the **primary focus** of a dashboard section and the user needs enough detail to draw conclusions. |
+| XXL | 1552 × 964px | A **full analytics dashboard surface** spanning multiple chart zones, a ToggleButton control bar, and optionally an embedded summary strip or data table. Use for dedicated reporting views where analytics is the entire purpose of the page — not one widget among many. |
+
+**Content-to-size rules:**
+- If the chart is one of several widgets on a mixed dashboard → L
+- If the chart is the primary widget with supporting data (table, secondary KPIs) → XL
+- If the surface IS the analytics page with multiple chart panels → XXL
+- Do not use XXL for a single chart — it will produce excessive whitespace; use XL instead
+- Do not use L when a supporting data table is required — upgrade to XL (L has no room for a table below the chart)
+
+---
+
 ## Anatomy
 
 The Insight framework is composed of 4 named zones. Zones 1, 2, and 3 are required. Zone 4 (data table) is optional and appears when users need to inspect the underlying values.

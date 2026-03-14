@@ -26,6 +26,27 @@ The defining characteristic of the Timeline is **time as the primary axis** — 
 
 ---
 
+## Widget Sizing
+
+**Valid sizes:** L, XL  
+**Default:** L  
+**Not valid for this framework:** XXS, XS, S, M, XXL
+
+Timeline widgets need vertical space to display a readable sequence of events. Sizes below L are too short to render a meaningful event list. XXL is not valid because the Timeline framework does not expand into full-width layouts — at that scale, a Datagrid is a better fit.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| L | 768 × 376px | Recent activity feed showing 4–6 events with timestamp, actor, and a brief description. Use when the timeline is **secondary context** — one widget among several on a dashboard, giving quick situational awareness without being the focus. |
+| XL | 768 × 768px | Full event history or audit trail showing 10+ events with richer per-event detail (expandable notes, sub-events, or linked records). Use when the timeline is the **primary surface** — the main reason the user opened this view. |
+
+**Content-to-size rules:**
+- If the user needs a quick "what happened recently" read alongside other widgets → L
+- If the user is investigating a specific record's full history or compiling an audit trail → XL
+- Do not use L when the event list requires scrolling past 6–8 items to reach relevant content — upgrade to XL
+- Do not use XL when the timeline is supplementary; it will dominate the layout disproportionately
+
+---
+
 ## Anatomy
 
 The Timeline framework is composed of 3 named zones. Zone 1 and Zone 3 are required. Zone 2 (time range controls) is required when the timeline spans more than 24 hours of data.

@@ -87,6 +87,40 @@ When a designer provides a PRD feature description:
 
 ---
 
+## Widget Sizing Grid
+
+**Source:** [UXTT-Widgets](https://www.figma.com/design/6gHlNEUBGcVMC7NJSlffXG/UXTT-Widgets?node-id=0-1) (authoritative sizing reference)
+
+All widgets must conform to the 7-tier sizing grid. Sizes are defined in columns and rows on an 8-column, 16px-gap grid. At `breakpoints.xl` (1552px content area), each column is 180px wide.
+
+| Size | Columns | Rows | Width (xl) | Height (xl) | Character |
+|------|---------|------|------------|-------------|-----------|
+| XXS | 2 | 1 | 376px | 180px | Minimal stat/indicator |
+| XS | 4 | 1 | 768px | 180px | Compact summary strip |
+| S | 8 | 1 | 1552px | 180px | Full-width banner |
+| M | 2 | 2 | 376px | 376px | Small card |
+| L | 4 | 2 | 768px | 376px | Medium card |
+| XL | 4 | 4 | 768px | 768px | Large data card |
+| XXL | 8 | 5 | 1552px | 964px | Full-width deep widget |
+
+> Full responsive breakpoint pixel tables (xl through xs) are in `/design-system/neon-tokens.md`.
+
+---
+
+## Framework → Size Pairing
+
+Every widget must be assigned a size from its framework's valid set. Sizes outside the valid set must not be used. The content and use case determine the appropriate size within the valid set.
+
+| Framework | Valid Sizes | Default | Size Selection Principle |
+|-----------|------------|---------|--------------------------|
+| Summary | XXS, XS, M | XS | Number of KPIs and depth of supporting data determine size. Single stat → XXS. Row of metrics → XS. KPI with trend/breakdown → M. |
+| Timeline | L, XL | L | Number of events and primacy of the timeline determine size. Secondary/recent feed (4–6 events) → L. Primary audit trail (10+ events) → XL. |
+| Datagrid | XL, XXL | XXL | Whether data browsing is the primary task determines size. Secondary/embedded panel → XL. Primary management surface → XXL. |
+| Form | L, XL | L | Field count and structural complexity determine size. Short form (2–4 fields) → L. Long or multi-section form (5+ fields) → XL. |
+| Insight | L, XL, XXL | XL | Analytical depth and number of chart zones determine size. Single chart → L. Chart + table or multi-metric → XL. Full dashboard → XXL. |
+
+---
+
 ## Versioning
 
 This framework library is versioned alongside ArgonOS. Changes to a framework spec require review before updating, as specs are used as AI context. Do not introduce component substitutions without updating both the spec and the Asio Neon component reference.

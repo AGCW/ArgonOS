@@ -26,6 +26,27 @@ Use the Datagrid framework when the data has identifiable rows (records) and the
 
 ---
 
+## Widget Sizing
+
+**Valid sizes:** XL, XXL  
+**Default:** XXL  
+**Not valid for this framework:** XXS, XS, S, M, L
+
+Datagrid widgets are data-dense surfaces that require both horizontal space (for columns) and vertical space (for rows). Sizes below XL do not provide enough room for a usable grid with toolbar, data rows, and pagination.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| XL | 768 × 768px | Compact list view with a limited number of visible rows (typically 4–6) and a reduced column set. Use when the Datagrid is **embedded in a broader layout** alongside other widgets, or when it serves as a secondary panel rather than the primary task surface. Pagination is still required if the data set exceeds visible rows. |
+| XXL | 1552 × 964px | Primary management surface with a full column set, complete toolbar (search, filters, bulk actions), and full pagination controls. Use when **data browsing is the primary job** — the user came to this view specifically to find, review, or act on records. |
+
+**Content-to-size rules:**
+- If the Datagrid is one of several widgets on a dashboard and shows a supporting list → XL
+- If the Datagrid IS the page — the user's entire task is working with this list → XXL
+- If the data requires more than 5 visible columns at once → XXL (XL will force too much horizontal truncation)
+- Do not use XL for bulk-action workflows — the reduced height limits selection visibility; use XXL
+
+---
+
 ## Anatomy
 
 The Datagrid framework is composed of 4 named zones. Every instance of this framework must include zones 1–3. Zone 4 is required when the data set can exceed the visible viewport.

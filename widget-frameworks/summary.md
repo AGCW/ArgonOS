@@ -26,6 +26,28 @@ Summary widgets are the answer to: "What is the current state of this thing, rig
 
 ---
 
+## Widget Sizing
+
+**Valid sizes:** XXS, XS, M  
+**Default:** XS  
+**Not valid for this framework:** S, L, XL, XXL
+
+The appropriate size is determined by the number of KPIs being displayed and the depth of supporting data. Use the smallest size that accommodates the content without truncation.
+
+| Size | Dimensions (xl) | When to Use |
+|------|----------------|-------------|
+| XXS | 376 × 180px | Single stat: one primary number, one label, and an optional status icon or trend arrow. Use when the widget is one of many in a dense dashboard row and space is at a premium. |
+| XS | 768 × 180px | 2–4 KPI metrics arranged horizontally in a compact strip. Use for a dashboard header row that gives a quick multi-metric read before users drill deeper. |
+| M | 376 × 376px | Single KPI card with secondary supporting data — trend sparkline, period-over-period delta, or a small breakdown list. Use when depth matters and the metric needs context to be actionable. |
+
+**Content-to-size rules:**
+- If you are showing only 1 value → XXS or M (M if supporting data is present)
+- If you are showing 2–4 values at equal weight → XS
+- If you are showing 5–8 values → use multiple XS or M widgets, not one enlarged widget
+- Do not stretch a Summary widget to L or XL to fill space — if that much room is needed, reconsider whether Summary is the right framework
+
+---
+
 ## Anatomy
 
 The Summary framework uses a Card-based layout. A single Summary widget instance is one card. Multiple instances are arranged in a responsive grid (Summary Grid). Each card has 3 internal zones.
