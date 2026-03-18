@@ -106,6 +106,20 @@ Each entry follows this structure:
 
 ---
 
+### [2026-03-16] — Asio Neon Concept: MSP Technician Efficiency Dashboard
+**Status:** Active
+**Area:** UX | Tooling
+**Decision:** Generated a 4-framework Asio Neon concept for an MSP owner dashboard to monitor technician efficiency and ticket resolution. The concept composes four widgets on the 8-column grid: a KPI header strip (4× Summary XXS), a full-width technician performance table (Datagrid XXL), a 7-day resolution trend chart (Insight XL), and a live activity feed (Timeline L). Pushed to Figma as a new page in the existing ArgonOS concept file.
+**Reasoning:** Multi-framework dashboard composition demonstrates the full widget sizing grid in a single, realistic MSP context. Each framework maps to a distinct MSP owner information need: scan KPIs → manage technicians → read trend → monitor live activity.
+**What Changed:**
+- Created `ui/concepts/msp-technician-efficiency-dashboard.html` — full dashboard concept (4 frameworks, annotation strip)
+- Updated `ui/concepts/manifest.json` — prepended new concept entry
+**Related:**
+- Prompt: "Build a dashboard for MSP owners to monitor technician efficiency and ticket resolution"
+- Figma: https://www.figma.com/design/YazkuCYaUX3P0Rw3j5zJLU?node-id=8-2
+
+---
+
 ## Superseded / Reversed Decisions
 
 _(None yet)_

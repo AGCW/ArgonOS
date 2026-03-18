@@ -1,0 +1,1386 @@
+<!--
+  Concept: MSP Technician Efficiency Dashboard
+  Frameworks: Summary (KPI strip) · Datagrid (technician table) · Insight (resolution trend) · Timeline (activity feed)
+  Sizes: XXS × 4 (KPI header strip) · XXL (Datagrid) · XL (Insight) · L (Timeline)
+  Size Rationale: Four XXS cards consume all 8 columns in the header strip; Datagrid XXL is the primary management surface for full technician roster; Insight XL surfaces multi-day resolution analytics as the primary chart; Timeline L provides recent ticket activity as secondary context alongside the chart.
+  Source: "Build a dashboard for MSP owners to monitor technician efficiency and ticket resolution"
+  Generated: 2026-03-16
+  Figma Libraries: Asio Neon (a1eKyRtlUCKWmryjQPA4Q2), UXTT-Widgets (6gHlNEUBGcVMC7NJSlffXG)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSP Technician Efficiency Dashboard — Asio Neon Concept</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+    /* ── Token Variables ─────────────────────────────────────────── */
+    :root {
+      /* Text */
+      --text-primary: #101120;
+      --text-secondary: #767786;
+      --text-on-color: #f1f1f2;
+
+      /* Background */
+      --background: #ffffff;
+      --background-hover: rgba(153, 153, 156, 0.16);
+
+      /* Layer / Surface */
+      --layer-01: #f6f6f9;
+      --layer-hover-03: #e7e7ea;
+      --layer-active-03: #c5c6cb;
+
+      /* Border */
+      --border-subtle-02: #ececee;
+
+      /* Icon */
+      --icon-on-color: #ecedee;
+      --icon-disabled: rgba(35, 36, 42, 0.25);
+
+      /* Button — Primary */
+      --button-primary: #2e3f80;
+      --button-primary-hover: #222e5e;
+      --button-primary-active: #394e9e;
+      --button-disabled: #c6c6c6;
+
+      /* Interactive */
+      --focus: #394e9e;
+      --link-primary: #006a8e;
+
+      /* Misc */
+      --skeleton-background: #dadae4;
+      --alert-text: #101120;
+
+      /* Status colors (semantic, mapped to Neon intent) */
+      --status-green: #1a7f4b;
+      --status-green-bg: #e8f5ee;
+      --status-red: #c62828;
+      --status-red-bg: #fce8e8;
+      --status-amber: #7a4f00;
+      --status-amber-bg: #fff3d6;
+      --status-blue: #004f73;
+      --status-blue-bg: #e0f2f8;
+
+      /* Spacing */
+      --spacing-01: 4px;
+      --spacing-02: 6px;
+      --spacing-03: 8px;
+      --spacing-04: 12px;
+      --spacing-05: 16px;
+      --spacing-06: 24px;
+      --spacing-07: 32px;
+      --spacing-08: 40px;
+      --spacing-09: 48px;
+
+      /* Grid */
+      --grid-col: 180px;
+      --grid-gap: 16px;
+      --grid-cols: 8;
+      --content-width: 1552px;
+    }
+
+    /* ── Typography ──────────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      background: var(--layer-01);
+      margin: 0;
+      padding: 0;
+    }
+
+    .h2-light     { font-size: 48px; font-weight: 300; line-height: 1; }
+    .h4-light     { font-size: 24px; font-weight: 300; line-height: 1; }
+    .h4-bold      { font-size: 24px; font-weight: 700; line-height: 1; }
+    .text-16-semibold { font-size: 16px; font-weight: 600; line-height: 22px; }
+    .text-14-semibold { font-size: 14px; font-weight: 600; line-height: 18px; }
+
+    /* ── Page Shell ──────────────────────────────────────────────── */
+    .page-header {
+      background: var(--background);
+      border-bottom: 1px solid var(--border-subtle-02);
+      padding: var(--spacing-06) var(--spacing-07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-header__title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .page-header__subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .page-header__controls {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-03);
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-02);
+      height: 32px;
+      padding: 0 var(--spacing-04);
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle-02);
+      background: var(--background);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .filter-chip--active {
+      border-color: var(--button-primary);
+      color: var(--button-primary);
+      background: var(--status-blue-bg);
+    }
+
+    .btn-primary {
+      height: 32px;
+      padding: 0 var(--spacing-05);
+      background: var(--button-primary);
+      color: var(--text-on-color);
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .page-body {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: var(--spacing-06) var(--spacing-07);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-05);
+    }
+
+    /* ── Widget Grid Row ─────────────────────────────────────────── */
+    .widget-row {
+      display: grid;
+      gap: var(--grid-gap);
+    }
+
+    .widget-row--kpi   { grid-template-columns: repeat(4, 1fr); }
+    .widget-row--full  { grid-template-columns: 1fr; }
+    .widget-row--split { grid-template-columns: 1fr 1fr; }
+
+    /* ── Widget Base ─────────────────────────────────────────────── */
+    .widget {
+      background: var(--background);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .widget__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-05) var(--spacing-06);
+      border-bottom: 1px solid var(--border-subtle-02);
+    }
+
+    .widget__header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-03);
+    }
+
+    .widget__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .widget__subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .widget__action {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--link-primary);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* ── Summary KPI Card (XXS: 2 cols × 1 row = 376 × 180) ─────── */
+    [data-widget-size="xxs"] {
+      width: 100%;
+      min-height: 180px;
+      box-sizing: border-box;
+    }
+
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: var(--spacing-05) var(--spacing-06) var(--spacing-06);
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .kpi-card__icon-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-card__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kpi-card__icon--blue   { background: var(--status-blue-bg); }
+    .kpi-card__icon--green  { background: var(--status-green-bg); }
+    .kpi-card__icon--amber  { background: var(--status-amber-bg); }
+    .kpi-card__icon--purple { background: #ede8fb; }
+
+    .kpi-card__delta {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    .kpi-card__delta--up    { background: var(--status-green-bg); color: var(--status-green); }
+    .kpi-card__delta--down  { background: var(--status-green-bg); color: var(--status-green); }
+    .kpi-card__delta--warn  { background: var(--status-red-bg);   color: var(--status-red);   }
+
+    .kpi-card__value {
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-top: var(--spacing-04);
+    }
+
+    .kpi-card__label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: var(--spacing-01);
+    }
+
+    .kpi-card__footer {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: var(--spacing-05);
+    }
+
+    /* ── Datagrid Widget (XXL: 8 cols × 5 rows = 1552 × 964) ────── */
+    [data-widget-size="xxl"] {
+      width: 100%;
+      min-height: 964px;
+      box-sizing: border-box;
+    }
+
+    .datagrid-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-03);
+      padding: var(--spacing-04) var(--spacing-06);
+      border-bottom: 1px solid var(--border-subtle-02);
+      background: var(--layer-01);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-02);
+      height: 32px;
+      padding: 0 var(--spacing-03);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 4px;
+      background: var(--background);
+      width: 240px;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      background: transparent;
+      width: 100%;
+    }
+
+    .search-box input::placeholder { color: var(--text-secondary); }
+
+    .toolbar-sep {
+      flex: 1;
+    }
+
+    .toolbar-btn {
+      height: 32px;
+      padding: 0 var(--spacing-04);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 4px;
+      background: var(--background);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-02);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: var(--layer-01);
+      border-bottom: 1px solid var(--border-subtle-02);
+    }
+
+    th {
+      text-align: left;
+      padding: var(--spacing-03) var(--spacing-05);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    th.sortable { cursor: pointer; }
+    th.sortable:hover { color: var(--text-primary); }
+
+    th .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.5; }
+    th.sorted .sort-icon { opacity: 1; color: var(--button-primary); }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-subtle-02);
+      transition: background 0.12s;
+    }
+
+    tbody tr:hover { background: var(--background-hover); }
+    tbody tr:last-child { border-bottom: none; }
+
+    td {
+      padding: var(--spacing-04) var(--spacing-05);
+      font-size: 13px;
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .tech-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-03);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-on-color);
+      flex-shrink: 0;
+    }
+
+    .avatar--a { background: #2e3f80; }
+    .avatar--b { background: #1a7f4b; }
+    .avatar--c { background: #7a4f00; }
+    .avatar--d { background: #006a8e; }
+    .avatar--e { background: #5e3a8a; }
+    .avatar--f { background: #8a3a3a; }
+
+    .tech-name { font-weight: 600; font-size: 13px; }
+    .tech-role { font-size: 11px; color: var(--text-secondary); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .status-badge--active  { background: var(--status-green-bg); color: var(--status-green); }
+    .status-badge--active::before  { background: var(--status-green); }
+    .status-badge--away    { background: var(--status-amber-bg); color: var(--status-amber); }
+    .status-badge--away::before    { background: #e0a800; }
+    .status-badge--offline { background: var(--layer-hover-03); color: var(--text-secondary); }
+    .status-badge--offline::before { background: var(--layer-active-03); }
+
+    .sla-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-03);
+    }
+
+    .sla-bar__track {
+      width: 80px;
+      height: 6px;
+      background: var(--border-subtle-02);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .sla-bar__fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .sla-bar__fill--high   { background: var(--status-green); }
+    .sla-bar__fill--medium { background: #e0a800; }
+    .sla-bar__fill--low    { background: var(--status-red); }
+
+    .sla-bar__pct { font-size: 12px; font-weight: 600; }
+    .sla-bar__pct--high   { color: var(--status-green); }
+    .sla-bar__pct--medium { color: var(--status-amber); }
+    .sla-bar__pct--low    { color: var(--status-red); }
+
+    .num--positive { color: var(--status-green); font-weight: 600; }
+    .num--warn     { color: var(--status-amber);  font-weight: 600; }
+    .num--danger   { color: var(--status-red);    font-weight: 600; }
+
+    .datagrid-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-04) var(--spacing-06);
+      border-top: 1px solid var(--border-subtle-02);
+      background: var(--layer-01);
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-02);
+    }
+
+    .page-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      background: var(--background);
+    }
+
+    .page-btn--active {
+      background: var(--button-primary);
+      color: var(--text-on-color);
+      border-color: var(--button-primary);
+      font-weight: 600;
+    }
+
+    /* ── Insight Widget (XL: 4 cols × 4 rows = 768 × 768) ───────── */
+    [data-widget-size="xl"] {
+      width: 100%;
+      min-height: 376px;
+      box-sizing: border-box;
+    }
+
+    .chart-area {
+      padding: var(--spacing-05) var(--spacing-06) var(--spacing-06);
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: var(--spacing-06);
+      margin-bottom: var(--spacing-05);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-02);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .legend-dot--resolved { background: var(--button-primary); }
+    .legend-dot--assigned { background: var(--skeleton-background); }
+
+    .chart-svg {
+      width: 100%;
+      height: 220px;
+    }
+
+    .chart-x-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-02) 44px 0 44px;
+    }
+
+    .chart-x-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      flex: 1;
+    }
+
+    .chart-summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-03);
+      margin-top: var(--spacing-06);
+      padding-top: var(--spacing-05);
+      border-top: 1px solid var(--border-subtle-02);
+    }
+
+    .chart-stat {
+      text-align: center;
+    }
+
+    .chart-stat__value {
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text-primary);
+    }
+
+    .chart-stat__label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ── Timeline Widget (L: 4 cols × 2 rows = 768 × 376) ───────── */
+    [data-widget-size="l"] {
+      width: 100%;
+      min-height: 376px;
+      box-sizing: border-box;
+    }
+
+    .timeline-list {
+      padding: var(--spacing-03) 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: var(--spacing-04);
+      padding: var(--spacing-04) var(--spacing-06);
+      position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: calc(var(--spacing-06) + 15px);
+      top: calc(var(--spacing-04) + 28px);
+      bottom: 0;
+      width: 1px;
+      background: var(--border-subtle-02);
+    }
+
+    .timeline-item__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 10px;
+      flex-shrink: 0;
+    }
+
+    .timeline-item__dot--resolved { background: var(--status-green); }
+    .timeline-item__dot--alert    { background: var(--status-red); }
+    .timeline-item__dot--escalate { background: var(--status-amber); }
+    .timeline-item__dot--login    { background: var(--button-primary); }
+    .timeline-item__dot--report   { background: var(--skeleton-background); }
+
+    .timeline-item__icon-wrap {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border-subtle-02);
+      background: var(--background);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .timeline-item__body {
+      flex: 1;
+    }
+
+    .timeline-item__event {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+
+    .timeline-item__meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .timeline-item__time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .timeline-item__ticket {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--link-primary);
+      margin-left: 2px;
+    }
+
+    .alert-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--status-red-bg);
+      color: var(--status-red);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── Annotation strip ────────────────────────────────────────── */
+    .annotation-strip {
+      background: var(--layer-01);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 8px;
+      padding: var(--spacing-06);
+    }
+
+    .annotation-strip__heading {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--spacing-05);
+    }
+
+    .annotation-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-05);
+    }
+
+    .annotation-card {
+      background: var(--background);
+      border: 1px solid var(--border-subtle-02);
+      border-radius: 6px;
+      padding: var(--spacing-05);
+    }
+
+    .annotation-card__label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: var(--spacing-02);
+    }
+
+    .annotation-card__content {
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .annotation-card__badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      margin-top: var(--spacing-02);
+    }
+
+    .badge--framework { background: #ede8fb; color: #5e3a8a; }
+    .badge--size      { background: var(--status-blue-bg); color: var(--status-blue); }
+    .badge--stable    { background: var(--status-green-bg); color: var(--status-green); }
+    .badge--exp       { background: var(--status-amber-bg); color: var(--status-amber); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Page Header ─────────────────────────────────────────────── -->
+  <header class="page-header">
+    <div>
+      <div class="page-header__title">Technician Efficiency</div>
+      <div class="page-header__subtitle">MSP Owner Dashboard · Monday, March 16, 2026</div>
+    </div>
+    <div class="page-header__controls">
+      <button class="filter-chip">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        All Technicians
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2.5 4L5 6.5 7.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="filter-chip filter-chip--active">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M6 8v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Last 7 Days
+      </button>
+      <button class="btn-primary">Export Report</button>
+    </div>
+  </header>
+
+  <!-- ── Dashboard Body ──────────────────────────────────────────── -->
+  <main class="page-body">
+
+    <!-- ── Row 1: KPI Summary Strip (4× Summary XXS) ──────────── -->
+    <div class="widget-row widget-row--kpi">
+
+      <!-- KPI 1: Open Tickets -->
+      <div class="widget" data-widget-size="xxs" data-framework="Summary">
+        <div class="kpi-card">
+          <div class="kpi-card__icon-row">
+            <div class="kpi-card__icon kpi-card__icon--blue">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="1.5" y="3" width="13" height="10" rx="2" stroke="#004f73" stroke-width="1.5"/>
+                <path d="M5 7h6M5 9.5h4" stroke="#004f73" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="kpi-card__delta kpi-card__delta--warn">↑ 12 today</span>
+          </div>
+          <div>
+            <div class="kpi-card__value">142</div>
+            <div class="kpi-card__label">Open Tickets</div>
+          </div>
+          <div class="kpi-card__footer">Across all technicians · 38 high priority</div>
+        </div>
+      </div>
+
+      <!-- KPI 2: Resolved Today -->
+      <div class="widget" data-widget-size="xxs" data-framework="Summary">
+        <div class="kpi-card">
+          <div class="kpi-card__icon-row">
+            <div class="kpi-card__icon kpi-card__icon--green">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6" stroke="#1a7f4b" stroke-width="1.5"/>
+                <path d="M5.5 8.5l2 2 3-4" stroke="#1a7f4b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="kpi-card__delta kpi-card__delta--up">↑ 8 vs avg</span>
+          </div>
+          <div>
+            <div class="kpi-card__value">64</div>
+            <div class="kpi-card__label">Resolved Today</div>
+          </div>
+          <div class="kpi-card__footer">Daily average: 56 · Best: 81 on Feb 28</div>
+        </div>
+      </div>
+
+      <!-- KPI 3: Avg Resolution Time -->
+      <div class="widget" data-widget-size="xxs" data-framework="Summary">
+        <div class="kpi-card">
+          <div class="kpi-card__icon-row">
+            <div class="kpi-card__icon kpi-card__icon--amber">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6" stroke="#7a4f00" stroke-width="1.5"/>
+                <path d="M8 5v3.5l2 1.5" stroke="#7a4f00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="kpi-card__delta kpi-card__delta--down">↓ 0.3h vs last wk</span>
+          </div>
+          <div>
+            <div class="kpi-card__value">2.4<span style="font-size:22px;font-weight:300;">h</span></div>
+            <div class="kpi-card__label">Avg Resolution Time</div>
+          </div>
+          <div class="kpi-card__footer">Target: ≤ 3h · SLA window: 4h for P1</div>
+        </div>
+      </div>
+
+      <!-- KPI 4: SLA Compliance -->
+      <div class="widget" data-widget-size="xxs" data-framework="Summary">
+        <div class="kpi-card">
+          <div class="kpi-card__icon-row">
+            <div class="kpi-card__icon" style="background:#ede8fb;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2l1.6 3.4 3.7.5-2.7 2.6.6 3.7L8 10.5l-3.2 1.7.6-3.7L2.7 5.9l3.7-.5L8 2z" stroke="#5e3a8a" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="kpi-card__delta kpi-card__delta--up">↑ 2% vs last wk</span>
+          </div>
+          <div>
+            <div class="kpi-card__value">94<span style="font-size:22px;font-weight:300;">%</span></div>
+            <div class="kpi-card__label">SLA Compliance</div>
+          </div>
+          <div class="kpi-card__footer">Target: 95% · 8 SLA breaches this week</div>
+        </div>
+      </div>
+
+    </div><!-- /widget-row--kpi -->
+
+    <!-- ── Row 2: Technician Datagrid (XXL) ───────────────────── -->
+    <div class="widget-row widget-row--full">
+      <div class="widget" data-widget-size="xxl" data-framework="Datagrid">
+
+        <div class="widget__header">
+          <div class="widget__header-left">
+            <div>
+              <div class="widget__title">Technician Performance</div>
+              <div class="widget__subtitle">6 active technicians · Last updated 2 min ago</div>
+            </div>
+          </div>
+          <a class="widget__action">View All →</a>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="datagrid-toolbar">
+          <div class="search-box">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="5.5" cy="5.5" r="4" stroke="#767786" stroke-width="1.4"/>
+              <path d="M9 9l2.5 2.5" stroke="#767786" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <input type="text" placeholder="Search technicians…" />
+          </div>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Filter
+          </button>
+          <button class="toolbar-btn">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M6 1v10M2 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Sort
+          </button>
+          <button class="toolbar-btn">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 2h8v2.5L6 8v3l-2-1V8L2 4.5V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+            Columns
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:220px;">Technician</th>
+                <th class="sortable">Status</th>
+                <th class="sortable sorted">
+                  Assigned <span class="sort-icon">↓</span>
+                </th>
+                <th class="sortable">Resolved Today</th>
+                <th class="sortable">Pending</th>
+                <th class="sortable">Avg Handle Time</th>
+                <th class="sortable">SLA Compliance</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Alex Torres -->
+              <tr>
+                <td>
+                  <div class="tech-cell">
+                    <div class="avatar avatar--a">AT</div>
+                    <div>
+                      <div class="tech-name">Alex Torres</div>
+                      <div class="tech-role">Tier 2 · Network</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="status-badge status-badge--active">Active</span></td>
+                <td>18</td>
+                <td class="num--positive">12</td>
+                <td>6</td>
+                <td>1.8h</td>
+                <td>
+                  <div class="sla-bar">
+                    <div class="sla-bar__track"><div class="sla-bar__fill sla-bar__fill--high" style="width:96%;"></div></div>
+                    <span class="sla-bar__pct sla-bar__pct--high">96%</span>
+                  </div>
+                </td>
+                <td><a class="widget__action" style="font-size:12px;">View</a></td>
+              </tr>
+              <!-- Jordan Kim -->
+              <tr>
+                <td>
+                  <div class="tech-cell">
+                    <div class="avatar avatar--b">JK</div>
+                    <div>
+                      <div class="tech-name">Jordan Kim</div>
+                      <div class="tech-role">Tier 2 · Desktop</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="status-badge status-badge--active">Active</span></td>
+                <td>22</td>
+                <td class="num--positive">14</td>
+                <td>8</td>
+                <td>2.1h</td>
+                <td>
+                  <div class="sla-bar">
+                    <div class="sla-bar__track"><div class="sla-bar__fill sla-bar__fill--high" style="width:91%;"></div></div>
+                    <span class="sla-bar__pct sla-bar__pct--high">91%</span>
+                  </div>
+                </td>
+                <td><a class="widget__action" style="font-size:12px;">View</a></td>
+              </tr>
+              <!-- Sam Patel -->
+              <tr>
+                <td>
+                  <div class="tech-cell">
+                    <div class="avatar avatar--c">SP</div>
+                    <div>
+                      <div class="tech-name">Sam Patel</div>
+                      <div class="tech-role">Tier 1 · Helpdesk</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="status-badge status-badge--away">Away</span></td>
+                <td>15</td>
+                <td class="num--positive">11</td>
+                <td>4</td>
+                <td>2.4h</td>
+                <td>
+                  <div class="sla-bar">
+                    <div class="sla-bar__track"><div class="sla-bar__fill sla-bar__fill--high" style="width:97%;"></div></div>
+                    <span class="sla-bar__pct sla-bar__pct--high">97%</span>
+                  </div>
+                </td>
+                <td><a class="widget__action" style="font-size:12px;">View</a></td>
+              </tr>
+              <!-- Morgan Reed -->
+              <tr>
+                <td>
+                  <div class="tech-cell">
+                    <div class="avatar avatar--d">MR</div>
+                    <div>
+                      <div class="tech-name">Morgan Reed</div>
+                      <div class="tech-role">Tier 3 · Security</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="status-badge status-badge--active">Active</span></td>
+                <td>19</td>
+                <td class="num--warn">9</td>
+                <td class="num--warn">10</td>
+                <td class="num--warn">3.2h</td>
+                <td>
+                  <div class="sla-bar">
+                    <div class="sla-bar__track"><div class="sla-bar__fill sla-bar__fill--medium" style="width:84%;"></div></div>
+                    <span class="sla-bar__pct sla-bar__pct--medium">84%</span>
+                  </div>
+                </td>
+                <td><a class="widget__action" style="font-size:12px;">View</a></td>
+              </tr>
+              <!-- Casey Liu -->
+              <tr>
+                <td>
+                  <div class="tech-cell">
+                    <div class="avatar avatar--e">CL</div>
+                    <div>
+                      <div class="tech-name">Casey Liu</div>
+                      <div class="tech-role">Tier 1 · Helpdesk</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="status-badge status-badge--active">Active</span></td>
+                <td>13</td>
+                <td class="num--positive">10</td>
+                <td>3</td>
+                <td>1.6h</td>
+                <td>
+                  <div class="sla-bar">
+                    <div class="sla-bar__track"><div class="sla-bar__fill sla-bar__fill--high" style="width:98%;"></div></div>
+                    <span class="sla-bar__pct sla-bar__pct--high">98%</span>
+                  </div>
+                </td>
+                <td><a class="widget__action" style="font-size:12px;">View</a></td>
+              </tr>
+              <!-- Riley Foster -->
+              <tr>
+                <td>
+                  <div class="tech-cell">
+                    <div class="avatar avatar--f">RF</div>
+                    <div>
+                      <div class="tech-name">Riley Foster</div>
+                      <div class="tech-role">Tier 2 · Server</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="status-badge status-badge--active">Active</span></td>
+                <td>21</td>
+                <td class="num--danger">8</td>
+                <td class="num--danger">13</td>
+                <td class="num--danger">4.1h</td>
+                <td>
+                  <div class="sla-bar">
+                    <div class="sla-bar__track"><div class="sla-bar__fill sla-bar__fill--low" style="width:76%;"></div></div>
+                    <span class="sla-bar__pct sla-bar__pct--low">76%</span>
+                  </div>
+                </td>
+                <td><a class="widget__action" style="font-size:12px;">View</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer / Pagination -->
+        <div class="datagrid-footer">
+          <span style="font-size:12px;color:var(--text-secondary);">Showing 6 of 6 technicians</span>
+          <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn page-btn--active">1</div>
+            <div class="page-btn">›</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /widget-row--full (Datagrid) -->
+
+    <!-- ── Row 3: Insight XL + Timeline L ──────────────────────── -->
+    <div class="widget-row widget-row--split">
+
+      <!-- Insight XL: 7-Day Resolution Trend -->
+      <div class="widget" data-widget-size="xl" data-framework="Insight">
+        <div class="widget__header">
+          <div class="widget__header-left">
+            <div>
+              <div class="widget__title">Ticket Resolution Trend</div>
+              <div class="widget__subtitle">Last 7 days · All technicians</div>
+            </div>
+          </div>
+          <a class="widget__action">Full Report →</a>
+        </div>
+        <div class="chart-area">
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot legend-dot--resolved"></div>
+              Resolved
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot legend-dot--assigned"></div>
+              Assigned
+            </div>
+          </div>
+
+          <!-- SVG chart: 7 days, two lines (Assigned + Resolved) -->
+          <!-- Data: Assigned [62,70,75,68,72,45,35], Resolved [48,55,61,52,64,38,29] -->
+          <!-- Y scale: 0–90, canvas: 660×200 -->
+          <svg class="chart-svg" viewBox="0 0 660 220" preserveAspectRatio="none">
+            <!-- Grid lines -->
+            <line x1="44" y1="20"  x2="640" y2="20"  stroke="#ececee" stroke-width="1"/>
+            <line x1="44" y1="60"  x2="640" y2="60"  stroke="#ececee" stroke-width="1"/>
+            <line x1="44" y1="100" x2="640" y2="100" stroke="#ececee" stroke-width="1"/>
+            <line x1="44" y1="140" x2="640" y2="140" stroke="#ececee" stroke-width="1"/>
+            <line x1="44" y1="180" x2="640" y2="180" stroke="#ececee" stroke-width="1"/>
+            <!-- Y axis labels -->
+            <text x="38" y="24"  text-anchor="end" font-size="10" fill="#767786">90</text>
+            <text x="38" y="64"  text-anchor="end" font-size="10" fill="#767786">70</text>
+            <text x="38" y="104" text-anchor="end" font-size="10" fill="#767786">50</text>
+            <text x="38" y="144" text-anchor="end" font-size="10" fill="#767786">30</text>
+            <text x="38" y="184" text-anchor="end" font-size="10" fill="#767786">10</text>
+            <!-- 
+              X positions for 7 days (evenly spaced from x=60 to x=620):
+              Mon=60, Tue=153, Wed=246, Thu=339, Fri=432, Sat=526, Sun=620
+              Y: val → y = 180 - ((val/90)*160)
+              Assigned: [62,70,75,68,72,45,35]
+                Mon: y=180-110=70 → y≈110
+                62→180-110=70... let me recalc: y=180-((v/90)*160)
+                62→180-110.2=69.8≈70
+                70→180-124.4=55.6≈56
+                75→180-133.3=46.7≈47
+                68→180-120.9=59.1≈59
+                72→180-128=52
+                45→180-80=100
+                35→180-62.2=117.8≈118
+              Resolved: [48,55,61,52,64,38,29]
+                48→180-85.3=94.7≈95
+                55→180-97.8=82.2≈82
+                61→180-108.4=71.6≈72
+                52→180-92.4=87.6≈88
+                64→180-113.8=66.2≈66
+                38→180-67.6=112.4≈112
+                29→180-51.6=128.4≈128
+            -->
+
+            <!-- Area fill: Assigned (lighter) -->
+            <path
+              d="M60,70 L153,56 L246,47 L339,59 L432,52 L526,100 L620,118 L620,180 L60,180 Z"
+              fill="#dadae4" fill-opacity="0.35"
+            />
+            <!-- Area fill: Resolved -->
+            <path
+              d="M60,95 L153,82 L246,72 L339,88 L432,66 L526,112 L620,128 L620,180 L60,180 Z"
+              fill="#2e3f80" fill-opacity="0.08"
+            />
+
+            <!-- Line: Assigned -->
+            <polyline
+              points="60,70 153,56 246,47 339,59 432,52 526,100 620,118"
+              fill="none" stroke="#dadae4" stroke-width="2" stroke-linejoin="round"
+            />
+            <!-- Line: Resolved -->
+            <polyline
+              points="60,95 153,82 246,72 339,88 432,66 526,112 620,128"
+              fill="none" stroke="#2e3f80" stroke-width="2.5" stroke-linejoin="round"
+            />
+
+            <!-- Data points: Resolved -->
+            <circle cx="60"  cy="95"  r="3.5" fill="#2e3f80"/>
+            <circle cx="153" cy="82"  r="3.5" fill="#2e3f80"/>
+            <circle cx="246" cy="72"  r="3.5" fill="#2e3f80"/>
+            <circle cx="339" cy="88"  r="3.5" fill="#2e3f80"/>
+            <circle cx="432" cy="66"  r="3.5" fill="#2e3f80" stroke="#fff" stroke-width="2"/>
+            <circle cx="526" cy="112" r="3.5" fill="#2e3f80"/>
+            <circle cx="620" cy="128" r="3.5" fill="#2e3f80"/>
+
+            <!-- Tooltip callout on Friday peak -->
+            <rect x="400" y="38" width="72" height="22" rx="4" fill="#2e3f80"/>
+            <text x="436" y="53" text-anchor="middle" font-size="11" fill="#f1f1f2" font-weight="600">64 resolved</text>
+            <line x1="436" y1="60" x2="432" y2="66" stroke="#2e3f80" stroke-width="1.5"/>
+          </svg>
+
+          <!-- X labels -->
+          <div class="chart-x-labels">
+            <span class="chart-x-label">Mon</span>
+            <span class="chart-x-label">Tue</span>
+            <span class="chart-x-label">Wed</span>
+            <span class="chart-x-label">Thu</span>
+            <span class="chart-x-label" style="color:var(--button-primary);font-weight:600;">Fri ●</span>
+            <span class="chart-x-label">Sat</span>
+            <span class="chart-x-label">Sun</span>
+          </div>
+
+          <!-- Summary stats row -->
+          <div class="chart-summary-row">
+            <div class="chart-stat">
+              <div class="chart-stat__value">337</div>
+              <div class="chart-stat__label">Total Resolved (7d)</div>
+            </div>
+            <div class="chart-stat">
+              <div class="chart-stat__value" style="color:var(--status-green);">87%</div>
+              <div class="chart-stat__label">Resolution Rate</div>
+            </div>
+            <div class="chart-stat">
+              <div class="chart-stat__value" style="color:var(--status-red);">4</div>
+              <div class="chart-stat__label">SLA Breaches (7d)</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Timeline L: Recent Activity Feed -->
+      <div class="widget" data-widget-size="l" data-framework="Timeline">
+        <div class="widget__header">
+          <div class="widget__header-left">
+            <div>
+              <div class="widget__title">Activity Feed</div>
+              <div class="widget__subtitle">Live · Last 4 hours</div>
+            </div>
+          </div>
+          <a class="widget__action">View All →</a>
+        </div>
+        <div class="timeline-list">
+
+          <!-- Event 1: Resolved -->
+          <div class="timeline-item">
+            <div class="timeline-item__icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="#1a7f4b" stroke-width="1.4"/>
+                <path d="M4.5 7.5l2 2 3-4" stroke="#1a7f4b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="timeline-item__body">
+              <div class="timeline-item__event">
+                Ticket resolved by Alex Torres
+                <a class="timeline-item__ticket">#4821</a>
+              </div>
+              <div class="timeline-item__meta">Network connectivity · P2 · 1.4h handle time</div>
+            </div>
+            <div class="timeline-item__time">2 min ago</div>
+          </div>
+
+          <!-- Event 2: SLA Breach Alert -->
+          <div class="timeline-item">
+            <div class="timeline-item__icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 2.5l5 9H2l5-9z" stroke="#c62828" stroke-width="1.4" stroke-linejoin="round"/>
+                <line x1="7" y1="6" x2="7" y2="9" stroke="#c62828" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="7" cy="10.2" r="0.6" fill="#c62828"/>
+              </svg>
+            </div>
+            <div class="timeline-item__body">
+              <div class="timeline-item__event">
+                SLA breach risk · Morgan Reed
+                <a class="timeline-item__ticket">#4806</a>
+                <span class="alert-pill">P1</span>
+              </div>
+              <div class="timeline-item__meta">Server outage · Approaching 4h SLA window</div>
+            </div>
+            <div class="timeline-item__time">15 min ago</div>
+          </div>
+
+          <!-- Event 3: Escalation -->
+          <div class="timeline-item">
+            <div class="timeline-item__icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 11V3M3 6l4-4 4 4" stroke="#7a4f00" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="timeline-item__body">
+              <div class="timeline-item__event">
+                Ticket escalated to Tier 3
+                <a class="timeline-item__ticket">#4819</a>
+              </div>
+              <div class="timeline-item__meta">Riley Foster → Morgan Reed · Security incident</div>
+            </div>
+            <div class="timeline-item__time">32 min ago</div>
+          </div>
+
+          <!-- Event 4: Login -->
+          <div class="timeline-item">
+            <div class="timeline-item__icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="5" r="2.5" stroke="#2e3f80" stroke-width="1.4"/>
+                <path d="M2 12c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="#2e3f80" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="timeline-item__body">
+              <div class="timeline-item__event">Jordan Kim started shift</div>
+              <div class="timeline-item__meta">8 tickets in queue · 0 SLA risks</div>
+            </div>
+            <div class="timeline-item__time">1h ago</div>
+          </div>
+
+          <!-- Event 5: Resolved -->
+          <div class="timeline-item">
+            <div class="timeline-item__icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="#1a7f4b" stroke-width="1.4"/>
+                <path d="M4.5 7.5l2 2 3-4" stroke="#1a7f4b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="timeline-item__body">
+              <div class="timeline-item__event">
+                Ticket resolved by Casey Liu
+                <a class="timeline-item__ticket">#4799</a>
+              </div>
+              <div class="timeline-item__meta">Password reset · P3 · 0.8h handle time</div>
+            </div>
+            <div class="timeline-item__time">1.5h ago</div>
+          </div>
+
+          <!-- Event 6: Report -->
+          <div class="timeline-item">
+            <div class="timeline-item__icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="2.5" y="1.5" width="9" height="11" rx="1.5" stroke="#767786" stroke-width="1.4"/>
+                <line x1="4.5" y1="5" x2="9.5" y2="5" stroke="#767786" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="4.5" y1="7.5" x2="9.5" y2="7.5" stroke="#767786" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="4.5" y1="10" x2="7.5" y2="10" stroke="#767786" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="timeline-item__body">
+              <div class="timeline-item__event">Daily efficiency report generated</div>
+              <div class="timeline-item__meta">PDF · Sent to 3 recipients</div>
+            </div>
+            <div class="timeline-item__time">2h ago</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /widget-row--split -->
+
+    <!-- ── Annotation Strip ───────────────────────────────────────── -->
+    <div class="annotation-strip">
+      <div class="annotation-strip__heading">Design Annotation — Widget + Framework Decisions</div>
+      <div class="annotation-grid">
+
+        <div class="annotation-card">
+          <div class="annotation-card__label">KPI Strip</div>
+          <div class="annotation-card__content">4× Summary XXS fills all 8 columns (4 × 2 cols = 8 cols). Single stat + delta badge + footer note. Technicians and SLA state scannable at a glance without drill-in.</div>
+          <div><span class="annotation-card__badge badge--framework">Summary</span> <span class="annotation-card__badge badge--size">XXS × 4</span></div>
+        </div>
+
+        <div class="annotation-card">
+          <div class="annotation-card__label">Technician Table</div>
+          <div class="annotation-card__content">Datagrid XXL is the primary management surface — full toolbar, sortable columns, SLA progress bars, and row-level drill-in. SLA column uses inline bar + percentage to avoid requiring a separate chart.</div>
+          <div><span class="annotation-card__badge badge--framework">Datagrid</span> <span class="annotation-card__badge badge--size">XXL</span> <span class="annotation-card__badge badge--exp">🧪 Experimental</span></div>
+        </div>
+
+        <div class="annotation-card">
+          <div class="annotation-card__label">Resolution Chart</div>
+          <div class="annotation-card__content">Insight XL with dual-line chart (Assigned vs Resolved). Peak day callout surfaced inline. Summary stat row below chart provides numeric anchors alongside the trend line for owner-level reporting.</div>
+          <div><span class="annotation-card__badge badge--framework">Insight</span> <span class="annotation-card__badge badge--size">XL</span></div>
+        </div>
+
+        <div class="annotation-card">
+          <div class="annotation-card__label">Activity Feed</div>
+          <div class="annotation-card__content">Timeline L as secondary context panel alongside the chart. P1 SLA risk events surface a red alert pill to draw MSP owner attention. Six events = within L's 4–6 event sweet spot.</div>
+          <div><span class="annotation-card__badge badge--framework">Timeline</span> <span class="annotation-card__badge badge--size">L</span> <span class="annotation-card__badge badge--stable">✔ Stable</span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

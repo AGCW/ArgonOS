@@ -1,5 +1,13 @@
 [
   {
+    "id": "msp-technician-efficiency-dashboard",
+    "title": "MSP Technician Efficiency Dashboard",
+    "prompt": "Build a dashboard for MSP owners to monitor technician efficiency and ticket resolution",
+    "createdAt": "2026-03-16T00:00:00Z",
+    "filename": "msp-technician-efficiency-dashboard.html",
+    "frameworks": ["Summary (XXS × 4)", "Datagrid (XXL)", "Insight (XL)", "Timeline (L)"]
+  },
+  {
     "id": "recent-ticket-drawer",
     "title": "Recent Ticket Drawer",
     "prompt": "Recent Ticket Drawer — Datagrid (List) framework, slide-out drawer, 3 states (populated, inaccessible tile, empty state)",

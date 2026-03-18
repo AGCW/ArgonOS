@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+If Marvin evidence exists, prefer it over slides, because it is closer to the raw insight and may include linked interview snippets.
+
+Whenever you award >0 points for a criterion, include supporting evidence:
+- Either a direct quote (preferred)
+- Or a precise section reference (e.g., “Success KPIs section”)
+If evidence is not found, award 0 and add a missing requirement + question.

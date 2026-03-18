@@ -1,0 +1,74 @@
+---
+description: Instructs the agent to fetch and reference the ConnectWise Asio Neon Storybook before planning or building any widget framework example or UI surface that uses Asio Neon components.
+alwaysApply: true
+---
+
+# CW UI Storybook Reference
+
+## When This Rule Applies
+
+Use the CW UI Storybook as additional knowledge whenever you are:
+- Planning or building a widget framework example (e.g., `ui/examples/*.html`)
+- Creating or updating a widget framework spec (e.g., `widget-frameworks/*.md`)
+- Designing any UI surface that references Asio Neon components
+- Evaluating component variants, props, or visual behavior for Asio Neon
+
+## Storybook Access
+
+**Base URL:** `https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/`
+
+**Story URL pattern:**
+```
+https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/{story-id}
+```
+
+**Story IDs** are already encoded in every widget framework spec as Story References, for example:
+- `asio-neon-components-avatar-✔` → story ID `asio-neon-components-avatar-✔--default`
+- `asio-neon-components-chip-✔` → story ID `asio-neon-components-chip-✔--default`
+- `asio-neon-components-list-🧪` → story ID `asio-neon-components-list-🧪--default`
+
+**URL-encode special characters** when constructing fetch URLs:
+- `✔` → `%E2%9C%94`
+- `🧪` → `%F0%9F%A7%AA`
+
+## How to Use It
+
+1. **Before planning or building**, identify which Asio Neon components the task requires by reading the relevant widget framework spec file (e.g., `widget-frameworks/timeline.md`).
+2. **For each component**, use `WebFetch` to retrieve its Storybook page to confirm available variants, visual behavior, and any experimental (`🧪`) status:
+   ```
+   WebFetch: https://default.cw-ui.qa.use1.cwcmddev.cwnet.io/?path=/story/asio-neon-components-{name}--default
+   ```
+3. **If a Storybook page is unreachable or returns empty content** (the iframe source is unavailable or authentication is required), note it and fall back to the component definition in the widget framework spec. Do NOT invent component behavior.
+4. **Cite the Storybook URL** in zone breakdown callouts when referencing Asio Neon components in example files, so designers can navigate directly to the live story.
+
+## Component Reference Quick Map
+
+The following components are used across the 5 core widget frameworks. Fetch these before working on any example:
+
+| Component | Story ID | Status |
+|-----------|----------|--------|
+| `Avatar` | `asio-neon-components-avatar-✔--default` | Stable ✔ |
+| `Badge` | `asio-neon-components-badge-✔--default` | Stable ✔ |
+| `Button` | `asio-neon-components-button-✔--default` | Stable ✔ |
+| `Card` | `asio-neon-components-card-✔--default` | Stable ✔ |
+| `Chip` | `asio-neon-components-chip-✔--default` | Stable ✔ |
+| `DataGrid` | `asio-neon-components-datagrid-🧪--default` | Experimental 🧪 |
+| `Dropdown` | `asio-neon-form-components-dropdown-✔--default` | Stable ✔ |
+| `LinearProgress` | `asio-neon-form-components-linear-progress-✔--default` | Stable ✔ |
+| `CircularProgress` | `asio-neon-components-circularprogress-✔--default` | Stable ✔ |
+| `Link` | `asio-neon-components-link-✔--default` | Stable ✔ |
+| `List` | `asio-neon-components-list-🧪--default` | Experimental 🧪 |
+| `Notification` | `asio-neon-components-notification--default` | No stability tag |
+| `OverflowMenu` | `asio-neon-components-overflow-menu--default` | No stability tag |
+| `Pagination` | `asio-neon-components-pagination-✔--default` | Stable ✔ |
+| `Search` | `asio-neon-components-search--default` | No stability tag |
+| `Status` | `asio-neon-components-status--default` | No stability tag |
+| `Stepper` | `asio-neon-components-stepper-🧪--default` | Experimental 🧪 |
+| `ToggleButton` | `asio-neon-components-togglebutton-✔--default` | Stable ✔ |
+
+## Non-Negotiables
+
+- Do NOT substitute components that are not listed in the widget framework spec for the surface being designed.
+- Do NOT invent component variants or props not found in the spec or Storybook.
+- If a component is marked `🧪` (experimental), note it in the zone breakdown so the team is aware.
+- The framework specs in `widget-frameworks/` are the authoritative source of truth. The Storybook is supplementary reference for component details and visual behavior.

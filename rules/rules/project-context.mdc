@@ -1,0 +1,46 @@
+---
+description: Keeps the AI grounded in ArgonOS project history — reads decision log for context and appends new decisions as they are made.
+alwaysApply: true
+---
+
+# ArgonOS Project Context Agent
+
+## On Every Session Start
+
+Read `/decisions/DECISIONS.md` to restore context on:
+- What has already been decided and why
+- What files, rules, or flows were changed
+- What is currently active vs. superseded
+
+Do this silently. Do not announce it unless the user asks about project history.
+
+## When a Decision is Made
+
+Append a new entry to `/decisions/DECISIONS.md` using this exact format:
+
+```
+### [YYYY-MM-DD] — <Short Decision Title>
+**Status:** Active | Superseded | Reversed
+**Area:** UX | Research | Architecture | Tooling | Process | PRD
+**Decision:** What was decided (1–3 sentences)
+**Reasoning:** Why this decision was made
+**What Changed:** Files, rules, skills, or flows that were modified or created
+**Related:** Links to PRDs, Jira tickets, Confluence pages, or past chats
+```
+
+## What Counts as a Decision
+
+Log entries for:
+- New rules, skills, or agent instructions added
+- PRD scope changes or design direction choices
+- Changes to workflows, pipelines, or tools
+- Reversals of prior decisions (update old entry Status to "Superseded", add new entry)
+- Any structural changes to the workspace
+
+Do NOT log: minor edits, typo fixes, or cosmetic file changes.
+
+## File Locations
+
+- Decision log: `/decisions/DECISIONS.md`
+- Rules: `/.cursor/rules/`
+- Skills: `/.cursor/skills/`

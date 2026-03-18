@@ -1,0 +1,219 @@
+# Figma Concept Generation — Asio Neon + Widget Sizing Rule
+
+## When This Rule Applies
+
+Apply this rule whenever you are:
+- Generating a UI concept (`ui/concepts/*.html`) from a feature description or PRD
+- Building or annotating a widget layout that should conform to the Widgets-Templates-Library grid
+- Referencing or hardcoding any color, type, spacing, or sizing value in a concept file
+
+---
+
+## Figma Library Sources
+
+| Library | File Key | Figma URL |
+|---------|----------|-----------|
+| Asio Neon (design system) | `a1eKyRtlUCKWmryjQPA4Q2` | https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon |
+| UXTT-Widgets (sizing — authoritative) | `6gHlNEUBGcVMC7NJSlffXG` | https://www.figma.com/design/6gHlNEUBGcVMC7NJSlffXG/UXTT-Widgets?node-id=0-1 |
+| Widgets-Templates-Library (sizing — reference) | `RjGqxhhalCsqQhC91omYUi` | https://www.figma.com/design/RjGqxhhalCsqQhC91omYUi/Widgets-Templates-Library?node-id=3-80 |
+
+**Token reference file:** `/design-system/neon-tokens.md`
+
+---
+
+## Non-Negotiables
+
+- **Never invent colors.** Every hex value used in a concept must come from the Neon token list below.
+- **Never invent font sizes or weights.** All type must use an `Inter` font and a defined token scale.
+- **Never invent a widget size.** All widget dimensions must snap to the 8-column grid using one of the 7 size tiers.
+- **Never use a size outside a framework's valid set.** Each framework specifies which sizes are valid — check the Framework + Size Pairing Guide before assigning a size.
+- **Always justify the size choice.** Every concept must include a `Size Rationale` in its HTML comment header explaining in one sentence why the chosen size fits the content.
+- **Every concept must map to exactly one framework.** If the content spans multiple frameworks, produce one widget per framework rather than mixing anatomy in a single container.
+- If you need a token that is not listed below, note it as `[TOKEN MISSING — needs extraction]` and do NOT substitute an arbitrary value.
+
+---
+
+## Color Tokens (Exhaustive — use CSS custom properties)
+
+Define these as CSS variables at the top of every concept file:
+
+```css
+:root {
+  /* Text */
+  --text-primary: #101120;
+  --text-secondary: #767786;
+  --text-on-color: #f1f1f2;
+
+  /* Background */
+  --background: #ffffff;
+  --background-hover: rgba(153, 153, 156, 0.16);
+
+  /* Layer / Surface */
+  --layer-01: #f6f6f9;
+  --layer-hover-03: #e7e7ea;
+  --layer-active-03: #c5c6cb;
+
+  /* Border */
+  --border-subtle-02: #ececee;
+
+  /* Icon */
+  --icon-on-color: #ecedee;
+  --icon-disabled: rgba(35, 36, 42, 0.25);
+
+  /* Button — Primary */
+  --button-primary: #2e3f80;
+  --button-primary-hover: #222e5e;
+  --button-primary-active: #394e9e;
+  --button-disabled: #c6c6c6;
+
+  /* Button — Secondary */
+  --button-secondary: #2e3f80;
+  --button-secondary-hover: #222e5e;
+  --button-secondary-active: #394e9e;
+
+  /* Button — Danger */
+  --button-danger-primary: #d32f2f;
+  --button-danger-secondary: #ef5350;
+  --button-danger-hover: #c62828;
+  --button-danger-active: #aa241d;
+
+  /* Interactive */
+  --focus: #394e9e;
+  --link-primary: #006a8e;
+
+  /* Misc */
+  --skeleton-background: #dadae4;
+  --alert-text: #101120;
+}
+```
+
+---
+
+## Typography Scale
+
+Font family: **Inter** (load from Google Fonts or assume available).
+
+| Token | Size | Weight | Line Height | CSS Class Name |
+|-------|------|--------|-------------|----------------|
+| `Headings/Light/H2` | 48px | 300 | 100% | `.h2-light` |
+| `Headings/Light/H4` | 24px | 300 | 100% | `.h4-light` |
+| `Headings/Bold/H4` | 24px | 700 | 100% | `.h4-bold` |
+| `Text/16-Semibold` | 16px | 600 | 22px | `.text-16-semibold` |
+| `Text/14-semibold` | 14px | 600 | 18px | `.text-14-semibold` |
+
+Define these as CSS classes in every concept:
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+body { font-family: 'Inter', sans-serif; color: var(--text-primary); background: var(--background); }
+
+.h2-light    { font-size: 48px; font-weight: 300; line-height: 1; }
+.h4-light    { font-size: 24px; font-weight: 300; line-height: 1; }
+.h4-bold     { font-size: 24px; font-weight: 700; line-height: 1; }
+.text-16-semibold { font-size: 16px; font-weight: 600; line-height: 22px; }
+.text-14-semibold { font-size: 14px; font-weight: 600; line-height: 18px; }
+```
+
+---
+
+## Spacing
+
+Base unit: **8px** (`Spacing/spacing-03`). Use multiples of 4px for all spacing.
+
+Inferred scale (multiples of 4px base):
+- `spacing-01`: 4px
+- `spacing-02`: 6px
+- `spacing-03`: 8px
+- `spacing-04`: 12px
+- `spacing-05`: 16px
+- `spacing-06`: 24px
+- `spacing-07`: 32px
+- `spacing-08`: 40px
+- `spacing-09`: 48px
+
+---
+
+## Widget Sizing Grid
+
+**Source:** [UXTT-Widgets](https://www.figma.com/design/6gHlNEUBGcVMC7NJSlffXG/UXTT-Widgets?node-id=0-1) (authoritative)  
+**Grid:** 8 equal columns | **Row height:** 180px | **Gutter:** 16px | **Column width at xl:** 180px
+
+### Size Tiers
+
+| Size | Columns | Rows | Notes |
+|------|---------|------|-------|
+| XXS | 2 | 1 | Minimal stat/indicator |
+| XS | 4 | 1 | Compact summary |
+| S | 8 | 1 | Full-width banner |
+| M | 2 | 2 | Small card |
+| L | 4 | 2 | Medium card |
+| XL | 4 | 4 | Large data card |
+| XXL | 8 | 5 (or 100%) | Full-width deep widget |
+
+### Pixel Dimensions at breakpoints.xl (1552px content, col = 180px, gap = 16px)
+
+Formula: Width = `(cols × 180) + ((cols−1) × 16)`. Height = `(rows × 180) + ((rows−1) × 16)`.
+
+| Size | Width | Height |
+|------|-------|--------|
+| XXS | 376px | 180px |
+| XS | 768px | 180px |
+| S | 1552px | 180px |
+| M | 376px | 376px |
+| L | 768px | 376px |
+| XL | 768px | 768px |
+| XXL | 1552px | 964px |
+
+**RULE:** Every widget container in a concept file must declare a `data-widget-size` attribute matching one of: `xxs`, `xs`, `s`, `m`, `l`, `xl`, `xxl`. Use the corresponding pixel dimensions from the table above.
+
+---
+
+## Widget Framework + Size Pairing Guide
+
+Each framework has a defined set of **valid sizes**. You MUST only use sizes from a framework's valid set. Do NOT assign a size outside the valid set — doing so is a constraint violation.
+
+When choosing a size, the content and use case must justify the choice. For every concept, you must include a `Size Rationale` in the HTML comment header (see Concept Generation Template below) explaining in one sentence why the chosen size fits the content.
+
+| Framework | Valid Sizes | Default | When to Use Each Size |
+|-----------|------------|---------|----------------------|
+| Summary | XXS, XS, M | XS | **XXS:** Single stat (1 number + 1 label + optional icon). Use when space is at a premium. **XS:** 2–4 KPI metrics in a horizontal row. Use for compact dashboard strips. **M:** Single KPI with secondary data (trend, sparkline, breakdown). Use when depth matters. |
+| Timeline | L, XL | L | **L:** Recent activity feed, 4–6 events. Use when timeline is secondary context alongside other widgets. **XL:** Full event history or audit trail, 10+ events. Use when timeline is the primary surface. |
+| Datagrid | XL, XXL | XXL | **XL:** Compact list, fewer visible rows. Use for secondary or embedded panels where space is constrained. **XXL:** Primary management surface with full toolbar, pagination, and bulk actions. Use when data browsing is the main task. |
+| Form | L, XL | L | **L:** Short form, 2–4 fields, single-step. Use for quick configuration or inline editing. **XL:** Longer form, 5+ fields or multi-section with grouping. Use for structured data entry workflows. |
+| Insight | L, XL, XXL | XL | **L:** Single chart or metric comparison. Use for supplemental analytics alongside other widgets. **XL:** Chart + supporting data table or multi-metric view. Use when insight is the primary widget. **XXL:** Full analytics dashboard with multiple chart zones. Use for dedicated reporting surfaces. |
+
+---
+
+## Concept Generation Template
+
+Every new concept file in `ui/concepts/` must:
+
+1. Start with the CSS variables block above
+2. Declare the correct Google Fonts import
+3. Define a widget container with `data-widget-size` and `data-framework` attributes
+4. Use only token values — no hardcoded colors outside the `:root` block
+5. Include a comment header identifying the concept, framework, and size tier
+
+```html
+<!-- 
+  Concept: [Feature Name]
+  Framework: [Datagrid | Timeline | Summary | Form | Insight]
+  Size: [XXS | XS | S | M | L | XL | XXL]
+  Size Rationale: [One sentence explaining why this size fits the content and use case]
+  Source: [PRD URL or description]
+  Generated: [YYYY-MM-DD]
+  Figma Libraries: Asio Neon (a1eKyRtlUCKWmryjQPA4Q2), UXTT-Widgets (6gHlNEUBGcVMC7NJSlffXG)
+-->
+```
+
+---
+
+## Figma Round-Trip
+
+To push a completed concept to Figma, use the `generate_figma_design` MCP tool:
+- Start a local server with `npm run ui` or open the file in browser
+- Call `generate_figma_design` without `outputMode` first to get instructions
+- Use `outputMode: "newFile"` for a fresh concept, `outputMode: "existingFile"` to add to an existing file
+
+**Reference:** See `/design-system/neon-tokens.md` for the full extracted token set.

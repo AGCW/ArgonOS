@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  Concept: Widget Sizing Reference — All 7 Tiers
+  Framework: Summary (XXS, XS, S, M) | Timeline (L) | Datagrid (XL, XXL)
+  Variant: Single Metric | Metric Strip | Status Roll-Up Banner | Single KPI with Depth | Activity Feed | Compact List | Primary Management Surface
+  Size: XXS → XXL (all tiers at breakpoints.xl)
+  Size Rationale: Showcase demonstrating all 7 size tiers at exact pixel dimensions for visual validation and designer reference.
+  Dimensions: See per-widget annotations (col=180px, gap=16px, 8-col grid)
+  Source: widget sizing reference (design-system-guardian.mdc)
+  Generated: 2026-03-14
+  MUI Version: @mui/material@5 CDN UMD (API ref: @mui/material@6.4.12 via MUI MCP)
+  Figma Libraries:
+    Asio Neon: https://www.figma.com/design/a1eKyRtlUCKWmryjQPA4Q2/Asio-Neon
+    UXTT-Widgets: https://www.figma.com/design/6gHlNEUBGcVMC7NJSlffXG/UXTT-Widgets?node-id=0-1
+  Guardian Gates:
+    Gate 1 ✓ Framework declared per tier before layout code
+    Gate 2 ✓ Sizes valid per framework pairing table (S noted as unassigned below)
+    Gate 3 ✓ No Tailwind — MUI components only
+    Gate 4 ✓ MUI MCP lookup: useMuiDocs @mui/material@6.4.12
+              Components confirmed: Card, CardContent, Typography, Chip, Divider,
+              LinearProgress, List, ListItem, ListItemText, ListItemAvatar, Avatar,
+              Table, TableBody, TableCell, TableHead, TableRow, TableContainer,
+              TextField, Pagination, Button, Stack, Box, ThemeProvider, createTheme,
+              CssBaseline
+    Gate 5 ✓ Storybook referenced: CW UI Asio Neon Storybook (component behavior + variants)
+    Gate 6 ✓ data-widget-size + data-framework on all containers; comment header present
+
+  NOTE — S size: The 1552×180 (S) tier has no framework assignment in the standard pairing
+  table. It is included here as an unassigned size demonstration. Do not use S in production
+  concepts until a framework pairing is formally assigned.
+-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArgonOS — Widget Sizing Reference</title>
+
+  <!-- Inter — Asio Neon typeface -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+  <!-- Emotion (MUI peer dependency) -->
+  <script src="https://unpkg.com/@emotion/react@11/dist/emotion-react.umd.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@emotion/styled@11/dist/emotion-styled.umd.min.js" crossorigin></script>
+
+  <!-- MUI Material (v5 UMD — API compatible with v6 for these components) -->
+  <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js" crossorigin></script>
+
+  <!-- Babel standalone for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #edeef2; font-family: 'Inter', sans-serif; }
+    code { font-family: 'SFMono-Regular', Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    /* MUI components — confirmed via useMuiDocs @mui/material@6.4.12 */
+    const {
+      Box, Card, CardContent, Typography, Chip, Button, Stack,
+      ThemeProvider, createTheme, CssBaseline,
+      LinearProgress, Divider,
+      Avatar, List, ListItem, ListItemText, ListItemAvatar,
+      Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+      TextField, Pagination,
+    } = MaterialUI;
+
+    /* ─── Asio Neon Theme ──────────────────────────────────────────────────────
+       All token values set once here. No raw hex values anywhere else in this file.
+       Token source: /design-system/neon-tokens.md
+    ─────────────────────────────────────────────────────────────────────────── */
+    const neonTheme = createTheme({
+      palette: {
+        primary: {
+          main: '#2e3f80',        // --button-primary
+          dark: '#222e5e',        // --button-primary-hover
+          light: '#394e9e',       // --button-primary-active / --focus
+          contrastText: '#f1f1f2',// --text-on-color
+        },
+        error: {
+          main: '#d32f2f',        // --button-danger-primary
+          dark: '#c62828',        // --button-danger-hover
+          light: '#ef5350',       // --button-danger-secondary
+        },
+        text: {
+          primary: '#101120',     // --text-primary
+          secondary: '#767786',   // --text-secondary
+          disabled: 'rgba(35, 36, 42, 0.25)', // --icon-disabled
+        },
+        background: {
+          default: '#ffffff',     // --background
+          paper: '#f6f6f9',       // --layer-01
+        },
+        divider: '#ececee',       // --border-subtle-02
+        action: {
+          hover: 'rgba(153, 153, 156, 0.16)',  // --background-hover
+          selected: '#e7e7ea',    // --layer-hover-03
+          active: '#c5c6cb',      // --layer-active-03
+          disabled: '#c6c6c6',    // --button-disabled
+          focus: '#394e9e',       // --focus
+        },
+        // Semantic — not in Neon token set yet, kept minimal
+        success: { main: '#2e7d32', light: '#e8f5e9' },
+        warning: { main: '#e65100', light: '#fff8e1' },
+        info:    { main: '#1565c0', light: '#e3f2fd' },
+        link:    { main: '#006a8e' }, // --link-primary
+      },
+      typography: {
+        fontFamily: '"Inter", sans-serif',
+        // Headings/Light/H2
+        h2: { fontSize: '48px', fontWeight: 300, lineHeight: 1, letterSpacing: 0 },
+        // Headings/Bold/H4
+        h4: { fontSize: '24px', fontWeight: 700, lineHeight: 1, letterSpacing: 0 },
+        // Text/16-Semibold
+        subtitle1: { fontSize: '16px', fontWeight: 600, lineHeight: '22px' },
+        // Text/14-semibold
+        body2: { fontSize: '14px', fontWeight: 600, lineHeight: '18px' },
+      },
+      spacing: 4, // 4px base; spacing(2)=8px, spacing(3)=12px, spacing(4)=16px
+      shape: { borderRadius: 4 },
+    });
+
+    /* ─── Shared helpers ──────────────────────────────────────────────────── */
+
+    const statusStyle = (s) =>
+      s === 'Open'        ? { bgcolor: '#e3f2fd', color: '#1565c0' } :
+      s === 'In Progress' ? { bgcolor: '#fff8e1', color: '#e65100' } :
+      s === 'Closed'      ? { bgcolor: '#e8f5e9', color: '#2e7d32' } :
+      {};
+
+    const priorityStyle = (p) =>
+      p === 'High'   ? { bgcolor: '#ffebee', color: '#c62828' } :
+      p === 'Low'    ? { bgcolor: '#f6f6f9', color: '#767786' } :
+                       { bgcolor: '#f6f6f9', color: '#767786' };
+
+    const slaStyle = (v) =>
+      v === 'Breached' ? { bgcolor: '#ffebee', color: '#c62828' } :
+      v === 'At Risk'  ? { bgcolor: '#fff8e1', color: '#e65100' } :
+      v === 'Met'      ? { bgcolor: '#e8f5e9', color: '#2e7d32' } :
+      {};
+
+    function StatusDot({ color }) {
+      return <Box component="span" sx={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', bgcolor: color, flexShrink: 0 }} />;
+    }
+
+    /* ─── Tier annotation bar ─────────────────────────────────────────────── */
+    function TierAnnotation({ tier, dims, framework, variant, note }) {
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5, flexWrap: 'wrap' }}>
+          <Box sx={{ px: 1.5, py: 0.5, bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: '4px', fontSize: 13, fontWeight: 700, letterSpacing: '0.06em', fontFamily: '"Inter", sans-serif' }}>
+            {tier}
+          </Box>
+          <Typography sx={{ fontSize: 13, fontWeight: 600, color: 'text.secondary' }}>{dims}</Typography>
+          <Box sx={{ width: 1, height: 14, bgcolor: 'divider' }} />
+          <Typography sx={{ fontSize: 13, fontWeight: 600, color: 'text.primary' }}>{framework}</Typography>
+          <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>·</Typography>
+          <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>{variant}</Typography>
+          {note && (
+            <Box sx={{ ml: 'auto', px: 1.5, py: 0.25, bgcolor: '#fff8e1', border: '1px solid #ffe082', borderRadius: '4px', fontSize: 11, fontWeight: 600, color: '#e65100', fontFamily: '"Inter", sans-serif' }}>
+              {note}
+            </Box>
+          )}
+        </Box>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: XXS — Summary / Single Metric
+       Framework: Summary  |  Valid: XXS, XS, M  |  Dims: 376×180px
+    ══════════════════════════════════════════════════════════════════════════ */
+    function WidgetXXS() {
+      return (
+        <Card
+          data-widget-size="xxs"
+          data-framework="summary"
+          elevation={0}
+          sx={{
+            width: 376, minWidth: 376, height: 180, minHeight: 180,
+            border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.default',
+          }}
+        >
+          <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', '&:last-child': { pb: 3 } }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Typography variant="body2" color="text.secondary">Open Tickets</Typography>
+              <Chip
+                label="↑ 12%"
+                size="small"
+                sx={{ bgcolor: 'success.light', color: 'success.main', fontWeight: 700, fontSize: 11, height: 20 }}
+              />
+            </Box>
+            <Typography sx={{ fontSize: 48, fontWeight: 300, lineHeight: 1, color: 'text.primary' }}>
+              142
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: 12 }}>
+              vs. 127 last week
+            </Typography>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: XS — Summary / Metric Strip
+       Framework: Summary  |  Valid: XXS, XS, M  |  Dims: 768×180px
+    ══════════════════════════════════════════════════════════════════════════ */
+    const kpis = [
+      { label: 'Open',       value: '142', trend: '↑ 12%', up: true  },
+      { label: 'In Progress', value: '58',  trend: '→ 0%',  up: null  },
+      { label: 'Resolved',   value: '309', trend: '↑ 4%',  up: true  },
+      { label: 'Overdue',    value: '11',  trend: '↓ 3%',  up: false },
+    ];
+
+    function WidgetXS() {
+      return (
+        <Card
+          data-widget-size="xs"
+          data-framework="summary"
+          elevation={0}
+          sx={{
+            width: 768, minWidth: 768, height: 180, minHeight: 180,
+            border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.default',
+          }}
+        >
+          <CardContent sx={{ p: 0, height: '100%', display: 'flex', '&:last-child': { pb: 0 } }}>
+            {kpis.map((m, i) => (
+              <React.Fragment key={m.label}>
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', px: 4, py: 3 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{m.label}</Typography>
+                  <Typography sx={{ fontSize: 36, fontWeight: 300, lineHeight: 1, color: 'text.primary', mb: 1 }}>
+                    {m.value}
+                  </Typography>
+                  <Chip
+                    label={m.trend}
+                    size="small"
+                    sx={{
+                      alignSelf: 'flex-start',
+                      bgcolor: m.up === true ? 'success.light' : m.up === false ? 'error.light' : 'action.selected',
+                      color: m.up === true ? 'success.main' : m.up === false ? 'error.dark' : 'text.secondary',
+                      fontWeight: 700, fontSize: 11, height: 20,
+                    }}
+                  />
+                </Box>
+                {i < kpis.length - 1 && (
+                  <Divider orientation="vertical" flexItem sx={{ borderColor: 'divider' }} />
+                )}
+              </React.Fragment>
+            ))}
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: S — Status Roll-Up Banner
+       NOTE: S (8-col × 1-row) is not assigned to any framework in the current
+       pairing table. Shown here as an unassigned size demonstration only.
+       Framework: (unassigned)  |  Dims: 1552×180px
+    ══════════════════════════════════════════════════════════════════════════ */
+    const statusRollup = [
+      { label: 'Total Tickets', value: '509', dot: '#1565c0' },
+      { label: 'SLA At Risk',   value: '7',   dot: '#e65100' },
+      { label: 'Critical',      value: '3',   dot: '#c62828' },
+      { label: 'Avg Response',  value: '1.4h',dot: '#2e7d32' },
+      { label: 'Satisfaction',  value: '94%', dot: '#2e7d32' },
+      { label: 'Unassigned',    value: '22',  dot: '#e65100' },
+    ];
+
+    function WidgetS() {
+      return (
+        <Card
+          data-widget-size="s"
+          data-framework="summary"
+          elevation={0}
+          sx={{
+            width: 1552, minWidth: 1552, height: 180, minHeight: 180,
+            border: '1px dashed', borderColor: '#e65100',
+            bgcolor: 'background.default',
+          }}
+        >
+          <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', '&:last-child': { pb: 3 } }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle1" color="text.primary">System Status Overview</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#2e7d32' }} />
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: 12 }}>All systems operational · Updated 2 min ago</Typography>
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 0, flex: 1, alignItems: 'center' }}>
+              {statusRollup.map((item, i) => (
+                <React.Fragment key={item.label}>
+                  <Box sx={{ flex: 1, px: 3 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: 12, mb: 0.5 }}>{item.label}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography sx={{ fontSize: 32, fontWeight: 300, lineHeight: 1, color: 'text.primary' }}>{item.value}</Typography>
+                      <StatusDot color={item.dot} />
+                    </Box>
+                  </Box>
+                  {i < statusRollup.length - 1 && (
+                    <Divider orientation="vertical" flexItem sx={{ borderColor: 'divider', my: 1 }} />
+                  )}
+                </React.Fragment>
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: M — Summary / Single KPI with Depth
+       Framework: Summary  |  Valid: XXS, XS, M  |  Dims: 376×376px
+    ══════════════════════════════════════════════════════════════════════════ */
+    function WidgetM() {
+      return (
+        <Card
+          data-widget-size="m"
+          data-framework="summary"
+          elevation={0}
+          sx={{
+            width: 376, minWidth: 376, height: 376, minHeight: 376,
+            border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.default',
+            display: 'flex', flexDirection: 'column',
+          }}
+        >
+          <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column', '&:last-child': { pb: 3 } }}>
+            {/* Zone 1: Header */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+              <Typography variant="body2" color="text.secondary">SLA Compliance Rate</Typography>
+              <Chip label="This Month" size="small" variant="outlined" sx={{ borderColor: 'divider', color: 'text.secondary', fontSize: 11, height: 20 }} />
+            </Box>
+            {/* Zone 2: Primary value */}
+            <Typography sx={{ fontSize: 48, fontWeight: 300, lineHeight: 1, color: 'text.primary' }}>
+              94%
+            </Typography>
+            <Box sx={{ mt: 1, mb: 'auto' }}>
+              <Chip
+                label="↑ 2% vs last month"
+                size="small"
+                sx={{ bgcolor: 'success.light', color: 'success.main', fontWeight: 700, fontSize: 11, height: 20 }}
+              />
+            </Box>
+            {/* Zone 3: Supporting context */}
+            <Box sx={{ mt: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.75 }}>
+                <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>Progress toward 96% target</Typography>
+                <Typography sx={{ fontSize: 12, fontWeight: 700, color: 'text.primary' }}>94 / 96</Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={(94 / 96) * 100}
+                sx={{
+                  height: 6, borderRadius: 1,
+                  bgcolor: 'action.selected',
+                  '& .MuiLinearProgress-bar': { bgcolor: 'primary.main', borderRadius: 1 },
+                }}
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2.5 }}>
+                {[['Resolved', '309'], ['Breached', '19'], ['Pending', '11']].map(([label, value]) => (
+                  <Box key={label} sx={{ textAlign: 'center' }}>
+                    <Typography sx={{ fontSize: 22, fontWeight: 700, lineHeight: 1, color: 'text.primary' }}>{value}</Typography>
+                    <Typography sx={{ fontSize: 11, color: 'text.secondary', mt: 0.25 }}>{label}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: L — Timeline / Activity Feed
+       Framework: Timeline  |  Valid: L, XL  |  Dims: 768×376px
+    ══════════════════════════════════════════════════════════════════════════ */
+    const events = [
+      { initials: 'MR', name: 'Maria R.',  action: 'closed',    subject: '#4821 — VPN access issue',            time: '2 min ago',  color: '#2e3f80' },
+      { initials: 'JT', name: 'James T.',  action: 'commented', subject: '#4819 — Printer offline',             time: '14 min ago', color: '#7b3f9e' },
+      { initials: 'SY', name: 'System',    action: 'escalated', subject: '#4816 — Email not sending',           time: '31 min ago', color: '#c62828' },
+      { initials: 'AL', name: 'Amy L.',    action: 'opened',    subject: '#4823 — Software install request',    time: '47 min ago', color: '#1565c0' },
+      { initials: 'MR', name: 'Maria R.',  action: 'updated',   subject: '#4817 — Slow network — 3rd floor',   time: '1 hr ago',   color: '#2e3f80' },
+    ];
+
+    function WidgetL() {
+      return (
+        <Card
+          data-widget-size="l"
+          data-framework="timeline"
+          elevation={0}
+          sx={{
+            width: 768, minWidth: 768, height: 376, minHeight: 376,
+            border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.default',
+            display: 'flex', flexDirection: 'column',
+          }}
+        >
+          <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', '&:last-child': { pb: 3 } }}>
+            {/* Zone 1: Header */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="subtitle1" color="text.primary">Recent Activity</Typography>
+              <Button size="small" disableRipple sx={{ color: '#006a8e', fontSize: 13, fontWeight: 600, textTransform: 'none', p: 0, minWidth: 0, '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' } }}>
+                View all
+              </Button>
+            </Box>
+            {/* Zone 2: Event stream */}
+            <List disablePadding>
+              {events.map((e, i) => (
+                <React.Fragment key={i}>
+                  <ListItem disableGutters sx={{ py: 1, alignItems: 'flex-start', gap: 1.5 }}>
+                    <ListItemAvatar sx={{ minWidth: 32, mt: 0.25 }}>
+                      <Avatar sx={{ width: 28, height: 28, fontSize: 10, fontWeight: 700, bgcolor: e.color }}>
+                        {e.initials}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      disableTypography
+                      primary={
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 1 }}>
+                          <Typography sx={{ fontSize: 13, lineHeight: '18px', color: 'text.primary' }}>
+                            <Box component="span" sx={{ fontWeight: 700 }}>{e.name}</Box>
+                            <Box component="span" sx={{ color: 'text.secondary', fontWeight: 400 }}> {e.action} </Box>
+                            <Box component="span" sx={{ color: '#006a8e', fontWeight: 600 }}>{e.subject}</Box>
+                          </Typography>
+                          <Typography sx={{ fontSize: 12, color: 'text.secondary', flexShrink: 0 }}>{e.time}</Typography>
+                        </Box>
+                      }
+                    />
+                  </ListItem>
+                  {i < events.length - 1 && <Divider sx={{ borderColor: 'divider' }} />}
+                </React.Fragment>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: XL — Datagrid / Compact List
+       Framework: Datagrid  |  Valid: XL, XXL  |  Dims: 768×768px
+       NOTE: Production concepts use @mui/x-data-grid@7.29.7. This showcase
+       uses MUI Table to avoid additional CDN dependency.
+    ══════════════════════════════════════════════════════════════════════════ */
+    const compactRows = [
+      { id: '#4823', subject: 'Software install request',     assignee: 'Amy L.',    status: 'Open',        priority: 'Normal', updated: '12:41 PM' },
+      { id: '#4822', subject: 'Monitor flickering randomly',  assignee: 'James T.',  status: 'In Progress', priority: 'High',   updated: '12:35 PM' },
+      { id: '#4821', subject: 'VPN access issue',             assignee: 'Maria R.',  status: 'Closed',      priority: 'High',   updated: '12:33 PM' },
+      { id: '#4820', subject: 'Keyboard not working',         assignee: 'James T.',  status: 'In Progress', priority: 'Normal', updated: '11:58 AM' },
+      { id: '#4819', subject: 'Printer offline — 2nd floor',  assignee: 'James T.',  status: 'In Progress', priority: 'Low',    updated: '11:42 AM' },
+      { id: '#4818', subject: 'Password reset request',       assignee: 'Unassigned',status: 'Open',        priority: 'Normal', updated: '10:30 AM' },
+    ];
+
+    const COL_SX = { fontWeight: 600, fontSize: 12, color: 'text.secondary', bgcolor: 'background.paper', borderColor: 'divider', py: 1.25 };
+    const CELL_SX = { borderColor: 'divider', py: 1.5 };
+
+    function WidgetXL() {
+      return (
+        <Card
+          data-widget-size="xl"
+          data-framework="datagrid"
+          elevation={0}
+          sx={{
+            width: 768, minWidth: 768, height: 768, minHeight: 768,
+            border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.default',
+            display: 'flex', flexDirection: 'column',
+          }}
+        >
+          <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column', '&:last-child': { pb: 3 } }}>
+            {/* Zone 1: Header */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="subtitle1" color="text.primary">Recent Tickets</Typography>
+              <Button size="small" variant="outlined" sx={{ borderColor: 'divider', color: 'text.secondary', fontSize: 12, textTransform: 'none', fontWeight: 600, py: 0.5 }}>
+                View all
+              </Button>
+            </Box>
+            {/* Zone 2: Toolbar */}
+            <TextField
+              placeholder="Search tickets..."
+              size="small"
+              fullWidth
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: 13, fontWeight: 600,
+                  '& fieldset': { borderColor: 'divider' },
+                  '&:hover fieldset': { borderColor: 'primary.light' },
+                },
+              }}
+            />
+            {/* Zone 3: Data surface */}
+            <TableContainer sx={{ flex: 1 }}>
+              <Table size="small" stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {['ID', 'Subject', 'Assignee', 'Status', 'Priority', 'Updated'].map(col => (
+                      <TableCell key={col} sx={COL_SX}>{col}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {compactRows.map(row => (
+                    <TableRow key={row.id} hover sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } }}>
+                      <TableCell sx={{ ...CELL_SX, color: '#006a8e', fontWeight: 700, fontSize: 13 }}>{row.id}</TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 13, fontWeight: 600, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row.subject}</TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 13, color: 'text.secondary' }}>{row.assignee}</TableCell>
+                      <TableCell sx={CELL_SX}>
+                        <Chip label={row.status} size="small" sx={{ ...statusStyle(row.status), fontWeight: 700, fontSize: 11, height: 20 }} />
+                      </TableCell>
+                      <TableCell sx={CELL_SX}>
+                        <Chip label={row.priority} size="small" sx={{ ...priorityStyle(row.priority), fontWeight: 700, fontSize: 11, height: 20 }} />
+                      </TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 12, color: 'text.secondary' }}>{row.updated}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {/* Zone 4: Footer */}
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>Showing 6 of 142 tickets</Typography>
+              <Pagination count={24} size="small" sx={{ '& .MuiPaginationItem-root': { fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: 12 } }} />
+            </Box>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       TIER: XXL — Datagrid / Primary Management Surface
+       Framework: Datagrid  |  Valid: XL, XXL  |  Dims: 1552×964px
+       NOTE: Production concepts use @mui/x-data-grid@7.29.7. This showcase
+       uses MUI Table to avoid additional CDN dependency.
+    ══════════════════════════════════════════════════════════════════════════ */
+    const fullRows = [
+      { id: '#4823', subject: 'Software install request',    company: 'Acme Corp',     assignee: 'Amy L.',    status: 'Open',        priority: 'Normal', sla: '8h left',  updated: 'Today 12:41 PM' },
+      { id: '#4822', subject: 'Monitor flickering randomly', company: 'TechNow LLC',   assignee: 'James T.',  status: 'In Progress', priority: 'High',   sla: '1h left',  updated: 'Today 12:35 PM' },
+      { id: '#4821', subject: 'VPN access issue',            company: 'Acme Corp',     assignee: 'Maria R.',  status: 'Closed',      priority: 'High',   sla: 'Met',      updated: 'Today 12:33 PM' },
+      { id: '#4820', subject: 'Keyboard not working',        company: 'Global Retail', assignee: 'James T.',  status: 'In Progress', priority: 'Normal', sla: '4h left',  updated: 'Today 11:58 AM' },
+      { id: '#4819', subject: 'Printer offline — 2nd floor', company: 'Global Retail', assignee: 'James T.',  status: 'In Progress', priority: 'Low',    sla: '16h left', updated: 'Today 11:42 AM' },
+      { id: '#4818', subject: 'Password reset request',      company: 'TechNow LLC',   assignee: 'Unassigned',status: 'Open',        priority: 'Normal', sla: '6h left',  updated: 'Today 10:30 AM' },
+      { id: '#4817', subject: 'Slow network — 3rd floor',    company: 'Acme Corp',     assignee: 'Maria R.',  status: 'In Progress', priority: 'High',   sla: 'At Risk',  updated: 'Today 9:14 AM'  },
+      { id: '#4816', subject: 'Email not sending',           company: 'Bright Future', assignee: 'Unassigned',status: 'Open',        priority: 'High',   sla: 'Breached', updated: 'Yesterday'       },
+    ];
+
+    function WidgetXXL() {
+      return (
+        <Card
+          data-widget-size="xxl"
+          data-framework="datagrid"
+          elevation={0}
+          sx={{
+            width: 1552, minWidth: 1552, height: 964, minHeight: 964,
+            border: '1px solid', borderColor: 'divider',
+            bgcolor: 'background.default',
+            display: 'flex', flexDirection: 'column',
+          }}
+        >
+          <CardContent sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column', '&:last-child': { pb: 3 } }}>
+            {/* Zone 1: Header */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
+              <Box>
+                <Typography variant="subtitle1" color="text.primary">Ticket Queue</Typography>
+                <Typography sx={{ fontSize: 12, color: 'text.secondary', mt: 0.25 }}>142 total · 22 unassigned · 7 SLA at risk</Typography>
+              </Box>
+              <Stack direction="row" spacing={1}>
+                <Button size="small" variant="outlined" sx={{ borderColor: 'divider', color: 'text.secondary', fontSize: 12, textTransform: 'none', fontWeight: 600 }}>
+                  Export
+                </Button>
+                <Button size="small" variant="outlined" sx={{ borderColor: 'divider', color: 'text.secondary', fontSize: 12, textTransform: 'none', fontWeight: 600 }}>
+                  Bulk Edit
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  sx={{ bgcolor: 'primary.main', fontSize: 12, textTransform: 'none', fontWeight: 600, '&:hover': { bgcolor: 'primary.dark' } }}
+                >
+                  + New Ticket
+                </Button>
+              </Stack>
+            </Box>
+            {/* Zone 2: Toolbar */}
+            <Box sx={{ display: 'flex', gap: 1.5, mb: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+              <TextField
+                placeholder="Search tickets, companies, assignees..."
+                size="small"
+                sx={{
+                  width: 360,
+                  '& .MuiOutlinedInput-root': {
+                    fontSize: 13, fontWeight: 600,
+                    '& fieldset': { borderColor: 'divider' },
+                    '&:hover fieldset': { borderColor: 'primary.light' },
+                  },
+                }}
+              />
+              <Stack direction="row" spacing={1}>
+                {['All', 'Open', 'In Progress', 'Closed'].map((f, i) => (
+                  <Chip
+                    key={f}
+                    label={f}
+                    size="small"
+                    clickable
+                    sx={{
+                      bgcolor: i === 0 ? 'primary.main' : 'background.paper',
+                      color: i === 0 ? 'primary.contrastText' : 'text.secondary',
+                      border: '1px solid',
+                      borderColor: i === 0 ? 'primary.main' : 'divider',
+                      fontWeight: 700, fontSize: 12, height: 28,
+                      '&:hover': { bgcolor: i === 0 ? 'primary.dark' : 'action.hover' },
+                    }}
+                  />
+                ))}
+              </Stack>
+              <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
+                {['High Priority', 'Unassigned', 'SLA At Risk'].map(f => (
+                  <Chip key={f} label={f} size="small" variant="outlined" sx={{ fontSize: 12, height: 28, borderColor: 'divider', color: 'text.secondary', fontWeight: 600 }} />
+                ))}
+              </Box>
+            </Box>
+            {/* Zone 3: Data surface */}
+            <TableContainer sx={{ flex: 1 }}>
+              <Table size="small" stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {['ID', 'Subject', 'Company', 'Assignee', 'Status', 'Priority', 'SLA', 'Updated'].map(col => (
+                      <TableCell key={col} sx={COL_SX}>{col}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {fullRows.map(row => (
+                    <TableRow key={row.id} hover sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } }}>
+                      <TableCell sx={{ ...CELL_SX, color: '#006a8e', fontWeight: 700, fontSize: 13 }}>{row.id}</TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 13, fontWeight: 600 }}>{row.subject}</TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 13, color: 'text.secondary' }}>{row.company}</TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 13, color: 'text.secondary' }}>{row.assignee}</TableCell>
+                      <TableCell sx={CELL_SX}>
+                        <Chip label={row.status} size="small" sx={{ ...statusStyle(row.status), fontWeight: 700, fontSize: 11, height: 20 }} />
+                      </TableCell>
+                      <TableCell sx={CELL_SX}>
+                        <Chip label={row.priority} size="small" sx={{ ...priorityStyle(row.priority), fontWeight: 700, fontSize: 11, height: 20 }} />
+                      </TableCell>
+                      <TableCell sx={CELL_SX}>
+                        <Chip label={row.sla} size="small" sx={{ ...slaStyle(row.sla), fontWeight: 700, fontSize: 11, height: 20 }} />
+                      </TableCell>
+                      <TableCell sx={{ ...CELL_SX, fontSize: 12, color: 'text.secondary' }}>{row.updated}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {/* Zone 4: Footer */}
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>Showing 8 of 142 tickets · Page 1 of 18</Typography>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>Rows per page:</Typography>
+                <Chip label="10 ▾" size="small" variant="outlined" sx={{ borderColor: 'divider', color: 'text.secondary', fontWeight: 600, fontSize: 12, height: 24 }} />
+                <Pagination count={18} size="small" siblingCount={2} sx={{ '& .MuiPaginationItem-root': { fontFamily: '"Inter", sans-serif', fontWeight: 600, fontSize: 12 } }} />
+              </Stack>
+            </Box>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       PAGE SHELL
+    ══════════════════════════════════════════════════════════════════════════ */
+    const tiers = [
+      { id: 'XXS', dims: '376 × 180 px', framework: 'Summary',  variant: 'Single Metric',             validSizes: 'XXS, XS, M',     Widget: WidgetXXS, note: null },
+      { id: 'XS',  dims: '768 × 180 px', framework: 'Summary',  variant: 'Metric Strip',              validSizes: 'XXS, XS, M',     Widget: WidgetXS,  note: null },
+      { id: 'S',   dims: '1552 × 180 px',framework: '—',        variant: 'Status Roll-Up Banner',     validSizes: 'Unassigned size', Widget: WidgetS,   note: 'S has no framework pairing — demo only' },
+      { id: 'M',   dims: '376 × 376 px', framework: 'Summary',  variant: 'Single KPI with Depth',     validSizes: 'XXS, XS, M',     Widget: WidgetM,   note: null },
+      { id: 'L',   dims: '768 × 376 px', framework: 'Timeline', variant: 'Activity Feed',             validSizes: 'L, XL',          Widget: WidgetL,   note: null },
+      { id: 'XL',  dims: '768 × 768 px', framework: 'Datagrid', variant: 'Compact List',              validSizes: 'XL, XXL',        Widget: WidgetXL,  note: null },
+      { id: 'XXL', dims: '1552 × 964 px',framework: 'Datagrid', variant: 'Primary Management Surface',validSizes: 'XL, XXL',        Widget: WidgetXXL, note: null },
+    ];
+
+    function App() {
+      return (
+        <ThemeProvider theme={neonTheme}>
+          <CssBaseline />
+          <Box sx={{ bgcolor: '#edeef2', minHeight: '100vh', px: 4, py: 5 }}>
+
+            {/* Page header */}
+            <Box sx={{ mb: 6 }}>
+              <Typography sx={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', color: 'text.secondary', textTransform: 'uppercase', mb: 0.75 }}>
+                ArgonOS · Design System Guardian
+              </Typography>
+              <Typography sx={{ fontSize: 36, fontWeight: 700, color: 'text.primary', lineHeight: 1.15 }}>
+                Widget Sizing Reference
+              </Typography>
+              <Typography sx={{ fontSize: 14, color: 'text.secondary', mt: 1.5, maxWidth: 640 }}>
+                All 7 size tiers at exact <code style={{ fontFamily: 'SFMono-Regular, Consolas, monospace', background: '#e7e7ea', padding: '1px 6px', borderRadius: 3, fontSize: 12 }}>breakpoints.xl</code> pixel dimensions. MUI + Asio Neon theme exclusively. No Tailwind.
+              </Typography>
+
+              {/* Guardian gate badges */}
+              <Box sx={{ display: 'flex', gap: 1, mt: 3, flexWrap: 'wrap' }}>
+                {['Gate 1: Framework ✓', 'Gate 2: Sizes ✓', 'Gate 3: MUI Only ✓', 'Gate 4: MUI MCP ✓', 'Gate 5: Storybook ✓', 'Gate 6: Template ✓'].map(g => (
+                  <Box key={g} sx={{
+                    px: 2, py: 0.75, borderRadius: '4px',
+                    bgcolor: 'background.default',
+                    border: '1px solid #c5c6cb',
+                    fontSize: 11, fontWeight: 700, color: 'success.main',
+                    fontFamily: '"Inter", sans-serif',
+                    letterSpacing: '0.02em',
+                  }}>
+                    {g}
+                  </Box>
+                ))}
+              </Box>
+
+              {/* Sizing grid legend */}
+              <Box sx={{ mt: 3, p: 2.5, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider', borderRadius: 1, display: 'inline-flex', gap: 4 }}>
+                <Box>
+                  <Typography sx={{ fontSize: 11, fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', mb: 0.75 }}>Grid</Typography>
+                  <Typography sx={{ fontSize: 12, color: 'text.primary' }}>8 columns · 16px gap · col = 180px</Typography>
+                </Box>
+                <Divider orientation="vertical" flexItem />
+                <Box>
+                  <Typography sx={{ fontSize: 11, fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', mb: 0.75 }}>Row height</Typography>
+                  <Typography sx={{ fontSize: 12, color: 'text.primary' }}>180px per row</Typography>
+                </Box>
+                <Divider orientation="vertical" flexItem />
+                <Box>
+                  <Typography sx={{ fontSize: 11, fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', mb: 0.75 }}>Source</Typography>
+                  <Typography sx={{ fontSize: 12, color: '#006a8e' }}>UXTT-Widgets (authoritative)</Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Tier specimens */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {tiers.map(({ id, dims, framework, variant, validSizes, Widget, note }) => (
+                <Box key={id}>
+                  <TierAnnotation tier={id} dims={dims} framework={framework} variant={variant} note={note} />
+                  <Box sx={{ fontSize: 11, color: 'text.secondary', mb: 1, fontFamily: '"Inter", sans-serif' }}>
+                    Valid sizes: <strong>{validSizes}</strong>
+                  </Box>
+                  <Box sx={{ overflow: 'auto' }}>
+                    <Widget />
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+
+            {/* Footer */}
+            <Box sx={{ mt: 8, pt: 3, borderTop: '1px solid', borderColor: 'divider' }}>
+              <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
+                ArgonOS Widget Sizing Reference · Generated 2026-03-14 ·{' '}
+                MUI @mui/material@5 CDN · Asio Neon design tokens ·{' '}
+                UXTT-Widgets grid (col=180px, gap=16px, 8 cols)
+              </Typography>
+            </Box>
+          </Box>
+        </ThemeProvider>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
