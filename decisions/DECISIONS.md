@@ -23,6 +23,18 @@ Each entry follows this structure:
 
 ## Active Decisions
 
+### [2026-03-20] — Discovery Pack: Billing Product (add / create / convert flows)
+**Status:** Active  
+**Area:** Research | UX | PRD  
+**Decision:** Ran the UX PRD Discovery Pipeline on the Billing Product PRD (improve flows for add, create and convert). Readiness evaluated as **Not Ready** (39/100 after metrics gate); pipeline **stopped before Marvin** research per standard gate rules. Discovery pack persisted with full readiness output and recommendation to clarify KPIs and E2E workflows before discovery.  
+**Reasoning:** Success KPIs section is an empty table; workflows are scenario-level only; several requirements and entitlement checks are incomplete.  
+**What Changed:**  
+- Created `ui/discovery-packs/2026-03-20-billing-product-add-create-convert-flows.md`  
+- Updated `ui/discovery-packs/manifest.json` (prepended new entry)  
+**Related:** [PRD: Billing Product - improve flows for add, create and convert actions](https://connectwisedev.atlassian.net/wiki/spaces/PT/pages/1023541556/)
+
+---
+
 ### [2026-03-12] — Decision Log & Context Rule Established
 **Status:** Active
 **Area:** Tooling / Process
